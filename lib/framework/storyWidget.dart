@@ -12,79 +12,108 @@ class StoryWidget extends StatefulWidget {
 }
 
 class StoryWidgetState extends State<StoryWidget> {
-  List<String> texts = [];
-  Function onFinished;
+  List<String> _texts = [];
+  Function _onFinished;
 
-  int textIndex = -1;
-  String storyText = "";
-  String buttonText = "";
-  bool isVisible = false;
-  bool isIntro = true;
+  int _textIndex = -1;
+  String _storyText = "";
+  String _buttonText = "";
+  bool _isVisible = false;
+  bool _isIntro = true;
 
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: this.isVisible,
-      child: Column(
-        children: <Widget>[
-          Text(this.storyText),
-          OutlinedButton(
-            child: Text(this.buttonText),
-            onPressed: this.onButtonPressed,
-          ),
-        ],
+      visible: _isVisible,
+      child: Container(
+        margin: EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: <Widget>[
+            _getTextContainer(),
+            _getButtonContainer(),
+          ],
+        ),
       ),
-    );;
+    );
   }
 
   /// Starts the widget with the given content.
   void show(List<String> texts, Function onFinished, bool isIntro) {
-    this.texts = texts;
-    this.onFinished = onFinished;
-    this.textIndex = -1;
-    this.isIntro = isIntro;
-    this.nextText();
+    _texts = texts;
+    _onFinished = onFinished;
+    _textIndex = -1;
+    _isIntro = isIntro;
+    _nextText();
   }
 
   /// Resets the content & hides the widget.
   void reset() {
-    this.texts = [];
-    this.onFinished = null;
-    this.textIndex = -1;
+    _texts = [];
+    _onFinished = null;
+    _textIndex = -1;
     setState(() {
-      this.isVisible = false;
-      this.storyText = "";
-      this.buttonText = "";
+      _isVisible = false;
+      _storyText = "";
+      _buttonText = "";
     });
   }
 
   /// Switches to the next text in the list & also updates the button text.
-  void nextText() {
-    this.textIndex++;
+  void _nextText() {
+    _textIndex++;
     setState(() {
-      this.isVisible = true;
-      this.storyText = this.texts[this.textIndex];
-      if (this.textIndex == (this.texts.length - 1)) {
-        if (this.isIntro) {
-          this.buttonText = stringStart;
+      _isVisible = true;
+      _storyText = _texts[_textIndex];
+      if (_textIndex == (_texts.length - 1)) {
+        if (_isIntro) {
+          _buttonText = stringStart;
         } else {
-          this.buttonText = stringContinue;
+          _buttonText = stringContinue;
         }
       } else {
-        this.buttonText = stringNext;
+        _buttonText = stringNext;
       }
     });
   }
 
   /// Callback for presses on the button.
-  void onButtonPressed() {
-    if (this.textIndex == (this.texts.length - 1)) {
-      if (this.onFinished != null) {
-        this.onFinished();
+  void _onButtonPressed() {
+    if (_textIndex == (_texts.length - 1)) {
+      if (_onFinished != null) {
+        _onFinished();
       }
-      this.reset();
+      reset();
     } else {
-      this.nextText();
+      _nextText();
     }
+  }
+
+  /// Creates the Container containing the story text object.
+  Container _getTextContainer() {
+    return Container(
+      margin: EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0, bottom: 5.0),
+      child: Text(_storyText,
+        style: TextStyle(
+          fontFamily: "marker felt",
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+
+  /// Creates the Container containing the story text button.
+  Container _getButtonContainer() {
+    return Container(
+      margin: EdgeInsets.only(top: 5.0, right: 10.0, left: 10.0, bottom: 5.0),
+      child: OutlinedButton(
+        child: Text(_buttonText),
+        onPressed: _onButtonPressed,
+      ),
+    );
   }
 }
