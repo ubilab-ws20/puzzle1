@@ -14,6 +14,6 @@ class Puzzle3 extends PuzzleBase {
   }
   void startPuzzle(BuildContext context) {
     print("Puzzle 3 started!");
-    this.onFinished();
+    onFinished();
   }
 }

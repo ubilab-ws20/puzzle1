@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'framework/framework.dart';
 
-// TODO:
-// - Ask if game really wants to be quitted
-// - Add input for player information
-// - Create framework class for handling the game logic
-// - Create state machine to guide through the game
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -30,7 +24,7 @@ class StartScreen extends StatelessWidget {
             "Start Game",
             style: TextStyle(fontSize: 40),
             ),
-          onPressed: () { this.startGame(context); },
+          onPressed: () { startGame(context); },
         ),
       )
     );

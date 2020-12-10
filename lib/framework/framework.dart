@@ -4,11 +4,7 @@ import 'package:latlong/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:user_location/user_location.dart';
 
-import 'package:ubilab_scavenger_hunt/puzzle_base/puzzleBase.dart';
-import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1.dart';
-import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
-import 'package:ubilab_scavenger_hunt/puzzle_3/puzzle3.dart';
-
+import 'game.dart';
 import 'storyWidget.dart';
 
 // Coordinates of Technical Faculty
@@ -23,20 +19,16 @@ class _GameMainScreen extends State<GameMainScreen> {
   MapController mapController = MapController();
   UserLocationOptions userLocationOptions;
   List<Marker> markers = [];
-
-  BuildContext context;
-  GlobalKey<StoryWidgetState> storyIntroWidgetyKey = GlobalKey();
-  GlobalKey<StoryWidgetState> storyOutroWidgetyKey = GlobalKey();
-  PuzzleBase puzzle;
+  Game game = Game();
 
   @override
   Widget build(BuildContext context) {
-    this.context = context;
-    this.userLocationOptions = UserLocationOptions(
+    game.setContext(context);
+    userLocationOptions = UserLocationOptions(
       context: context,
-      mapController: this.mapController,
-      markers: this.markers,
-      onLocationUpdate: onLocationChanged,
+      mapController: mapController,
+      markers: markers,
+      onLocationUpdate: game.onLocationChanged,
       updateMapLocationOnPositionChange: false,
       zoomToCurrentLocationOnLoad: false,
       defaultZoom: 16,
@@ -52,10 +44,10 @@ class _GameMainScreen extends State<GameMainScreen> {
             UserLocationPlugin(),
           ],
         ),
-        mapController: this.mapController,
+        mapController: mapController,
         layers: [
-          MarkerLayerOptions(markers: this.markers),
-          this.userLocationOptions,
+          MarkerLayerOptions(markers: markers),
+          userLocationOptions,
         ],
         children: <Widget>[
           TileLayerWidget(options: TileLayerOptions(
@@ -65,8 +57,8 @@ class _GameMainScreen extends State<GameMainScreen> {
           Column(
             children: [
               testPuzzleButtonRow(),
-              StoryWidget(key: this.storyIntroWidgetyKey),
-              StoryWidget(key: this.storyOutroWidgetyKey),
+              StoryWidget(key: game.storyIntroWidgetyKey),
+              StoryWidget(key: game.storyOutroWidgetyKey),
             ],
           ),
         ],
@@ -74,76 +66,28 @@ class _GameMainScreen extends State<GameMainScreen> {
     );
   }
 
-  /// Callback for map when location of player changed.
-  void onLocationChanged(LatLng coords) {
-    print("Location changed.");
-  }
-
-  /// Callback for puzzles when puzzle is finished.
-  void onPuzzleFinished() {
-    if (this.puzzle == null) {
-      return;
-    }
-    this.storyOutroWidgetyKey.currentState.show(this.puzzle.getOutroTexts(), null, false);
-    this.puzzle = null;
-  }
-
   // Functions for development & testing
-
-  /// Test callback for reaching the location for puzzle 1.
-  /// Used by a test button.
-  void testOnPuzzle1() {
-    this.puzzle = Puzzle1();
-    this.puzzle.setFinishedCallback(onPuzzleFinished);
-    this.storyIntroWidgetyKey.currentState.show(this.puzzle.getIntroTexts(), this.testOnStartPuzzle, true);
-  }
-
-  /// Test callback for reaching the location for puzzle 2.
-  /// Used by a test button.
-  void testOnPuzzle2() {
-    this.puzzle = Puzzle2();
-    this.puzzle.setFinishedCallback(onPuzzleFinished);
-    this.storyIntroWidgetyKey.currentState.show(this.puzzle.getIntroTexts(), this.testOnStartPuzzle, true);
-  }
-
-  /// Test callback for reaching the location for puzzle 2.
-  /// Used by a test button.
-  void testOnPuzzle3() {
-    this.puzzle = Puzzle3();
-    this.puzzle.setFinishedCallback(onPuzzleFinished);
-    this.storyIntroWidgetyKey.currentState.show(this.puzzle.getIntroTexts(), this.testOnStartPuzzle, true);
-  }
-
-  /// Test callback when after reading the intro story a puzzle is started.
-  void testOnStartPuzzle() {
-    if (this.puzzle == null) {
-      return;
-    }
-    this.puzzle.startPuzzle(this.context);
-  }
 
   /// Creates a row of test buttons to trigger reaching the location for a puzzle.
   Row testPuzzleButtonRow() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        testPuzzleButton("Puzzle 1", testOnPuzzle1),
-        testPuzzleButton("Puzzle 2", testOnPuzzle2),
-        testPuzzleButton("Puzzle 3", testOnPuzzle3),
+        testPuzzleButton("Start", game.start),
+        testPuzzleButton("Puzzle", game.testOnPuzzleLocation),
       ],
     );
   }
 
   /// Creates a test button to trigger reaching the location for a puzzle.
-  Expanded testPuzzleButton(String buttonText, Function onButtonPressed) {
-    return Expanded(
-      child: FittedBox(
-        fit: BoxFit.fill,
-        child: Container(
-          margin: const EdgeInsets.all(1.0),
-          child: OutlinedButton(
-            child: Text(buttonText),
-            onPressed: onButtonPressed,
-          ),
+  FittedBox testPuzzleButton(String buttonText, Function onButtonPressed) {
+    return FittedBox(
+      fit: BoxFit.fill,
+      child: Container(
+        margin: const EdgeInsets.all(1.0),
+        child: OutlinedButton(
+          child: Text(buttonText),
+          onPressed: onButtonPressed,
         ),
       ),
     );
