@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:latlong/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:user_location/user_location.dart';
-
 import 'game.dart';
 import 'storyWidget.dart';
 
@@ -56,7 +54,7 @@ class _GameMainScreen extends State<GameMainScreen> {
           )),
           Column(
             children: [
-              testPuzzleButtonRow(),
+              _testPuzzleButtonRow(),
               StoryWidget(key: game.storyIntroWidgetyKey),
               StoryWidget(key: game.storyOutroWidgetyKey),
             ],
@@ -69,18 +67,18 @@ class _GameMainScreen extends State<GameMainScreen> {
   // Functions for development & testing
 
   /// Creates a row of test buttons to trigger reaching the location for a puzzle.
-  Row testPuzzleButtonRow() {
+  Row _testPuzzleButtonRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        testPuzzleButton("Start", game.start),
-        testPuzzleButton("Puzzle", game.testOnPuzzleLocation),
+        _testPuzzleButton("Start", game.start),
+        _testPuzzleButton("Puzzle", game.testOnPuzzleLocation),
       ],
     );
   }
 
   /// Creates a test button to trigger reaching the location for a puzzle.
-  FittedBox testPuzzleButton(String buttonText, Function onButtonPressed) {
+  FittedBox _testPuzzleButton(String buttonText, Function onButtonPressed) {
     return FittedBox(
       fit: BoxFit.fill,
       child: Container(

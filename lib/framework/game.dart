@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-
 import 'package:latlong/latlong.dart';
-
 import 'package:ubilab_scavenger_hunt/puzzle_base/puzzleBase.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_3/puzzle3.dart';
-
 import 'storyWidget.dart';
 
 enum gameState {
@@ -89,7 +86,7 @@ class Game {
   /// Test callback for reaching the location for puzzle 1.
   void testOnPuzzleLocation() {
     if (_state == gameState.searchPuzzle1) {
-      _puzzle = Puzzle1();
+      _puzzle = Puzzle1.getInstance();
     } else if (_state == gameState.searchPuzzle2) {
       _puzzle = Puzzle2();
     } else if (_state == gameState.searchPuzzle3) {
