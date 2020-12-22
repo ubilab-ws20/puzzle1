@@ -4,6 +4,7 @@ import 'package:ubilab_scavenger_hunt/puzzle_base/puzzleBase.dart';
 import 'package:flutter/services.dart';
 import '../puzzle_base/puzzleBase.dart';
 
+
 class Puzzle3 extends PuzzleBase {
   LatLng getStartLocation() {
     return LatLng(48.012684, 7.835044);
