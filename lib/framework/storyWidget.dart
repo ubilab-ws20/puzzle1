@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ubilab_scavenger_hunt/framework/game.dart';
 
 const String stringNext = "Next";
 const String stringStart = "Start";
@@ -15,14 +16,21 @@ class StoryWidgetState extends State<StoryWidget> {
   List<String> _texts = [];
   Function _onFinished;
 
-  int _textIndex = -1;
+  int _textIndex = 0;
   String _storyText = "";
-  String _buttonText = "";
+  String _buttonText = stringStart;
   bool _isVisible = false;
   bool _isIntro = true;
 
   @override
   Widget build(BuildContext context) {
+    Game game = Game.getInstance();
+    if (game.start()) {
+      _isVisible = true;
+      _texts = game.gameStartTexts;
+      _storyText = _texts[_textIndex];
+      _onFinished = game.nextState;
+    }
     return Visibility(
       visible: _isVisible,
       child: Container(

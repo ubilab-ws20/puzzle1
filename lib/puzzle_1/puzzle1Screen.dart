@@ -15,7 +15,7 @@ import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1.dart';
 
 const String stringScreenName = "Puzzle 1";
 const String stringSubmitButtonText = "Open";
-const String stringAlertText = "Damn. So close!";
+const String stringNotSolved = "Damn. So close!";
 
 /// Wrapper class for int secrets for passing by reference.
 class Secret {
@@ -70,7 +70,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
         builder: (BuildContext context){
           return AlertDialog(
             title: Text(
-              stringAlertText,
+              stringNotSolved,
               textAlign: TextAlign.center,
             ),
           );
