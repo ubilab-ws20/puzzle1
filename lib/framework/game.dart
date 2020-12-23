@@ -25,28 +25,57 @@ enum gameState {
 }
 
 class Game {
+  static Game _instance;
+
   GlobalKey<StoryWidgetState> storyIntroWidgetyKey = GlobalKey();
   GlobalKey<StoryWidgetState> storyOutroWidgetyKey = GlobalKey();
+  List<String> gameStartTexts = ["Start 1", "Start 2", "Start 3"];
 
   BuildContext _context;
+  String _teamName = "";
   gameState _state = gameState.none;
   PuzzleBase _puzzle;
-  List<String> _gameStartTexts = ["Start 1", "Start 2", "Start 3"];
+
+  Game() {
+    _instance = this;
+  }
+
+  /// Static singleton method.
+  static Game getInstance() {
+    if (_instance == null) {
+      _instance = Game();
+    }
+    return _instance;
+  }
 
   /// Setter for the BuildContext with which the puzzles start function is called.
   void setContext(BuildContext context) {
     _context = context;
   }
 
+  /// Setter for team name.
+  void setTeamName(String teamName) {
+    _teamName = teamName;
+  }
+
   /// To start the game resp. the state machine.
-  void start() {
-    if ((_state != gameState.none) && (_state != gameState.end)) {
-      return;
+  bool start() {
+    if (_state != gameState.none) {
+      return false;
     }
+    print("Game started with teamname: " + _teamName);
     _state = gameState.none;
     _puzzle = null;
-    _nextState();
-    storyIntroWidgetyKey.currentState.show(_gameStartTexts, _nextState, true);
+    nextState();
+    return true;
+  }
+
+  /// Resets the game in order to start it again.
+  void reset() {
+    _context = null;
+    _teamName = "";
+    _state = gameState.none;
+    _puzzle = null;
   }
 
   /// Callback for map when location of player changed.
@@ -59,7 +88,7 @@ class Game {
     if (_puzzle == null) {
       return;
     }
-    _nextState();
+    nextState();
     _puzzle.startPuzzle(_context);
   }
 
@@ -68,13 +97,13 @@ class Game {
     if (_puzzle == null) {
       return;
     }
-    _nextState();
-    storyOutroWidgetyKey.currentState.show(_puzzle.getOutroTexts(), _nextState, false);
+    nextState();
+    storyOutroWidgetyKey.currentState.show(_puzzle.getOutroTexts(), nextState, false);
     _puzzle = null;
   }
 
   /// Sets the state machine into the next state.
-  void _nextState() {
+  void nextState() {
     if (_state.index < (gameState.values.length - 1)) {
       _state = gameState.values[_state.index + 1];
     }
@@ -94,7 +123,7 @@ class Game {
     } else {
       return;
     }
-    _nextState();
+    nextState();
     _puzzle.setFinishedCallback(onPuzzleFinished);
     storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
   }

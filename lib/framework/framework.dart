@@ -8,6 +8,8 @@ import 'storyWidget.dart';
 // Coordinates of Technical Faculty
 // 48.012684, 7.835044
 
+const String stringAppName = "Ubilab Scavenger Hunt";
+
 class GameMainScreen extends StatefulWidget {
   @override
   _GameMainScreen createState() => _GameMainScreen();
@@ -17,7 +19,7 @@ class _GameMainScreen extends State<GameMainScreen> {
   MapController mapController = MapController();
   UserLocationOptions userLocationOptions;
   List<Marker> markers = [];
-  Game game = Game();
+  Game game = Game.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +73,6 @@ class _GameMainScreen extends State<GameMainScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        _testPuzzleButton("Start", game.start),
         _testPuzzleButton("Puzzle", game.testOnPuzzleLocation),
       ],
     );
