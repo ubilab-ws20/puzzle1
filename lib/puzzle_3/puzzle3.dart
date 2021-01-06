@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_base/puzzleBase.dart';
 import 'package:flutter/services.dart';
+
 import '../puzzle_base/puzzleBase.dart';
 
 class Puzzle3 extends PuzzleBase {
@@ -87,28 +88,65 @@ class _ThirdRouteState extends State<ThirdRoute > {
       appBar: AppBar(
         title: Text('Puzzle 3'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child:
-        Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text('Insert outro here', style: TextStyle(fontWeight: FontWeight.bold)),
-              ElevatedButton(
-                child: Text('Continue'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SecondRoute()),
-                  );
-                },
-              ),
-            ]
-        ),
-      ),
-
-    );
+        body: Stack(
+              children: <Widget>[
+                CustomPaint( //                       <-- CustomPaint widget
+                    size: Size(1000, 1000),
+                    painter: MyPainter2()
+                ),
+                Positioned(
+                  top: 50,
+                  left: 50,
+                  child: Column(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.circle),
+                          color: Colors.green,
+                          onPressed: () {
+                          },
+                        ),
+                      ]),),
+                Positioned(
+                  top: 50,
+                  left: 150,
+                  child: Column(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.circle),
+                          color: Colors.green,
+                          onPressed: () {
+                          },
+                        ),
+                      ]),),
+                Positioned(
+                  top: 50,
+                  left: 300,
+                  child: IconButton(
+                    icon: Icon(Icons.circle),
+                    color: Colors.green,
+                    onPressed: () {
+                    },
+                  ),),
+                Positioned(
+                  top: 50,
+                  left: 450,
+                  child: IconButton(
+                    icon: Icon(Icons.circle),
+                    color: Colors.green,
+                    onPressed: () {
+                    },
+                  ),),
+                Positioned(
+                  top: 50,
+                  left: 550,
+                  child: IconButton(
+                    icon: Icon(Icons.circle),
+                    color: Colors.green,
+                    onPressed: () {
+                    },
+                  ),),
+    ]
+    ));
   }
 
 }
@@ -134,7 +172,11 @@ bool checkReachedNode(double x, double y) {
   return false;
 }
 
+double xpos = 0.0, ypos = 0.0;
+double nodex = x0, nodey = y0;
+
 class _SecondRouteState extends State<SecondRoute > {
+  BuildContext scaffoldContext;
   int _downCounter = 0;
   int _upCounter = 0;
   double x = 0.0;
@@ -158,12 +200,16 @@ class _SecondRouteState extends State<SecondRoute > {
   void _updateLocation(PointerEvent details) {
     double X = details.position.dx;
     double Y = details.position.dy;
+    xpos = X;
+    ypos = Y;
     setState(() {
       x = X;
       y = Y;
     });
     if (X > x0 + 15 && X < x0 + 30 && Y > y0 + 95 && Y < y0 + 110 &&
         lastNode == 0) {
+      nodex = x0;
+      nodey = y0;
       lastNode = 1;
       c1 = Colors.green;
       print("first node");
@@ -173,6 +219,8 @@ class _SecondRouteState extends State<SecondRoute > {
           lastNode == 1) {
         if (X > x3 + 15 && X < x3 + 30 && Y > y3 + 95 && Y < y3 + 110) {
           lastNode = 2;
+          nodex = x3;
+          nodey = y3;
           c2 = Colors.green;
           print("second node");
         } else {
@@ -185,6 +233,8 @@ class _SecondRouteState extends State<SecondRoute > {
           lastNode == 2){
         if (X > x5 + 15 && X < x5 + 30 && Y > y5 + 95 && Y < y5 + 110) {
           lastNode = 3;
+          nodex = x5;
+          nodey = y5;
           c3 = Colors.green;
           print("thrid node");
         } else {
@@ -198,6 +248,8 @@ class _SecondRouteState extends State<SecondRoute > {
         lastNode == 3){
       if (X > x11 + 15 && X < x11 + 30 && Y > y11 + 95 && Y < y11 + 110) {
         lastNode = 4;
+        nodex = x11;
+        nodey = y11;
         c4 = Colors.green;
         print("fourth node");
       } else {
@@ -212,7 +264,7 @@ class _SecondRouteState extends State<SecondRoute > {
       if (X > x1+15 && X < x1+30 && Y > y1+95 && Y < y1+110 ) {
         lastNode = 5;
         c5 = Colors.green;
-        print("fifth node");
+        // switch to the next screen
       } else {
         c1 = Colors.blue;
         c2 = Colors.blue;
@@ -225,6 +277,31 @@ class _SecondRouteState extends State<SecondRoute > {
     }
 
   }
+
+  Widget ourButton(BuildContext context) {
+    final snackBar = new SnackBar(content: new Text("aa"),
+        backgroundColor: Colors.red);
+    //Scaffold.of(context).showSnackBar(snackBar);
+    return lastNode == 5 ?
+    ElevatedButton(
+      child: Text('Continue'),
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ThirdRoute()),
+        );
+      },
+    ) :
+        Container();
+  }
+  
+  Widget ourText() {
+    return lastNode == 5 ?
+    Text("Congratulations! You have found the right path!")
+        :
+        Container();
+  }
+
 
   @override
   void initState(){
@@ -253,7 +330,8 @@ class _SecondRouteState extends State<SecondRoute > {
       appBar: AppBar(
         title: Text("Second Route"),
       ),
-      body: Stack(
+      body: Builder(
+        builder: (context) => Stack(
         children: <Widget>[
           CustomPaint( //                       <-- CustomPaint widget
               size: Size(1000, 1000),
@@ -393,9 +471,25 @@ class _SecondRouteState extends State<SecondRoute > {
                 ),
               ),
             ),),
-        ]),
+          Positioned(
+            top: 250,
+            left: 580,
+            child: Column(
+                children: <Widget>[
+                  ourButton(context)
+                ]),),
+          Positioned(
+            top: 20,
+            left: 200,
+            child: Column(
+                children: <Widget>[
+                  ourText()
+                ]),),
+        ]),)
+
     );
   }
+
 }
 
 
@@ -414,6 +508,8 @@ class MyPainter extends CustomPainter { //         <-- CustomPainter class
       final p9 = Offset(x9+25, y9+25);
       final p10 = Offset(x10+25, y10+25);
       final p11 = Offset(x11+25, y11+25);
+      final node = Offset(nodex+25, nodey+25);
+      final cursor = Offset(xpos,ypos-75);
       final paint = Paint()
         ..color = Colors.blue
         ..strokeWidth = 4;
@@ -449,6 +545,7 @@ class MyPainter extends CustomPainter { //         <-- CustomPainter class
       canvas.drawLine(p8, p1, paint);
       canvas.drawLine(p6, p5, paint);
       canvas.drawLine(p7, p8, paint);
+      canvas.drawLine(node,cursor, paint);
     }
 
   @override
@@ -457,3 +554,25 @@ class MyPainter extends CustomPainter { //         <-- CustomPainter class
   }
 }
 
+class MyPainter2 extends CustomPainter { //         <-- CustomPainter class
+  @override
+  void paint(Canvas canvas, Size size) {
+    final p0 = Offset(75, 75);
+    final p1 = Offset(175, 75);
+    final p2 = Offset(325, 75);
+    final p3 = Offset(475, 75);
+    final p4 = Offset(575, 75);
+    final paint = Paint()
+      ..color = Colors.green
+      ..strokeWidth = 4;
+    canvas.drawLine(p0, p1, paint);
+    canvas.drawLine(p1, p2, paint);
+    canvas.drawLine(p2, p3, paint);
+    canvas.drawLine(p3, p4, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter old) {
+    return false;
+  }
+}
