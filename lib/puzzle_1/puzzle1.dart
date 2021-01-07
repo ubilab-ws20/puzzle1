@@ -7,6 +7,8 @@ import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1Screen.dart';
 class Puzzle1 extends PuzzleBase {
   static Puzzle1 _instance;
 
+  List<String> hintTexts = ["Puzzle 1 Hint 1", "Puzzle 1 Hint 2", "Puzzle 1 Hint 3"];
+
   Puzzle1() {
     _instance = this;
   }
@@ -19,18 +21,27 @@ class Puzzle1 extends PuzzleBase {
     return _instance;
   }
 
+  @override
+  List<String> getPuzzleSearchHints() {
+    return ["Search Puzzle 1 Hint 1", "Search Puzzle 1 Hint 2", "Search Puzzle 1 Hint 3"];
+  }
+
+  @override
   LatLng getStartLocation() {
     return LatLng(48.012684, 7.835044);
   }
 
+  @override
   List<String> getIntroTexts() {
-    return ["Intro 1", "Intro 2", "Intro 3"];
+    return ["Puzzle 1 Intro 1", "Puzzle 1 Intro 2", "Puzzle 1 Intro 3"];
   }
 
+  @override
   List<String> getOutroTexts() {
-    return ["Outro 1", "Outro 2", "Outro 3"];
+    return ["Puzzle 1 Outro 1", "Puzzle 1 Outro 2", "Puzzle 1 Outro 3"];
   }
 
+  @override
   void startPuzzle(BuildContext context) {
     Navigator.of(context).push(
       PageTransition(

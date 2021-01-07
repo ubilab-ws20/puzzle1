@@ -18,7 +18,7 @@ class StoryWidgetState extends State<StoryWidget> {
 
   int _textIndex = 0;
   String _storyText = "";
-  String _buttonText = stringStart;
+  String _buttonText = stringNext;
   bool _isVisible = false;
   bool _isIntro = true;
 
@@ -42,8 +42,8 @@ class StoryWidgetState extends State<StoryWidget> {
         ),
         child: Column(
           children: <Widget>[
-            _getTextContainer(),
-            _getButtonContainer(),
+            _text(),
+            _button(),
           ],
         ),
       ),
@@ -102,7 +102,7 @@ class StoryWidgetState extends State<StoryWidget> {
   }
 
   /// Creates the Container containing the story text object.
-  Container _getTextContainer() {
+  Widget _text() {
     return Container(
       margin: EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0, bottom: 5.0),
       child: Text(_storyText,
@@ -115,7 +115,7 @@ class StoryWidgetState extends State<StoryWidget> {
   }
 
   /// Creates the Container containing the story text button.
-  Container _getButtonContainer() {
+  Widget _button() {
     return Container(
       margin: EdgeInsets.only(top: 5.0, right: 10.0, left: 10.0, bottom: 5.0),
       child: OutlinedButton(
