@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1.dart';
+import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/game.dart';
 
 // TODO:
 // - Add bluetooth beacon functionality
@@ -37,27 +41,37 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
 
   @override
   Widget build(BuildContext context) {
+    Game.getInstance().updateCurrentHints(Puzzle1.getInstance().hintTexts);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-        title: Text(stringScreenName),
+          title: Text(stringScreenName),
           automaticallyImplyLeading: false,
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _testSoundButtonRow1(),
-            _testSoundButtonRow2(),
-            _testQuitButton(),
-            Spacer(),
-            _secretPickerRow1(),
-            _secretPickerRow2(),
-            _openButton(),
-            Spacer(),
-            Spacer(),
+          actions: [
+            hintIconButton(context),
+            gameMenuIconButton(context),
           ],
-        )
+        ),
+        body: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _testSoundButtonRow1(),
+              _testSoundButtonRow2(),
+              _testQuitButton(),
+              Spacer(),
+              _secretPickerRow1(),
+              _secretPickerRow2(),
+              _openButton(),
+              Spacer(),
+              Spacer(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -139,7 +153,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   // Construction methods for parts of the screen
 
   /// Creates the first row of secret pickers.
-  Row _secretPickerRow1() {
+  Widget _secretPickerRow1() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -151,7 +165,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   }
 
   /// Creates the second row of secret pickers.
-  Row _secretPickerRow2() {
+  Widget _secretPickerRow2() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -163,7 +177,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   }
 
   /// Creates a single secret picker.
-  Container _secretPicker(Secret secret) {
+  Widget _secretPicker(Secret secret) {
     return Container(
       margin: EdgeInsets.all(5.0),
       child: NumberPicker.integer(
@@ -184,7 +198,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   }
 
   /// Creates the open button for submitting the secrets.
-  Container _openButton() {
+  Widget _openButton() {
     return Container(
       margin: EdgeInsets.only(top: 30.0),
       child: OutlinedButton(
@@ -200,7 +214,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   // Functions for development & testing
 
   /// Creates the first row of secret sound test buttons.
-  Row _testSoundButtonRow1() {
+  Widget _testSoundButtonRow1() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -212,7 +226,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   }
 
   /// Creates the second row of secret sound test buttons.
-  Row _testSoundButtonRow2() {
+  Widget _testSoundButtonRow2() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -224,7 +238,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   }
 
   /// Creates a test button with the specified text and callback function.
-  Container _testSoundButton(String buttonText, Function onButtonPressed) {
+  Widget _testSoundButton(String buttonText, Function onButtonPressed) {
     return Container(
       margin: const EdgeInsets.only(left: 5.0, right: 5.0),
       child: OutlinedButton(
@@ -235,7 +249,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   }
 
   /// Creates a test button to quit and leave the puzzle.
-  Container _testQuitButton() {
+  Widget _testQuitButton() {
     return Container(
       margin: const EdgeInsets.only(left: 5.0, right: 5.0),
       child: OutlinedButton(

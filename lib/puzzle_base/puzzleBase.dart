@@ -8,6 +8,10 @@ abstract class PuzzleBase {
     this.onFinished = onFinished;
   }
 
+  List<String> getPuzzleSearchHints() {
+    return [];
+  }
+
   LatLng getStartLocation();
   List<String> getIntroTexts();
   List<String> getOutroTexts();

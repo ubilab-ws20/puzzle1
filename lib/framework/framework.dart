@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:latlong/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:user_location/user_location.dart';
 import 'game.dart';
 import 'storyWidget.dart';
+import 'gameMenuScreen.dart';
+import 'hintScreen.dart';
 
 // Coordinates of Technical Faculty
 // 48.012684, 7.835044
@@ -33,35 +36,48 @@ class _GameMainScreen extends State<GameMainScreen> {
       zoomToCurrentLocationOnLoad: false,
       defaultZoom: 16,
     );
-    return Scaffold(
-      appBar: AppBar(title: Text("Ubilab Scavenger Hunt")),
-      body: FlutterMap(
-        options: MapOptions(
-          // Coordinates of Technical Faculty
-          center: LatLng(48.012684, 7.835044),
-          zoom: 16.0,
-          plugins: [
-            UserLocationPlugin(),
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(stringAppName),
+          automaticallyImplyLeading: false,
+          actions: [
+            hintIconButton(context),
+            gameMenuIconButton(context),
           ],
         ),
-        mapController: mapController,
-        layers: [
-          MarkerLayerOptions(markers: markers),
-          userLocationOptions,
-        ],
-        children: <Widget>[
-          TileLayerWidget(options: TileLayerOptions(
-            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c'],
-          )),
-          Column(
-            children: [
-              _testPuzzleButtonRow(),
-              StoryWidget(key: game.storyIntroWidgetyKey),
-              StoryWidget(key: game.storyOutroWidgetyKey),
+        body: FlutterMap(
+          options: MapOptions(
+            // Coordinates of Technical Faculty
+            center: LatLng(48.012684, 7.835044),
+            zoom: 16.0,
+            plugins: [
+              UserLocationPlugin(),
             ],
           ),
-        ],
+          mapController: mapController,
+          layers: [
+            MarkerLayerOptions(markers: markers),
+            userLocationOptions,
+          ],
+          children: <Widget>[
+            TileLayerWidget(options: TileLayerOptions(
+              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+              subdomains: ['a', 'b', 'c'],
+            )),
+            Column(
+              children: [
+                _testPuzzleButtonRow(),
+                StoryWidget(key: game.storyIntroWidgetyKey),
+                StoryWidget(key: game.storyOutroWidgetyKey),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -69,7 +85,7 @@ class _GameMainScreen extends State<GameMainScreen> {
   // Functions for development & testing
 
   /// Creates a row of test buttons to trigger reaching the location for a puzzle.
-  Row _testPuzzleButtonRow() {
+  Widget _testPuzzleButtonRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -79,7 +95,7 @@ class _GameMainScreen extends State<GameMainScreen> {
   }
 
   /// Creates a test button to trigger reaching the location for a puzzle.
-  FittedBox _testPuzzleButton(String buttonText, Function onButtonPressed) {
+  Widget _testPuzzleButton(String buttonText, Function onButtonPressed) {
     return FittedBox(
       fit: BoxFit.fill,
       child: Container(

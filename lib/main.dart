@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'framework/framework.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
 
@@ -14,7 +15,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: stringAppName,
-      home: StartScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => StartScreen(),
+      },
     );
   }
 }
@@ -29,9 +33,13 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return Scaffold(
-        appBar: AppBar(title: Text(stringAppName)),
-        body: Center(
+      appBar: AppBar(title: Text(stringAppName)),
+      body: SafeArea(
+        child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -56,8 +64,9 @@ class _StartScreenState extends State<StartScreen> {
                 ),
               ),
             ],
-          )
-        )
+          ),
+        ),
+      ),
     );
   }
 
