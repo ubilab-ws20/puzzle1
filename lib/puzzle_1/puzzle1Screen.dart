@@ -8,16 +8,7 @@ import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
 
-// TODO:
-// - Add bluetooth beacon functionality
-// - Record audios and include them here
-// - Fade between game main screen & puzzle with black screen in between
-//
-// - Make everything nice and fancy
-// - Add game overview
-// - Add hints
-
-const String stringScreenName = "Puzzle 1";
+const String stringScreenName = "The Vault";
 const String stringSubmitButtonText = "Open";
 const String stringNotSolved = "Damn. So close!";
 
@@ -40,8 +31,13 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   List<Secret> _secrets = [Secret(50), Secret(50), Secret(50), Secret(50), Secret(50), Secret(50)];
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     Game.getInstance().updateCurrentHints(Puzzle1.getInstance().hintTexts);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -56,20 +52,29 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
             gameMenuIconButton(context),
           ],
         ),
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _testSoundButtonRow1(),
-              _testSoundButtonRow2(),
-              _testQuitButton(),
-              Spacer(),
-              _secretPickerRow1(),
-              _secretPickerRow2(),
-              _openButton(),
-              Spacer(),
-              Spacer(),
-            ],
+        body: Container(
+          constraints: BoxConstraints.expand(),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/vault.jpg"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _testSoundButtonRow1(),
+                _testSoundButtonRow2(),
+                _testQuitButton(),
+                Spacer(),
+                _secretPickerRow1(),
+                _secretPickerRow2(),
+                _openButton(),
+                Spacer(),
+                Spacer(),
+              ],
+            ),
           ),
         ),
       ),
@@ -115,38 +120,44 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   }
 
   /// Plays the sound for secret 1.
+  /// 46
   void _playSecret1() async {
-    await _playSecret("goat.mp3");
+    await _playSecret("46.mp3");
     print("<secret 1 sound>");
   }
 
   /// Plays the sound for secret 2.
+  /// 2
   void _playSecret2() async {
-    await _playSecret("goat.mp3");
+    await _playSecret("2.mp3");
     print("<secret 2 sound>");
   }
 
   /// Plays the sound for secret 3.
+  /// 30
   void _playSecret3() async {
-    await _playSecret("goat.mp3");
+    await _playSecret("30.mp3");
     print("<secret 3 sound>");
   }
 
   /// Plays the sound for secret 4.
+  /// 89
   void _playSecret4() async {
-    await _playSecret("goat.mp3");
+    await _playSecret("89.mp3");
     print("<secret 4 sound>");
   }
 
   /// Plays the sound for secret 5.
+  /// 51
   void _playSecret5() async {
-    await _playSecret("goat.mp3");
+    await _playSecret("51.mp3");
     print("<secret 5 sound>");
   }
 
   /// Plays the sound for secret 6.
+  /// 73
   void _playSecret6() async {
-    await _playSecret("goat.mp3");
+    await _playSecret("73.mp3");
     print("<secret 6 sound>");
   }
 
@@ -189,8 +200,19 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
             secret.val = newValue;
           });
         },
+        textStyle: TextStyle(
+          fontSize: 14.0,
+          color: Colors.grey,
+        ),
+        selectedTextStyle: TextStyle(
+          fontSize: 25.0,
+          color: Colors.orangeAccent,
+        ),
         decoration: BoxDecoration(
-          border: Border.all(),
+          border: Border.all(
+            color: Colors.grey,
+            width: 3.0,
+          ),
           borderRadius: BorderRadius.circular(12),
         ),
       ),
@@ -201,10 +223,16 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   Widget _openButton() {
     return Container(
       margin: EdgeInsets.only(top: 30.0),
-      child: OutlinedButton(
+      child: ElevatedButton(
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.orangeAccent),
+        ),
         child: Text(
           stringSubmitButtonText,
-          style: TextStyle(fontSize: 40),
+          style: TextStyle(
+            fontSize: 40,
+            color: Colors.black,
+          ),
         ),
         onPressed: () { _onOpenPressed(context); },
       ),

@@ -31,7 +31,14 @@ class Game {
 
   GlobalKey<StoryWidgetState> storyIntroWidgetyKey = GlobalKey();
   GlobalKey<StoryWidgetState> storyOutroWidgetyKey = GlobalKey();
-  List<String> gameStartTexts = ["Game Start 1", "Game Start 2", "Game Start 3"];
+  List<String> gameStartTexts = ["A few days ago something mysterious happened in Freiburg.",
+    "The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.",
+    "The official version is that he is suffering from a severe illness.",
+    "But people who were working closely with him are heavily doubting this.",
+    "While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:",
+    "\"Scientists discovered the 6 key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So WHY don't you go and search for the right food for you personal needs?\"",
+    "Strange..."
+  ];
 
   BuildContext _context;
   String _teamName = "";

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:page_transition/page_transition.dart';
 import 'framework/framework.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
 
@@ -95,11 +96,12 @@ class _StartScreenState extends State<StartScreen> {
     game.reset();
     game.setTeamName(_controller.text);
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          return GameMainScreen();
-        }
-      )
+        PageTransition(
+          type: PageTransitionType.fade,
+          duration: Duration(seconds: 1),
+          reverseDuration: Duration(seconds: 1),
+          child: GameMainScreen(),
+        )
     );
   }
 }

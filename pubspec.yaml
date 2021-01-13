@@ -55,7 +55,13 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/audio/goat.mp3
+    - assets/audio/2.mp3
+    - assets/audio/30.mp3
+    - assets/audio/46.mp3
+    - assets/audio/51.mp3
+    - assets/audio/73.mp3
+    - assets/audio/89.mp3
+    - assets/vault.jpg
     - assets/555.png
     - assets/fileTransfer.gif
     - assets/downloadCanceled.jpg
