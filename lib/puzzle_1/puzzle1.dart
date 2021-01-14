@@ -7,7 +7,13 @@ import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1Screen.dart';
 class Puzzle1 extends PuzzleBase {
   static Puzzle1 _instance;
 
-  List<String> hintTexts = ["Puzzle 1 Hint 1", "Puzzle 1 Hint 2", "Puzzle 1 Hint 3"];
+  List<String> hintTexts = ["What does the second text message tell you to do?",
+    "Explore the location and listen carefully!",
+    "At certain locations in and around the building sounds are played, telling you the numbers to use for the vault.",
+    "What may this graph-like structure be about? Is it there for a reason?",
+    "The order of the numbers can be derived from the graph-like structure.",
+    "Each point represents one of the numbers. Their relative positions to each other tell you the order how they have to be inserted in the number pickers."
+  ];
 
   Puzzle1() {
     _instance = this;
@@ -23,7 +29,11 @@ class Puzzle1 extends PuzzleBase {
 
   @override
   List<String> getPuzzleSearchHints() {
-    return ["Search Puzzle 1 Hint 1", "Search Puzzle 1 Hint 2", "Search Puzzle 1 Hint 3"];
+    return ["What might be the reason for having \"WHY\" written in capital letters in this strange text message?",
+      "Could this be a hint to or from Prof. Dr. Y?",
+      "Where does the content of the message lead you to?",
+      "Find a location which is closely linked to nutrition."
+    ];
   }
 
   @override
@@ -33,12 +43,22 @@ class Puzzle1 extends PuzzleBase {
 
   @override
   List<String> getIntroTexts() {
-    return ["Puzzle 1 Intro 1", "Puzzle 1 Intro 2", "Puzzle 1 Intro 3"];
+    return ["Ok, let's be honest. Of course you could not resist the feeling that this odd text message had a reason.",
+      "The capital letters \"WHY\" must have been a hint to Prof. Dr. Y! ...what a silly thought.",
+      "You went to the canteen and found absolutely nothing...of course not. It was just a stupid advertising message.",
+      "But suddenly another text message comes in:",
+      "\"The second key for a better life is living in the here and now. Whereever you are, discover your surrounding and listen to what it tells you!\"",
+      "Ok...well that was...but wait? Your phone starts to show something like a vault...and you cannot control it anymore!",
+      "What is happening???"
+    ];
   }
 
   @override
   List<String> getOutroTexts() {
-    return ["Puzzle 1 Outro 1", "Puzzle 1 Outro 2", "Puzzle 1 Outro 3"];
+    return ["Puzzle 1 Outro 1",
+      "Puzzle 1 Outro 2",
+      "Puzzle 1 Outro 3"
+    ];
   }
 
   @override
@@ -46,6 +66,8 @@ class Puzzle1 extends PuzzleBase {
     Navigator.of(context).push(
       PageTransition(
         type: PageTransitionType.fade,
+        duration: Duration(seconds: 1),
+        reverseDuration: Duration(seconds: 1),
         child: Puzzle1Screen(),
       )
     );
