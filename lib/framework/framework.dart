@@ -65,12 +65,14 @@ class _GameMainScreen extends State<GameMainScreen> {
             userLocationOptions,
           ],
           children: <Widget>[
-            TileLayerWidget(options: TileLayerOptions(
+            TileLayerWidget(
+                options: TileLayerOptions(
               urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
               subdomains: ['a', 'b', 'c'],
             )),
             Column(
               children: [
+                GameProgressbar(),
                 _testPuzzleButtonRow(),
                 StoryWidget(key: game.storyIntroWidgetyKey),
                 StoryWidget(key: game.storyOutroWidgetyKey),
@@ -108,3 +110,47 @@ class _GameMainScreen extends State<GameMainScreen> {
     );
   }
 }
+
+///added by Sabari KM-----------------------------///
+class GameProgressbar extends StatefulWidget {
+  @override
+  GameProgressbarState createState() => GameProgressbarState();
+}
+
+class GameProgressbarState extends State<GameProgressbar> {
+  static GameProgressbarState _instance;
+
+  GameProgressbarState() {
+    _instance = this;
+  }
+
+  /// Static singleton method.
+  static GameProgressbarState getInstance() {
+    if (_instance == null) {
+      _instance = GameProgressbarState();
+    }
+    return _instance;
+  }
+
+  void setStateCallback() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: LinearProgressIndicator(
+        value: MainVariables.progressValue,
+        minHeight: 20,
+        backgroundColor: Colors.red,
+        valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+      ),
+    );
+  }
+}
+
+class MainVariables {
+  static double progressValue = 0.1; //accepted values 0 to 1
+}
+
+///----------------------------------------------------///
