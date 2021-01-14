@@ -7,7 +7,11 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - geolocator (6.1.9):
+    - Flutter
   - location (0.0.1):
+    - Flutter
+  - motion_sensors (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
@@ -16,15 +20,20 @@ PODS:
     - FMDB (>= 2.7.5)
   - user_location (0.0.1):
     - Flutter
+  - vibration (1.7.3):
+    - Flutter
 
 DEPENDENCIES:
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - Flutter (from `Flutter`)
   - flutter_compass (from `.symlinks/plugins/flutter_compass/ios`)
+  - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - location (from `.symlinks/plugins/location/ios`)
+  - motion_sensors (from `.symlinks/plugins/motion_sensors/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - user_location (from `.symlinks/plugins/user_location/ios`)
+  - vibration (from `.symlinks/plugins/vibration/ios`)
 
 SPEC REPOS:
   trunk:
@@ -37,24 +46,33 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_compass:
     :path: ".symlinks/plugins/flutter_compass/ios"
+  geolocator:
+    :path: ".symlinks/plugins/geolocator/ios"
   location:
     :path: ".symlinks/plugins/location/ios"
+  motion_sensors:
+    :path: ".symlinks/plugins/motion_sensors/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
   user_location:
     :path: ".symlinks/plugins/user_location/ios"
+  vibration:
+    :path: ".symlinks/plugins/vibration/ios"
 
 SPEC CHECKSUMS:
   audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_compass: cbbd285cea1584c7ac9c4e0c3e1f17cbea55e855
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  geolocator: 057a0c63a43e9c5296d8ad845a3ac8e6df23d899
   location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
+  motion_sensors: 03f55b7c637a7e365a0b5f9697a449f9059d5d91
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   user_location: ec382950d42014e9d796513cb4a83de2e643a477
+  vibration: b5a33e764c3f609a975b9dca73dce20fdde627dc
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
