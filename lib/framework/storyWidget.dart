@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
 
 const String stringNext = "Next";
@@ -57,6 +58,7 @@ class StoryWidgetState extends State<StoryWidget> {
     _textIndex = -1;
     _isIntro = isIntro;
     _nextText();
+    Vibration.vibrate(duration: 500);
   }
 
   /// Resets the content & hides the widget.
