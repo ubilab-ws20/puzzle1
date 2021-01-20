@@ -108,7 +108,14 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
 
   /// Container with game menu team name entry.
   Widget _teamName() {
-    String teamName = Game.getInstance().getTeamName();
+    Game game = Game.getInstance();
+    String teamName = game.getTeamName();
+    int teamSize = game.getTeamSize();
+    if (teamSize == 1) {
+      teamName += " (1 member)";
+    } else {
+      teamName += " (" + game.getTeamSize().toString() + " members)";
+    }
     return Container(
       margin: EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0, bottom: 10.0),
       child: Row(

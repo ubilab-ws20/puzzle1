@@ -36,12 +36,13 @@ class Game {
     "The official version is that he is suffering from a severe illness.",
     "But people who were working closely with him are heavily doubting this.",
     "While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:",
-    "\"Scientists discovered the 6 key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So WHY don't you go and search for the right food for you personal needs?\"",
+    "\"Scientists discovered the 6 key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for you personal needs?\"",
     "Strange..."
   ];
 
   BuildContext _context;
   String _teamName = "";
+  int _teamSize = 0;
   gameState _state = gameState.none;
   PuzzleBase _puzzle;
 
@@ -79,6 +80,16 @@ class Game {
     return _teamName;
   }
 
+  /// Setter for team size.
+  void setTeamSize(int teamSize) {
+    _teamSize = teamSize;
+  }
+
+  /// Getter for team size.
+  int getTeamSize() {
+    return _teamSize;
+  }
+
   /// Getter for already played time formatted as a string.
   String getAlreadyPlayedTime() {
     var secs = _stopWatch.elapsedMilliseconds ~/ 1000;
@@ -96,6 +107,14 @@ class Game {
   /// Getter for already shown texts.
   List<String> getAlreadyShownTexts() {
     return _alreadyShownTexts;
+  }
+
+  /// Adds new texts to the already shown ones, along with a seperator.
+  void _addTextsToAlreadyShown(List<String> texts) {
+    if (_alreadyShownTexts.isNotEmpty) {
+      _alreadyShownTexts.add("- - - - - - - - - - - - - - -");
+    }
+    _alreadyShownTexts.addAll(texts);
   }
 
   /// Getter for currently available hints.
@@ -126,7 +145,7 @@ class Game {
     _state = gameState.none;
     _puzzle = null;
     _stopWatch.start();
-    _alreadyShownTexts.addAll(gameStartTexts);
+    _addTextsToAlreadyShown(gameStartTexts);
     nextState();
     return true;
   }
@@ -135,6 +154,7 @@ class Game {
   void reset() {
     _context = null;
     _teamName = "";
+    _teamSize = 0;
     _state = gameState.none;
     _puzzle = null;
     _stopWatch.reset();
@@ -153,11 +173,12 @@ class Game {
     LatLng pCoords = _puzzle.getStartLocation();
     double distance = Geolocator.distanceBetween(coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
     if (distance <= 10) {
-      // Uncomment this to try real puzzle location check.
+      // TODO:
+      // Uncomment this to use real puzzle location check.
       /*nextState();
       _puzzle.setFinishedCallback(onPuzzleFinished);
       storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
-      _alreadyShownTexts.addAll(_puzzle.getIntroTexts());*/
+      _addTextsToAlreadyShown(_puzzle.getIntroTexts());*/
     }
   }
 
@@ -177,7 +198,7 @@ class Game {
     }
     nextState();
     storyOutroWidgetyKey.currentState.show(_puzzle.getOutroTexts(), nextState, false);
-    _alreadyShownTexts.addAll(_puzzle.getOutroTexts());
+    _addTextsToAlreadyShown(_puzzle.getOutroTexts());
     _puzzle = null;
   }
 
@@ -222,7 +243,7 @@ class Game {
     nextState();
     _puzzle.setFinishedCallback(onPuzzleFinished);
     storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
-    _alreadyShownTexts.addAll(_puzzle.getIntroTexts());
+    _addTextsToAlreadyShown(_puzzle.getIntroTexts());
   }
 
   void _testPrintState() {

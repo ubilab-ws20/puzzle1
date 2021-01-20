@@ -5,8 +5,10 @@ import 'framework/framework.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
 
 const String stringAppName = "Ubilab Scavenger Hunt";
-const String stringTeamName = "Team Name";
+const String stringTeamName = "Team name";
+const String stringTeamSize = "Number of members";
 const String stringNoTeamName = "Please enter a team name!";
+const String stringNoTeamSize = "Please enter the number of team members!";
 const String stringStart = "Start";
 
 void main() => runApp(MyApp());
@@ -30,7 +32,8 @@ class StartScreen extends StatefulWidget {
 }
 
 class _StartScreenState extends State<StartScreen> {
-  final _controller = TextEditingController();
+  final _nameController = TextEditingController();
+  final _sizeController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +50,21 @@ class _StartScreenState extends State<StartScreen> {
               Container(
                 margin: EdgeInsets.all(10.0),
                 child: TextField(
-                  controller: _controller,
+                  controller: _nameController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: stringTeamName,
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+                child: TextField(
+                  controller: _sizeController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: stringTeamSize,
                   ),
                 ),
               ),
@@ -73,13 +87,14 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _nameController.dispose();
+    _sizeController.dispose();
     super.dispose();
   }
 
   void startGame(BuildContext context) {
     Game game = Game.getInstance();
-    if (_controller.text.isEmpty) {
+    if (_nameController.text.isEmpty) {
       showDialog(
         context: context,
         builder: (BuildContext context){
@@ -93,8 +108,23 @@ class _StartScreenState extends State<StartScreen> {
       );
       return;
     }
+    if (_sizeController.text.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: Text(
+              stringNoTeamSize,
+              textAlign: TextAlign.center,
+            ),
+          );
+        },
+      );
+      return;
+    }
     game.reset();
-    game.setTeamName(_controller.text);
+    game.setTeamName(_nameController.text);
+    game.setTeamSize(int.parse(_sizeController.text));
     Navigator.of(context).push(
         PageTransition(
           type: PageTransitionType.fade,
