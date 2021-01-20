@@ -24,7 +24,7 @@ class Puzzle3 extends PuzzleBase {
 }
 
 double height = 0.0, width = 0.0;
-double refWidth = 683.4, refHeight = 411.4;
+double refHeight = 683.4, refWidth = 411.4;
 
 class FirstRoute extends StatelessWidget {
   @override
