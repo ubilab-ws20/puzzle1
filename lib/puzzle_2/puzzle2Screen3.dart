@@ -12,6 +12,10 @@ import 'package:motion_sensors/motion_sensors.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2MainScreen.dart';
 
+import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/game.dart';
+
 class Puzzle2Screen3 extends StatefulWidget {
   @override
   Puzzle2Screen3State createState() => Puzzle2Screen3State();
@@ -21,9 +25,16 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
   Vector3 _orientation = Vector3.zero();
   int _groupValue = 0;
 
+  List<String> hintTexts = [
+    "some hint 1",
+    "some hint 2",
+    "some hint 3"
+  ];
+
   @override
   void initState() {
     super.initState();
+    Game.getInstance().updateCurrentHints(hintTexts);
     motionSensors.orientationUpdateInterval =
         Duration.microsecondsPerSecond ~/ 1;
     motionSensors.isOrientationAvailable().then((available) {
@@ -100,6 +111,10 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text('Puzzle 2.3'),
+        actions: [
+          hintIconButton(context),
+          gameMenuIconButton(context),
+        ],
       ),
       body: Builder(
         builder: (BuildContext context) {
@@ -768,9 +783,9 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                         LineChartData(
                             backgroundColor: Colors.black,
                             minX: 0,
-                            maxX: 7,
+                            maxX: 8,
                             minY: 0,
-                            maxY: 2,
+                            maxY: 3,
                             lineBarsData: [
                               LineChartBarData(
                                 belowBarData: BarAreaData(
@@ -792,6 +807,9 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                   FlSpot(6, Puzzle23Variables.point6), //1
                                   FlSpot(6, Puzzle23Variables.point7),
                                   FlSpot(7, Puzzle23Variables.point7),
+
+                                  FlSpot(7, Puzzle23Variables.point8),
+                                  FlSpot(8, Puzzle23Variables.point8),
                                 ],
                               ),
                             ]),
@@ -946,13 +964,14 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                           onPressed: () {
                             setState(() {
                               Puzzle23Variables.pointCounter = 1;
-                              Puzzle23Variables.point1 = 0;
-                              Puzzle23Variables.point2 = 0;
-                              Puzzle23Variables.point3 = 0;
-                              Puzzle23Variables.point4 = 0;
-                              Puzzle23Variables.point5 = 0;
-                              Puzzle23Variables.point6 = 0;
-                              Puzzle23Variables.point7 = 0;
+                              Puzzle23Variables.point1 = 1;
+                              Puzzle23Variables.point2 = 1;
+                              Puzzle23Variables.point3 = 1;
+                              Puzzle23Variables.point4 = 1;
+                              Puzzle23Variables.point5 = 1;
+                              Puzzle23Variables.point6 = 1;
+                              Puzzle23Variables.point7 = 1;
+                              Puzzle23Variables.point8 = 1;
                             });
                           },
                         ),
@@ -975,7 +994,8 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                   (Puzzle23Variables.point4 == 0) &&
                                   (Puzzle23Variables.point5 == 1) &&
                                   (Puzzle23Variables.point6 == 0) &&
-                                  (Puzzle23Variables.point7 == 1)) {
+                                  (Puzzle23Variables.point7 == 1)&&
+                                  (Puzzle23Variables.point8 == 1)) {
                                 //puzzle solved
                                 Puzzle23Variables.stopTimer = true;
                                 Puzzle23Variables.puzzleSolved = true;
@@ -1083,13 +1103,14 @@ class Puzzle23Variables {
   static double cpuUsage = 80.0;
   static bool stopTimer = false;
   static double timeCounter = 0;
-  static double point1 = 0; //1
-  static double point2 = 0; //0
-  static double point3 = 0; //1
-  static double point4 = 0; //0
-  static double point5 = 0; //1
-  static double point6 = 0; //0
-  static double point7 = 0; //1
+  static double point1 = 1; //1
+  static double point2 = 1; //0
+  static double point3 = 1; //1
+  static double point4 = 1; //0
+  static double point5 = 1; //1
+  static double point6 = 1; //0
+  static double point7 = 1; //1
+  static double point8 = 1; //1
   static int pointCounter = 1;
   static bool puzzleSolved = false;
 }

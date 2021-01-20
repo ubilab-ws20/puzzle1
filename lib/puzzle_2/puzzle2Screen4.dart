@@ -3,6 +3,10 @@ import 'dart:async';
 import 'dart:io' show Platform;
 import 'package:beacons_plugin/beacons_plugin.dart';
 
+import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/game.dart';
+
 class Puzzle2Screen4 extends StatefulWidget {
   @override
   Puzzle2Screen4State createState() => Puzzle2Screen4State();
@@ -16,10 +20,16 @@ class Puzzle2Screen4State extends State<Puzzle2Screen4> {
   final StreamController<String> beaconEventsController =
   StreamController<String>.broadcast();
 
+  List<String> hintTexts = [
+    "some hint 1",
+    "some hint 2",
+    "some hint 3"
+  ];
   @override
   void initState() {
     super.initState();
     initPlatformState();
+    Game.getInstance().updateCurrentHints(hintTexts);
   }
 
   @override
@@ -90,6 +100,10 @@ class Puzzle2Screen4State extends State<Puzzle2Screen4> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text('Monitoring Beacons'),
+          actions: [
+            hintIconButton(context),
+            gameMenuIconButton(context),
+          ],
         ),
         body: Center(
           child: Column(

@@ -2,12 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2MainScreen.dart';
 
+import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/game.dart';
+
 class Puzzle2Screen1 extends StatefulWidget {
   @override
   Puzzle2Screen1State createState() => Puzzle2Screen1State();
 }
 
 class Puzzle2Screen1State extends State<Puzzle2Screen1> {
+
+  List<String> hintTexts = [
+    "Any sufficiently crisp question can be answered by a single "
+        "yes/no or what a computer could say?",
+  ];
+  @override
+  void initState() {
+    super.initState();
+    Game.getInstance().updateCurrentHints(hintTexts);
+  }
+
+
   bool isSwitched0 = false;
   bool isSwitched1 = false;
   bool isSwitched2 = false;
@@ -41,7 +57,7 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
                 color: Colors.green,
               ),
               label: Text(
-                'Forget binary code',
+                'Forgot binary code',
                 style: TextStyle(
                     color: Colors.green,
                     fontSize: 16.0,
@@ -535,6 +551,10 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text('Puzzle 2.1'),
+        actions: [
+          hintIconButton(context),
+          gameMenuIconButton(context),
+        ],
       ),
 
       ///add image

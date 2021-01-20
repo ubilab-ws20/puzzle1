@@ -9,6 +9,11 @@ import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'package:motion_sensors/motion_sensors.dart';
 
 import 'package:vibration/vibration.dart';
+
+import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/game.dart';
+
 /*
 class Puzzle2Screen2 extends StatefulWidget {
   @override
@@ -71,9 +76,14 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
 
   Vector3 _magnetometer = Vector3.zero();
 
+  List<String> hintTexts = [
+    "use another phone.",
+  ];
+
   @override
   void initState() {
     super.initState();
+    Game.getInstance().updateCurrentHints(hintTexts);
     motionSensors.magnetometerUpdateInterval =
         Duration.microsecondsPerSecond ~/ 30;
     motionSensors.magnetometer.listen((MagnetometerEvent event) {
@@ -201,6 +211,10 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text('Puzzle 2.2'),
+        actions: [
+          hintIconButton(context),
+          gameMenuIconButton(context),
+        ],
       ),
       body: Container(
         child: Column(
