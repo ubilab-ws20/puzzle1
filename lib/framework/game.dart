@@ -8,6 +8,8 @@ import 'package:ubilab_scavenger_hunt/puzzle_3/puzzle3.dart';
 import 'storyWidget.dart';
 import 'hint.dart';
 
+import 'package:ubilab_scavenger_hunt/framework/framework.dart';///added by Sabari KM
+
 enum gameState {
   none,
   start,
@@ -197,6 +199,32 @@ class Game {
     if ((_puzzle != null) && isSearchingForPuzzle()) {
       updateCurrentHints(_puzzle.getPuzzleSearchHints());
     }
+
+    ///added by Sabari KM-------------
+    switch (_state) {
+      case gameState.searchPuzzle2:
+        MainVariables.progressValue = 0.33;///added by Sabari KM
+        GameProgressbarState.getInstance().setStateCallback();
+        break;
+
+      case gameState.searchPuzzle3:
+        MainVariables.progressValue = 0.66;///added by Sabari KM
+        GameProgressbarState.getInstance().setStateCallback();
+        break;
+
+    // case gameState.outroPuzzle3:
+    //   MainVariables.progressValue = 1.0;///added by Sabari KM
+    //   GameProgressbarState.getInstance().setStateCallback();
+    //   break;
+      case gameState.end:
+        MainVariables.progressValue = 1.0;///added by Sabari KM
+        GameProgressbarState.getInstance().setStateCallback();
+        break;
+      default:
+        break;
+    }
+    ///-------------------------------
+    ///
     _testPrintState();
   }
 
