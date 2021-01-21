@@ -143,7 +143,7 @@ class Game {
     if (_state != gameState.none) {
       return false;
     }
-    print("Game started with teamname: " + _teamName);
+    print("Game started");
     _state = gameState.none;
     _puzzle = null;
     _stopWatch.start();
