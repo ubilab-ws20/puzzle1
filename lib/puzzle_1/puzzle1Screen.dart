@@ -10,7 +10,7 @@ import 'package:ubilab_scavenger_hunt/framework/game.dart';
 
 const String stringScreenName = "The Vault";
 const String stringSubmitButtonText = "Open";
-const String stringNotSolved = "Damn. So close!";
+const String stringNotSolved = "Wrong combination.";
 
 /// Wrapper class for int secrets for passing by reference.
 class Secret {
@@ -27,13 +27,16 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   final List<int> _solutions = [46, 2, 30, 89, 51, 73];
   final _pickerMin = 0;
   final _pickerMax = 100;
+  bool _firstSoundPlayed = false;
+  List<bool> _soundsPlayed = [false, false, false, false, false, false];
+
 
   List<Secret> _secrets = [Secret(50), Secret(50), Secret(50), Secret(50), Secret(50), Secret(50)];
 
   @override
   void initState() {
     super.initState();
-    Game.getInstance().updateCurrentHints(Puzzle1.getInstance().hintTexts);
+    Game.getInstance().updateCurrentHints(Puzzle1.getInstance().hintTexts1FindSounds);
   }
 
   @override
@@ -64,10 +67,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                _testSoundButtonRow1(),
-                _testSoundButtonRow2(),
-                _testQuitButton(),
-                Spacer(),
+                _testSecretOrderHintStack(),
                 _secretPickerRow1(),
                 _secretPickerRow2(),
                 _openButton(),
@@ -123,6 +123,8 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   /// 46
   void _playSecret1() async {
     await _playSecret("46.mp3");
+    _soundsPlayed[0] = true;
+    _soundPlayed();
     print("<secret 1 sound>");
   }
 
@@ -130,6 +132,8 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   /// 2
   void _playSecret2() async {
     await _playSecret("2.mp3");
+    _soundsPlayed[1] = true;
+    _soundPlayed();
     print("<secret 2 sound>");
   }
 
@@ -137,6 +141,8 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   /// 30
   void _playSecret3() async {
     await _playSecret("30.mp3");
+    _soundsPlayed[2] = true;
+    _soundPlayed();
     print("<secret 3 sound>");
   }
 
@@ -144,6 +150,8 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   /// 89
   void _playSecret4() async {
     await _playSecret("89.mp3");
+    _soundsPlayed[3] = true;
+    _soundPlayed();
     print("<secret 4 sound>");
   }
 
@@ -151,6 +159,8 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   /// 51
   void _playSecret5() async {
     await _playSecret("51.mp3");
+    _soundsPlayed[4] = true;
+    _soundPlayed();
     print("<secret 5 sound>");
   }
 
@@ -158,10 +168,38 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   /// 73
   void _playSecret6() async {
     await _playSecret("73.mp3");
+    _soundsPlayed[5] = true;
+    _soundPlayed();
     print("<secret 6 sound>");
   }
 
+  void _soundPlayed() {
+    bool allSoundsPlayed = true;
+    if (!_firstSoundPlayed) {
+      _firstSoundPlayed = true;
+      Game.getInstance().updateCurrentHints(Puzzle1.getInstance().hintTexts2FindAllSounds);
+    }
+    for (int i = 0; i < _soundsPlayed.length; i++) {
+      if (!_soundsPlayed[i]) {
+        allSoundsPlayed = false;
+        break;
+      }
+    }
+    if (allSoundsPlayed) {
+      Game.getInstance().updateCurrentHints(Puzzle1.getInstance().hintTexts3SecretOrder);
+    }
+  }
+
   // Construction methods for parts of the screen
+
+  Widget _secretOrderHint() {
+    return Container(
+      margin: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+      child: Image(
+        image: AssetImage("assets/numberPickerHintScratches.png"),
+      ),
+    );
+  }
 
   /// Creates the first row of secret pickers.
   Widget _secretPickerRow1() {
@@ -202,7 +240,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
         },
         textStyle: TextStyle(
           fontSize: 14.0,
-          color: Colors.grey,
+          color: Colors.black,
         ),
         selectedTextStyle: TextStyle(
           fontSize: 25.0,
@@ -210,7 +248,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
         ),
         decoration: BoxDecoration(
           border: Border.all(
-            color: Colors.grey,
+            color: Colors.black,
             width: 3.0,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -240,6 +278,27 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   }
 
   // Functions for development & testing
+
+  Widget _testSecretOrderHintStack() {
+    return Container(
+      margin: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+      child: Stack(
+        children: <Widget>[
+          Image(
+            image: AssetImage("assets/numberPickerHintScratches.png"),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _testSoundButtonRow1(),
+              _testSoundButtonRow2(),
+              _testQuitButton(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 
   /// Creates the first row of secret sound test buttons.
   Widget _testSoundButtonRow1() {
