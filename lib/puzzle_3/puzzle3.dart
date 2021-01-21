@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_base/puzzleBase.dart';
 import 'package:flutter/services.dart';
+import 'package:noise_meter/noise_meter.dart';
+import 'dart:async';
+import 'dart:math';
 
 import '../puzzle_base/puzzleBase.dart';
 
@@ -24,13 +27,18 @@ class Puzzle3 extends PuzzleBase {
 }
 
 double height = 0.0, width = 0.0;
-double refWidth = 683.4, refHeight = 411.4;
+
+double refHeight = 683.4, refWidth = 411.4;
 
 class FirstRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    if (height < width) {
+      refWidth = 683.4;
+      refHeight = 411.4;
+    }
     return MaterialApp(
         title: "first screen",
         home: Scaffold(
@@ -93,11 +101,97 @@ class ThirdRoute extends StatefulWidget {
 
 
 
+
+
 class _ThirdRouteState extends State<ThirdRoute > {
+
+  bool _isRecording = false;
+  StreamSubscription<NoiseReading> _noiseSubscription;
+  NoiseMeter _noiseMeter;
+  int lastKnock = 0;
+  int lastKnockTime = 0;
+  bool disableKnock = false;
+  int disableTime = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _noiseMeter = new NoiseMeter(onError);
+  }
+
+  void onData(NoiseReading noiseReading) {
+    this.setState(() {
+      if (!this._isRecording) {
+        this._isRecording = true;
+      }
+    });
+
+    if (DateTime.now().millisecondsSinceEpoch - disableTime > 250) {
+      disableKnock = false;
+    }
+
+    if (noiseReading.maxDecibel > 75 && !disableKnock) {
+      int time = DateTime.now().millisecondsSinceEpoch;
+      if (lastKnock == 0) {
+        print('first knock');
+        lastKnock = 1;
+        lastKnockTime = time;
+      } else if (lastKnock == 1 && (time - lastKnockTime) > 808 && (time - lastKnockTime) < 1200) {
+        print('second knock');
+        lastKnock = 2;
+        lastKnockTime = time;
+      } else if (lastKnock == 2  && (time - lastKnockTime) > 808 && (time - lastKnockTime) < 1200) {
+        print('third knock');
+        lastKnock = 3;
+        lastKnockTime = time;
+      } else if (lastKnock == 3  && (time - lastKnockTime) > 808 && (time - lastKnockTime) < 1200) {
+        print('fourth knock');
+        lastKnock = 4;
+        lastKnockTime = time;
+      } else if (lastKnock == 4 && (time - lastKnockTime) > 808 && (time - lastKnockTime) < 1200) {
+        print('fifth knock');
+        lastKnock = 5;
+        lastKnockTime = time;
+      } else {
+        lastKnock = 0;
+        print('wrong knock');
+      }
+      disableKnock = true;
+      disableTime = DateTime.now().millisecondsSinceEpoch;
+    }
+
+  }
+
+  void onError(PlatformException e) {
+    print(e.toString());
+    _isRecording = false;
+  }
+
+  void start() async {
+    try {
+      _noiseSubscription = _noiseMeter.noiseStream.listen(onData);
+    } catch (err) {
+      print(err);
+    }
+  }
+
+  void stop() async {
+    try {
+      if (_noiseSubscription != null) {
+        _noiseSubscription.cancel();
+        _noiseSubscription = null;
+      }
+      this.setState(() {
+        this._isRecording = false;
+      });
+    } catch (err) {
+      print('stopRecorder error: $err');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    print(heightRatio);
-    print(widthRatio);
+    start();
     return Scaffold(
         appBar: AppBar(
           title: Text('Puzzle 3'),
@@ -401,10 +495,10 @@ class _SecondRouteState extends State<SecondRoute > {
   @override
   void dispose(){
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
     ]);
     super.dispose();
   }
