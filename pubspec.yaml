@@ -36,8 +36,14 @@ dependencies:
   numberpicker: ^1.3.0
   audioplayers: 0.17.0
   page_transition: ^1.1.7+3
+
+  #Puzzle 2 dependencies
+  #page_transition: ^1.1.7+3
   motion_sensors: ^0.0.4
   vibration: ^1.7.3
+  syncfusion_flutter_gauges: ^18.4.33
+  fl_chart: ^0.12.2
+  beacons_plugin: ^1.0.19
 
 dev_dependencies:
   flutter_test:
