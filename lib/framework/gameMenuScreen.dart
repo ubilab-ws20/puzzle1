@@ -18,11 +18,11 @@ Widget gameMenuIconButton(BuildContext context) {
     ),
     onPressed: () {
       Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) {
-            return GameMenuScreen();
-          }
-        )
+          MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return GameMenuScreen();
+              }
+          )
       );
     },
   );
@@ -88,10 +88,10 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text(stringCancel),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }
+                child: Text(stringCancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }
             ),
             FlatButton(
               child: Text(stringQuit),

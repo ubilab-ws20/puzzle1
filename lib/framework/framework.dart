@@ -67,9 +67,9 @@ class _GameMainScreen extends State<GameMainScreen> {
           children: <Widget>[
             TileLayerWidget(
                 options: TileLayerOptions(
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              subdomains: ['a', 'b', 'c'],
-            )),
+                  urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                  subdomains: ['a', 'b', 'c'],
+                )),
             Column(
               children: [
                 GameProgressbar(),

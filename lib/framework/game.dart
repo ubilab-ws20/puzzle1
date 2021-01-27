@@ -214,7 +214,7 @@ class Game {
     } else if (_state == gameState.searchPuzzle2) {
       _puzzle = Puzzle2.getInstance();
     } else if (_state == gameState.searchPuzzle3) {
-      _puzzle = Puzzle3();
+      _puzzle = Puzzle3.getInstance();
     }
     _currentHints.clear();
     if ((_puzzle != null) && isSearchingForPuzzle()) {

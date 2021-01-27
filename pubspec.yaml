@@ -37,6 +37,7 @@ dependencies:
   audioplayers: 0.17.0
   page_transition: ^1.1.7+3
   flutter_blue: ^0.7.3
+  noise_meter: ^2.0.0
 
   #Puzzle 2 dependencies
   motion_sensors: ^0.0.4
@@ -72,7 +73,9 @@ flutter:
     - assets/555.png
     - assets/fileTransfer.gif
     - assets/downloadCanceled.jpg
-
+    - assets/door.jpg
+    - assets/door2.jpg
+    - assets/graphBackground.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

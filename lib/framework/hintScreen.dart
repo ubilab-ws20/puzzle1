@@ -48,11 +48,11 @@ class _HintIconButtonState extends State<HintIconButton> {
         ),
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return HintScreen();
-              }
-            )
+              MaterialPageRoute<void>(
+                  builder: (BuildContext context) {
+                    return HintScreen();
+                  }
+              )
           );
         },
       ),
@@ -102,10 +102,10 @@ class _HintScreenState extends State<HintScreen> {
             ),
             actions: <Widget>[
               FlatButton(
-                child: Text(stringOk),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                }
+                  child: Text(stringOk),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }
               ),
             ],
           );
@@ -123,10 +123,10 @@ class _HintScreenState extends State<HintScreen> {
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text(stringCancel),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }
+                child: Text(stringCancel),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }
             ),
             FlatButton(
               child: Text(stringUse),
@@ -146,13 +146,13 @@ class _HintScreenState extends State<HintScreen> {
   /// List view of all current hints.
   Widget _hintsListView() {
     return ListView.builder(
-      itemCount: (_hints.length * 2),
-      itemBuilder: (context, i) {
-        if (i.isOdd) {
-          return Divider();
-        }
-        return _hintBox(i ~/ 2);
-      });
+        itemCount: (_hints.length * 2),
+        itemBuilder: (context, i) {
+          if (i.isOdd) {
+            return Divider();
+          }
+          return _hintBox(i ~/ 2);
+        });
   }
 
   /// Single hint, either locked or unlocked & shown.
