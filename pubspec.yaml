@@ -74,6 +74,9 @@ flutter:
     - assets/555.png
     - assets/fileTransfer.gif
     - assets/downloadCanceled.jpg
+    - assets/door.jpg
+    - assets/door2.jpg
+    - assets/graphBackground.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
