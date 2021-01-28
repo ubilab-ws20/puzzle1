@@ -6,17 +6,18 @@ class MQTTManager {
   MqttServerClient client;
   final String _host;
   final String topicName = "testID/testtopic";
+  List<String> teamDetails = [];
 
   MQTTManager({@required String host}) : _host = host;
 
   void initialiseMQTTClient() {
-    client = MqttServerClient(_host, '');
+    client = MqttServerClient(_host, 'android_123');
 
     //client.clientIdentifier = 'TestID';
     client.useWebSocket = true;
-    //client.port = 443;
+    client.port = 443;
     //client.secure = true;
-    client.logging(on: true);
+    client.logging(on: false);
     client.keepAlivePeriod = 5;
     client.autoReconnect = true;
     client.resubscribeOnAutoReconnect = true;
@@ -39,6 +40,14 @@ class MQTTManager {
       print('EXAMPLE::client exception - $e');
       disconnect();
     }
+    client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+      final MqttPublishMessage message = c[0].payload;
+      final payload =
+          MqttPublishPayload.bytesToStringAsString(message.payload.message);
+
+      print(
+          'Received message in Framework:$payload from topic: ${c[0].topic}>');
+    });
   }
 
   void disconnect() {
@@ -52,8 +61,10 @@ class MQTTManager {
   }
 
   void _subscribeToTopic(String topicName) {
-    print('MQTTClientWrapper::Subscribing to the $topicName topic');
-    client.subscribe(topicName, MqttQos.atMostOnce);
+    //print('MQTTClientWrapper::Subscribing to the $topicName topic');
+
+    //client.subscribe(topicName, MqttQos.atMostOnce);
+    publish(topicName);
   }
 
 // subscribe to topic succeeded
@@ -69,5 +80,19 @@ class MQTTManager {
 // unsubscribe succeeded
   void onUnsubscribed(String topic) {
     print('Unsubscribed topic: $topic');
+  }
+
+  void publish(String topic) {
+    final builder = MqttClientPayloadBuilder();
+    builder.addString(teamDetails[0]);
+    builder.addString(",");
+    builder.addString(teamDetails[1]);
+
+    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void setTeamDetails(String teamName, String teamSize) {
+    teamDetails.add(teamName);
+    teamDetails.add(teamSize);
   }
 }

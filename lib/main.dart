@@ -41,6 +41,7 @@ class _StartScreenState extends State<StartScreen> {
     MQTTManager manager =
         MQTTManager(host: 'wss://earth.informatik.uni-freiburg.de/ubilab/ws/');
     manager.initialiseMQTTClient();
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -131,6 +132,8 @@ class _StartScreenState extends State<StartScreen> {
     }
     game.reset();
     game.setTeamName(_nameController.text);
+    manager.setTeamDetails(_nameController.text, _sizeController.text);
+    //manager.setHintsUsed(game.getAlreadyUsedHints());
     game.setTeamSize(int.parse(_sizeController.text));
     Navigator.of(context).push(PageTransition(
       type: PageTransitionType.fade,
