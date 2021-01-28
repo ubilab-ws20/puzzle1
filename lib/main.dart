@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:ubilab_scavenger_hunt/mqtt/MqttManager.dart';
 import 'framework/framework.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
 
@@ -37,6 +38,10 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MQTTManager manager =
+        MQTTManager(host: 'wss://earth.informatik.uni-freiburg.de/ubilab/ws/');
+    manager.initialiseMQTTClient();
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -75,7 +80,9 @@ class _StartScreenState extends State<StartScreen> {
                     stringStart,
                     style: TextStyle(fontSize: 40),
                   ),
-                  onPressed: () { startGame(context); },
+                  onPressed: () {
+                    startGame(context, manager);
+                  },
                 ),
               ),
             ],
@@ -92,12 +99,13 @@ class _StartScreenState extends State<StartScreen> {
     super.dispose();
   }
 
-  void startGame(BuildContext context) {
+  void startGame(BuildContext context, MQTTManager manager) {
     Game game = Game.getInstance();
+    manager.connect();
     if (_nameController.text.isEmpty) {
       showDialog(
         context: context,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
               stringNoTeamName,
@@ -111,7 +119,7 @@ class _StartScreenState extends State<StartScreen> {
     if (_sizeController.text.isEmpty) {
       showDialog(
         context: context,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
               stringNoTeamSize,
@@ -124,14 +132,14 @@ class _StartScreenState extends State<StartScreen> {
     }
     game.reset();
     game.setTeamName(_nameController.text);
+    manager.setTeamDetails(_nameController.text, _sizeController.text);
+    //manager.setHintsUsed(game.getAlreadyUsedHints());
     game.setTeamSize(int.parse(_sizeController.text));
-    Navigator.of(context).push(
-        PageTransition(
-          type: PageTransitionType.fade,
-          duration: Duration(seconds: 1),
-          reverseDuration: Duration(seconds: 1),
-          child: GameMainScreen(),
-        )
-    );
+    Navigator.of(context).push(PageTransition(
+      type: PageTransitionType.fade,
+      duration: Duration(seconds: 1),
+      reverseDuration: Duration(seconds: 1),
+      child: GameMainScreen(),
+    ));
   }
 }

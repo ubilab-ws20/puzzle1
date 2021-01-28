@@ -8,7 +8,9 @@ import 'package:ubilab_scavenger_hunt/puzzle_3/puzzle3.dart';
 import 'storyWidget.dart';
 import 'hint.dart';
 
-import 'package:ubilab_scavenger_hunt/framework/framework.dart';///added by Sabari KM
+import 'package:ubilab_scavenger_hunt/framework/framework.dart';
+
+///added by Sabari KM
 
 enum gameState {
   none,
@@ -33,7 +35,8 @@ class Game {
 
   GlobalKey<StoryWidgetState> storyIntroWidgetyKey = GlobalKey();
   GlobalKey<StoryWidgetState> storyOutroWidgetyKey = GlobalKey();
-  List<String> gameStartTexts = ["A few days ago something mysterious happened in Freiburg.",
+  List<String> gameStartTexts = [
+    "A few days ago something mysterious happened in Freiburg.",
     "The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.",
     "The official version is that he is suffering from a severe illness.",
     "But people who were working closely with him are heavily doubting this.",
@@ -168,12 +171,13 @@ class Game {
 
   /// Callback for map when location of player changed.
   void onLocationChanged(LatLng coords) {
-    print("Location changed.");
+    //print("Location changed.");
     if ((_puzzle == null) || !isSearchingForPuzzle()) {
       return;
     }
     LatLng pCoords = _puzzle.getStartLocation();
-    double distance = Geolocator.distanceBetween(coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
+    double distance = Geolocator.distanceBetween(
+        coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
     if (distance <= 10) {
       // TODO:
       // Uncomment this to use real puzzle location check.
@@ -199,7 +203,8 @@ class Game {
       return;
     }
     nextState();
-    storyOutroWidgetyKey.currentState.show(_puzzle.getOutroTexts(), nextState, false);
+    storyOutroWidgetyKey.currentState
+        .show(_puzzle.getOutroTexts(), nextState, false);
     _addTextsToAlreadyShown(_puzzle.getOutroTexts());
     _puzzle = null;
   }
@@ -224,26 +229,33 @@ class Game {
     ///added by Sabari KM-------------
     switch (_state) {
       case gameState.searchPuzzle2:
-        MainVariables.progressValue = 0.33;///added by Sabari KM
+        MainVariables.progressValue = 0.33;
+
+        ///added by Sabari KM
         GameProgressbarState.getInstance().setStateCallback();
         break;
 
       case gameState.searchPuzzle3:
-        MainVariables.progressValue = 0.66;///added by Sabari KM
+        MainVariables.progressValue = 0.66;
+
+        ///added by Sabari KM
         GameProgressbarState.getInstance().setStateCallback();
         break;
 
-    // case gameState.outroPuzzle3:
-    //   MainVariables.progressValue = 1.0;///added by Sabari KM
-    //   GameProgressbarState.getInstance().setStateCallback();
-    //   break;
+      // case gameState.outroPuzzle3:
+      //   MainVariables.progressValue = 1.0;///added by Sabari KM
+      //   GameProgressbarState.getInstance().setStateCallback();
+      //   break;
       case gameState.end:
-        MainVariables.progressValue = 1.0;///added by Sabari KM
+        MainVariables.progressValue = 1.0;
+
+        ///added by Sabari KM
         GameProgressbarState.getInstance().setStateCallback();
         break;
       default:
         break;
     }
+
     ///-------------------------------
     ///
     _testPrintState();
@@ -270,7 +282,8 @@ class Game {
     }
     nextState();
     _puzzle.setFinishedCallback(onPuzzleFinished);
-    storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
+    storyIntroWidgetyKey.currentState
+        .show(_puzzle.getIntroTexts(), onStartPuzzle, true);
     _addTextsToAlreadyShown(_puzzle.getIntroTexts());
   }
 
