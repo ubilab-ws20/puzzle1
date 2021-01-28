@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:uuid/uuid.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_base/puzzleBase.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_3/puzzle3.dart';
+import 'gameProgressBar.dart';
 import 'storyWidget.dart';
 import 'hint.dart';
-
-import 'package:ubilab_scavenger_hunt/framework/framework.dart';
-
-///added by Sabari KM
 
 enum gameState {
   none,
@@ -35,8 +33,8 @@ class Game {
 
   GlobalKey<StoryWidgetState> storyIntroWidgetyKey = GlobalKey();
   GlobalKey<StoryWidgetState> storyOutroWidgetyKey = GlobalKey();
-  List<String> gameStartTexts = [
-    "A few days ago something mysterious happened in Freiburg.",
+  GlobalKey<GameProgressBarState> gameProgressBarStateKey = GlobalKey();
+  List<String> gameStartTexts = ["A few days ago something mysterious happened in Freiburg.",
     "The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.",
     "The official version is that he is suffering from a severe illness.",
     "But people who were working closely with him are heavily doubting this.",
@@ -46,6 +44,7 @@ class Game {
   ];
 
   BuildContext _context;
+  String _uuid = "";
   String _teamName = "";
   int _teamSize = 0;
   gameState _state = gameState.none;
@@ -57,6 +56,7 @@ class Game {
   List<Hint> _currentHints = [];
   int _totalHints = 0;
   int _hintsUsed = 0;
+  double _progress = 0.01;
 
   Game() {
     _instance = this;
@@ -141,6 +141,11 @@ class Game {
     _hintsUsed += 1;
   }
 
+  /// Getter for current game progress value.
+  double getProgress() {
+    return _progress;
+  }
+
   /// To start the game resp. the state machine.
   bool start() {
     if (_state != gameState.none) {
@@ -148,6 +153,8 @@ class Game {
     }
     print("Game started");
     _state = gameState.none;
+    Uuid uuid = Uuid();
+    _uuid = uuid.v1();
     _puzzle = null;
     _stopWatch.start();
     _addTextsToAlreadyShown(gameStartTexts);
@@ -158,6 +165,7 @@ class Game {
   /// Resets the game in order to start it again.
   void reset() {
     _context = null;
+    _uuid = "";
     _teamName = "";
     _teamSize = 0;
     _state = gameState.none;
@@ -167,6 +175,7 @@ class Game {
     _currentHints.clear();
     _totalHints = 0;
     _hintsUsed = 0;
+    _progress = 0.01;
   }
 
   /// Callback for map when location of player changed.
@@ -179,12 +188,10 @@ class Game {
     double distance = Geolocator.distanceBetween(
         coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
     if (distance <= 10) {
-      // TODO:
-      // Uncomment this to use real puzzle location check.
-      /*nextState();
+      nextState();
       _puzzle.setFinishedCallback(onPuzzleFinished);
       storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
-      _addTextsToAlreadyShown(_puzzle.getIntroTexts());*/
+      _addTextsToAlreadyShown(_puzzle.getIntroTexts());
     }
   }
 
@@ -214,6 +221,7 @@ class Game {
     if (_state.index < (gameState.values.length - 1)) {
       _state = gameState.values[_state.index + 1];
     }
+    // Update puzzle instance
     if (_state == gameState.searchPuzzle1) {
       _puzzle = Puzzle1.getInstance();
     } else if (_state == gameState.searchPuzzle2) {
@@ -221,43 +229,31 @@ class Game {
     } else if (_state == gameState.searchPuzzle3) {
       _puzzle = Puzzle3();
     }
+    // Update hints
     _currentHints.clear();
     if ((_puzzle != null) && isSearchingForPuzzle()) {
       updateCurrentHints(_puzzle.getPuzzleSearchHints());
     }
-
-    ///added by Sabari KM-------------
-    switch (_state) {
-      case gameState.searchPuzzle2:
-        MainVariables.progressValue = 0.33;
-
-        ///added by Sabari KM
-        GameProgressbarState.getInstance().setStateCallback();
-        break;
-
-      case gameState.searchPuzzle3:
-        MainVariables.progressValue = 0.66;
-
-        ///added by Sabari KM
-        GameProgressbarState.getInstance().setStateCallback();
-        break;
-
-      // case gameState.outroPuzzle3:
-      //   MainVariables.progressValue = 1.0;///added by Sabari KM
-      //   GameProgressbarState.getInstance().setStateCallback();
-      //   break;
-      case gameState.end:
-        MainVariables.progressValue = 1.0;
-
-        ///added by Sabari KM
-        GameProgressbarState.getInstance().setStateCallback();
-        break;
-      default:
-        break;
+    // Update game progress
+    if (_state == gameState.introPuzzle1) {
+      _progress = 0.166; // Found puzzle 1
+      gameProgressBarStateKey.currentState.setStateCallback();
+    } else if (_state == gameState.outroPuzzle1) {
+      _progress = 0.333; // Finished puzzle 1
+      gameProgressBarStateKey.currentState.setStateCallback();
+    } else if (_state == gameState.introPuzzle2) {
+      _progress = 0.5; // Found puzzle 2
+      gameProgressBarStateKey.currentState.setStateCallback();
+    } else if (_state == gameState.outroPuzzle2) {
+      _progress = 0.666; // Finished puzzle 2
+      gameProgressBarStateKey.currentState.setStateCallback();
+    } else if (_state == gameState.introPuzzle3) {
+      _progress = 0.833; // Found puzzle 3
+      gameProgressBarStateKey.currentState.setStateCallback();
+    } else if (_state == gameState.outroPuzzle3) {
+      _progress = 1.0; // Finished puzzle 3
+      gameProgressBarStateKey.currentState.setStateCallback();
     }
-
-    ///-------------------------------
-    ///
     _testPrintState();
   }
 

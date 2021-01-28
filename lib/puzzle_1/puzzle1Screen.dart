@@ -3,14 +3,34 @@ import 'package:flutter/services.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1.dart';
 import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
+import 'dart:async';
+import 'dart:math';
 
 const String stringScreenName = "The Vault";
 const String stringSubmitButtonText = "Open";
 const String stringNotSolved = "Wrong combination.";
+
+/// Bluetooth beacon UUIDs
+const String idBeacon1_46 = "5CCD88B5-60A4-1990-F769-378BBDAB3D4D";
+const String idBeacon2_2 = "7C05140C-8627-9D06-AEB7-FB9F172AFE2D";
+const String idBeacon3_30 = "291216FB-CD5A-1B8C-748F-C78FE8979FF3";
+const String idBeacon4_89 = "27CDCEB1-D951-036A-BA16-5652FFDB660C";
+const String idBeacon5_51 = "C712B898-49AE-C751-C28F-B97469E5AAF1";
+const String idBeacon6_73 = "A6022DE5-F851-9776-23A9-37C26B4695C4";
+
+/// Convenience class for working with the Bluetooth beacons.
+class Beacon {
+  String name;
+  String id;
+  Function sound;
+  double distance = -1;
+  Beacon(this.name, this.id, this.sound);
+}
 
 /// Wrapper class for int secrets for passing by reference.
 class Secret {
@@ -24,19 +44,47 @@ class Puzzle1Screen extends StatefulWidget {
 }
 
 class _Puzzle1ScreenState extends State<Puzzle1Screen> {
+  FlutterBlue _flutterBlue;
+  Timer _beaconHandleTimer;
+  List<Beacon> _beacons;
+  final double _maxBeaconDist = 5;
+
   final List<int> _solutions = [46, 2, 30, 89, 51, 73];
+  List<Secret> _secrets = [Secret(50), Secret(50), Secret(50), Secret(50), Secret(50), Secret(50)];
   final _pickerMin = 0;
   final _pickerMax = 100;
+
   bool _firstSoundPlayed = false;
   List<bool> _soundsPlayed = [false, false, false, false, false, false];
-
-
-  List<Secret> _secrets = [Secret(50), Secret(50), Secret(50), Secret(50), Secret(50), Secret(50)];
+  bool _scratchHintsSent = false;
 
   @override
   void initState() {
     super.initState();
+    // Timer for beacon handling
+    _beaconHandleTimer = new Timer.periodic(new Duration(seconds: 5), (timer) {
+      _handleBeacons();
+    });
+    // Bluetooth module
+    _flutterBlue = FlutterBlue.instance;
+    _flutterBlue.scanResults.listen((results) {
+      _onDevicesDiscovered(results);
+    });
+    _beacons = [Beacon("1_46", idBeacon1_46, _playSecret1_46),
+      Beacon("2_2", idBeacon2_2, _playSecret2_2),
+      Beacon("3_30", idBeacon3_30, _playSecret3_30),
+      Beacon("4_89", idBeacon4_89, _playSecret4_89),
+      Beacon("5_51", idBeacon5_51, _playSecret5_51),
+      Beacon("6_73", idBeacon6_73, _playSecret6_73)];
+    // Hints
     Game.getInstance().updateCurrentHints(Puzzle1.getInstance().hintTexts1FindSounds);
+  }
+
+  @override
+  void deactivate() {
+    _beaconHandleTimer.cancel();
+    _flutterBlue.stopScan();
+    super.deactivate();
   }
 
   @override
@@ -119,58 +167,110 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
     return await cache.play(assetName);
   }
 
+  /// Method for scanning for the Bluetooth beacons triggering the sounds.
+  void _handleBeacons() {
+    _playClosestBeaconSound();
+    _flutterBlue.startScan(timeout: Duration(seconds: 3));
+  }
+
+  /// Callback for discovered Bluetooth devices.
+  void _onDevicesDiscovered(List<ScanResult> results) {
+    List<bool> foundBeacons = [false, false, false, false, false, false];
+    String id = "";
+    int rssi = 0, idx = 0;
+    for (ScanResult result in results) {
+      id = result.device.id.id;
+      rssi = result.rssi;
+      idx = 0;
+      for (Beacon beacon in _beacons) {
+        if (beacon.id == id) {
+          // Formula for distance based on rssi
+          beacon.distance = pow(10, ((-69 - rssi) / (10 * 4)));
+          foundBeacons[idx] = true;
+        }
+        idx++;
+      }
+    }
+    idx = 0;
+    for (bool found in foundBeacons) {
+      if (!found) {
+        _beacons[idx].distance = -1;
+      }
+      idx++;
+    }
+  }
+
+  /// Plays the sound for the closest beacon in range.
+  void _playClosestBeaconSound() {
+    double closestDist = 100;
+    Beacon closestBeacon;
+    for (Beacon beacon in _beacons) {
+      if (beacon.distance == -1) {
+        continue;
+      }
+      if (beacon.distance < closestDist) {
+        closestDist = beacon.distance;
+        closestBeacon = beacon;
+      }
+    }
+    if ((closestBeacon != null) && (closestBeacon.distance <= _maxBeaconDist)) {
+      print("Beacon ${closestBeacon.name} is closest!");
+      closestBeacon.sound();
+    }
+  }
+
   /// Plays the sound for secret 1.
   /// 46
-  void _playSecret1() async {
+  void _playSecret1_46() async {
     await _playSecret("46.mp3");
     _soundsPlayed[0] = true;
     _soundPlayed();
-    print("<secret 1 sound>");
+    print("Play sound 1 (46)");
   }
 
   /// Plays the sound for secret 2.
   /// 2
-  void _playSecret2() async {
+  void _playSecret2_2() async {
     await _playSecret("2.mp3");
     _soundsPlayed[1] = true;
     _soundPlayed();
-    print("<secret 2 sound>");
+    print("Play sound 2 (2)");
   }
 
   /// Plays the sound for secret 3.
   /// 30
-  void _playSecret3() async {
+  void _playSecret3_30() async {
     await _playSecret("30.mp3");
     _soundsPlayed[2] = true;
     _soundPlayed();
-    print("<secret 3 sound>");
+    print("Play sound 3 (30)");
   }
 
   /// Plays the sound for secret 4.
   /// 89
-  void _playSecret4() async {
+  void _playSecret4_89() async {
     await _playSecret("89.mp3");
     _soundsPlayed[3] = true;
     _soundPlayed();
-    print("<secret 4 sound>");
+    print("Play sound 4 (89)");
   }
 
   /// Plays the sound for secret 5.
   /// 51
-  void _playSecret5() async {
+  void _playSecret5_51() async {
     await _playSecret("51.mp3");
     _soundsPlayed[4] = true;
     _soundPlayed();
-    print("<secret 5 sound>");
+    print("Play sound 5 (51)");
   }
 
   /// Plays the sound for secret 6.
   /// 73
-  void _playSecret6() async {
+  void _playSecret6_73() async {
     await _playSecret("73.mp3");
     _soundsPlayed[5] = true;
     _soundPlayed();
-    print("<secret 6 sound>");
+    print("Play sound 6 (73)");
   }
 
   void _soundPlayed() {
@@ -185,8 +285,9 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
         break;
       }
     }
-    if (allSoundsPlayed) {
+    if (allSoundsPlayed && !_scratchHintsSent) {
       Game.getInstance().updateCurrentHints(Puzzle1.getInstance().hintTexts3SecretOrder);
+      _scratchHintsSent = true;
     }
   }
 
@@ -305,9 +406,9 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        _testSoundButton("1", _playSecret1),
-        _testSoundButton("2", _playSecret2),
-        _testSoundButton("3", _playSecret3),
+        _testSoundButton("1", _playSecret1_46),
+        _testSoundButton("2", _playSecret2_2),
+        _testSoundButton("3", _playSecret3_30),
       ],
     );
   }
@@ -317,9 +418,9 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        _testSoundButton("4", _playSecret4),
-        _testSoundButton("5", _playSecret5),
-        _testSoundButton("6", _playSecret6),
+        _testSoundButton("4", _playSecret4_89),
+        _testSoundButton("5", _playSecret5_51),
+        _testSoundButton("6", _playSecret6_73),
       ],
     );
   }

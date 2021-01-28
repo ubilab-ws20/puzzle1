@@ -37,6 +37,7 @@ dependencies:
   audioplayers: 0.17.0
   page_transition: ^1.1.7+3
   flutter_blue: ^0.7.3
+  uuid: ^2.2.2
   mqtt_client: ^8.1.0
   noise_meter: ^2.0.0
 

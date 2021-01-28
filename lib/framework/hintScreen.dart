@@ -4,7 +4,7 @@ import 'game.dart';
 import 'hint.dart';
 
 const String stringHints = "Hints";
-const String stringPreviousHints = "All previous hints have to be opned first.";
+const String stringPreviousHints = "All previous hints have to be opened first.";
 const String stringOk = "Ok";
 const String stringUseHint = "Do you really want to use a hint?";
 const String stringCancel = "Cancel";
@@ -145,14 +145,18 @@ class _HintScreenState extends State<HintScreen> {
 
   /// List view of all current hints.
   Widget _hintsListView() {
-    return ListView.builder(
-      itemCount: (_hints.length * 2),
-      itemBuilder: (context, i) {
-        if (i.isOdd) {
-          return Divider();
+    return Container(
+      margin: EdgeInsets.only(left: 20.0, right: 20.0),
+      child: ListView.builder(
+        itemCount: (_hints.length * 2),
+        itemBuilder: (context, i) {
+          if (i.isOdd) {
+            return Divider();
+          }
+          return _hintBox(i ~/ 2);
         }
-        return _hintBox(i ~/ 2);
-      });
+      ),
+    );
   }
 
   /// Single hint, either locked or unlocked & shown.
