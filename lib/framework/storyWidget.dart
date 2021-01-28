@@ -108,10 +108,7 @@ class StoryWidgetState extends State<StoryWidget> {
     return Container(
       margin: EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0, bottom: 5.0),
       child: Text(_storyText,
-        style: TextStyle(
-          fontFamily: "marker felt",
-          fontSize: 20,
-        ),
+        style: TextStyle(fontSize: 20),
       ),
     );
   }

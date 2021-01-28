@@ -3,15 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:latlong/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:user_location/user_location.dart';
+import 'package:ubilab_scavenger_hunt/main.dart';
 import 'game.dart';
+import 'gameProgressBar.dart';
 import 'storyWidget.dart';
 import 'gameMenuScreen.dart';
 import 'hintScreen.dart';
 
 // Coordinates of Technical Faculty
 // 48.012684, 7.835044
-
-const String stringAppName = "Ubilab Scavenger Hunt";
 
 class GameMainScreen extends StatefulWidget {
   @override
@@ -71,8 +71,8 @@ class _GameMainScreen extends State<GameMainScreen> {
                   subdomains: ['a', 'b', 'c'],
                 )),
             Column(
-              children: [
-                GameProgressbar(),
+              children: <Widget>[
+                GameProgressBar(key: game.gameProgressBarStateKey),
                 _testPuzzleButtonRow(),
                 StoryWidget(key: game.storyIntroWidgetyKey),
                 StoryWidget(key: game.storyOutroWidgetyKey),
@@ -110,47 +110,3 @@ class _GameMainScreen extends State<GameMainScreen> {
     );
   }
 }
-
-///added by Sabari KM-----------------------------///
-class GameProgressbar extends StatefulWidget {
-  @override
-  GameProgressbarState createState() => GameProgressbarState();
-}
-
-class GameProgressbarState extends State<GameProgressbar> {
-  static GameProgressbarState _instance;
-
-  GameProgressbarState() {
-    _instance = this;
-  }
-
-  /// Static singleton method.
-  static GameProgressbarState getInstance() {
-    if (_instance == null) {
-      _instance = GameProgressbarState();
-    }
-    return _instance;
-  }
-
-  void setStateCallback() {
-    setState(() {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: LinearProgressIndicator(
-        value: MainVariables.progressValue,
-        minHeight: 20,
-        backgroundColor: Colors.red,
-        valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-      ),
-    );
-  }
-}
-
-class MainVariables {
-  static double progressValue = 0.1; //accepted values 0 to 1
-}
-
-///----------------------------------------------------///

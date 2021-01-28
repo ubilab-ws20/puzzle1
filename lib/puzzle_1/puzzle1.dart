@@ -66,9 +66,11 @@ class Puzzle1 extends PuzzleBase {
   List<String> getOutroTexts() {
     // TODO:
     // Add hint where to find location for puzzle 2.
-    return ["Puzzle 1 Outro 1",
-      "Puzzle 1 Outro 2",
-      "Puzzle 1 Outro 3",
+    return ["Hey! Seems like you managed to open this phone hijacking vault...after all.",
+      "But nevertheless, what is going on here?",
+      "The only reasonable explanation is that really Prof. Y is sending you all these messages, hints and challenges.",
+      "And that he needs you to help him!",
+      "TBD hint where to find location for puzzle 2.",
     ];
   }
 
