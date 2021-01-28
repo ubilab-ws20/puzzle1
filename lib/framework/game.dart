@@ -180,12 +180,13 @@ class Game {
 
   /// Callback for map when location of player changed.
   void onLocationChanged(LatLng coords) {
-    print("Location changed.");
+    //print("Location changed.");
     if ((_puzzle == null) || !isSearchingForPuzzle()) {
       return;
     }
     LatLng pCoords = _puzzle.getStartLocation();
-    double distance = Geolocator.distanceBetween(coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
+    double distance = Geolocator.distanceBetween(
+        coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
     if (distance <= 10) {
       nextState();
       _puzzle.setFinishedCallback(onPuzzleFinished);
@@ -209,7 +210,8 @@ class Game {
       return;
     }
     nextState();
-    storyOutroWidgetyKey.currentState.show(_puzzle.getOutroTexts(), nextState, false);
+    storyOutroWidgetyKey.currentState
+        .show(_puzzle.getOutroTexts(), nextState, false);
     _addTextsToAlreadyShown(_puzzle.getOutroTexts());
     _puzzle = null;
   }
@@ -276,7 +278,8 @@ class Game {
     }
     nextState();
     _puzzle.setFinishedCallback(onPuzzleFinished);
-    storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
+    storyIntroWidgetyKey.currentState
+        .show(_puzzle.getIntroTexts(), onStartPuzzle, true);
     _addTextsToAlreadyShown(_puzzle.getIntroTexts());
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ubilab_scavenger_hunt/mqtt/MqttManager.dart';
 import 'package:ubilab_scavenger_hunt/framework/introScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
 
@@ -21,6 +22,8 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    MQTTManager manager = MQTTManager(host: 'wss://earth.informatik.uni-freiburg.de/ubilab/ws/');
+    manager.initialiseMQTTClient();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -59,7 +62,7 @@ class _StartScreenState extends State<StartScreen> {
                     stringStart,
                     style: TextStyle(fontSize: 40),
                   ),
-                  onPressed: () { startGame(context); },
+                  onPressed: () { startGame(context, manager); },
                 ),
               ),
             ],
@@ -76,8 +79,9 @@ class _StartScreenState extends State<StartScreen> {
     super.dispose();
   }
 
-  void startGame(BuildContext context) {
+  void startGame(BuildContext context, MQTTManager manager) {
     Game game = Game.getInstance();
+    manager.connect();
     if (_nameController.text.isEmpty) {
       showDialog(
         context: context,
@@ -109,6 +113,7 @@ class _StartScreenState extends State<StartScreen> {
     game.reset();
     game.setTeamName(_nameController.text);
     game.setTeamSize(int.parse(_sizeController.text));
+    manager.setTeamDetails(_nameController.text, _sizeController.text);
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (BuildContext context) {
