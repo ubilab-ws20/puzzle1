@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'game.dart';
+import 'gameProgressBar.dart';
 
 const String stringProgress = "Progress";
 const String stringQuitGame = "Quit Game";
@@ -55,6 +56,7 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            GameProgressBar(),
             _teamName(),
             Divider(),
             _alreadyUsedHints(),
@@ -110,11 +112,11 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
   Widget _teamName() {
     Game game = Game.getInstance();
     String teamName = game.getTeamName();
-    int teamSize = game.getTeamSize();
-    if (teamSize == 1) {
-      teamName += " (1 member)";
+    String teamSize = "";
+    if (game.getTeamSize() == 1) {
+      teamSize += "(1 member)";
     } else {
-      teamName += " (" + game.getTeamSize().toString() + " members)";
+      teamSize += "(" + game.getTeamSize().toString() + " members)";
     }
     return Container(
       margin: EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0, bottom: 10.0),
@@ -127,9 +129,18 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
               size: 30.0,
             ),
           ),
-          Text(
-            teamName,
-            style: TextStyle(fontSize: 25.0),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                teamName,
+                style: TextStyle(fontSize: 25.0),
+              ),
+              Text(
+                teamSize,
+                style: TextStyle(fontSize: 25.0),
+              ),
+            ]
           ),
         ],
       ),
