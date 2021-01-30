@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:ubilab_scavenger_hunt/mqtt/MqttManager.dart';
 import 'package:ubilab_scavenger_hunt/framework/introScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
+import 'dart:async';
 
 const String stringAppName = "Ubilab Scavenger Hunt";
 const String stringTeamName = "Team name";
@@ -10,6 +11,7 @@ const String stringTeamSize = "Number of members";
 const String stringNoTeamName = "Please enter a team name!";
 const String stringNoTeamSize = "Please enter the number of team members!";
 const String stringStart = "Start";
+var listTeamDetails = [];
 
 class StartScreen extends StatefulWidget {
   @override
@@ -22,7 +24,8 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MQTTManager manager = MQTTManager(host: 'wss://earth.informatik.uni-freiburg.de/ubilab/ws/');
+    MQTTManager manager =
+        MQTTManager(host: 'wss://earth.informatik.uni-freiburg.de/ubilab/ws/');
     manager.initialiseMQTTClient();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -62,7 +65,9 @@ class _StartScreenState extends State<StartScreen> {
                     stringStart,
                     style: TextStyle(fontSize: 40),
                   ),
-                  onPressed: () { startGame(context, manager); },
+                  onPressed: () {
+                    startGame(context, manager);
+                  },
                 ),
               ),
             ],
@@ -85,7 +90,7 @@ class _StartScreenState extends State<StartScreen> {
     if (_nameController.text.isEmpty) {
       showDialog(
         context: context,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
               stringNoTeamName,
@@ -99,7 +104,7 @@ class _StartScreenState extends State<StartScreen> {
     if (_sizeController.text.isEmpty) {
       showDialog(
         context: context,
-        builder: (BuildContext context){
+        builder: (BuildContext context) {
           return AlertDialog(
             title: Text(
               stringNoTeamSize,
@@ -113,13 +118,18 @@ class _StartScreenState extends State<StartScreen> {
     game.reset();
     game.setTeamName(_nameController.text);
     game.setTeamSize(int.parse(_sizeController.text));
-    manager.setTeamDetails(_nameController.text, _sizeController.text);
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (BuildContext context) {
-          return IntroScreen();
-        }
-      )
-    );
+    print(game.getProgress());
+    Timer.periodic(Duration(seconds: 2), (timer) {
+      listTeamDetails.add(_nameController.text);
+      listTeamDetails.add(_sizeController.text);
+      listTeamDetails.add(game.getAlreadyUsedHints());
+      listTeamDetails.add(game.getProgress().toString());
+      manager.updateDetail(listTeamDetails);
+    });
+    //
+    Navigator.of(context)
+        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+      return IntroScreen();
+    }));
   }
 }
