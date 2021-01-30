@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'game.dart';
 import 'gameProgressBar.dart';
+import 'storyText.dart';
+import 'hintScreen.dart';
 
 const String stringProgress = "Progress";
 const String stringQuitGame = "Quit Game";
@@ -19,11 +21,11 @@ Widget gameMenuIconButton(BuildContext context) {
     ),
     onPressed: () {
       Navigator.of(context).push(
-          MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return GameMenuScreen();
-              }
-          )
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) {
+            return GameMenuScreen();
+          }
+        )
       );
     },
   );
@@ -36,6 +38,7 @@ class GameMenuScreen extends StatefulWidget {
 
 class _GameMenuScreenState extends State<GameMenuScreen> {
   Timer _timer;
+  List<StoryText> _storyTexts;
 
   @override
   void initState() {
@@ -43,6 +46,16 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
     _timer = new Timer.periodic(new Duration(milliseconds: 25), (timer) {
       setState(() {});
     });
+    _storyTexts = Game.getInstance().getAlreadyShownTexts();
+    for (StoryText storyText in _storyTexts) {
+      if (!storyText.text.endsWith("\n\n")) {
+        if (storyText.text.endsWith("\n")) {
+          storyText.text += "\n";
+        } else {
+          storyText.text += "\n\n";
+        }
+      }
+    }
   }
 
   @override
@@ -50,11 +63,13 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(stringProgress),
+        actions: [
+          hintIconButton(context),
+          _quitGameButton(context),
+        ],
       ),
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: ListView(
           children: <Widget>[
             GameProgressBar(),
             _teamName(),
@@ -65,7 +80,6 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
             Divider(),
             _storySoFar(),
             _alreadyShownTexts(),
-            _quitGameButton(context),
           ],
         ),
       ),
@@ -217,21 +231,30 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
 
   /// Expanded Container with all already shown story texts.
   Widget _alreadyShownTexts() {
-    String wholeText = "";
-    List<String> texts = Game.getInstance().getAlreadyShownTexts();
-    for (String text in texts) {
-      wholeText += text + "\n\n";
-    }
-    return Expanded(
-      child: Container(
-        margin: EdgeInsets.only(left: 40.0, right: 40.0, bottom: 30.0),
-        child: Scrollbar(
-          child: SingleChildScrollView(
-            child: Text(
-              wholeText,
-              style: TextStyle(fontSize: 15.0),
-            ),
+    List<TextSpan> textSpans = [];
+    String font = "";
+    for (StoryText storyText in _storyTexts) {
+      if (storyText.fromAi) {
+        font = fontAi;
+      } else {
+        font = fontNarration;
+      }
+      textSpans.add(
+        TextSpan(
+          text: storyText.text,
+          style: TextStyle(
+            fontFamily: font,
+            color: Colors.black,
+            fontSize: 15.0,
           ),
+        )
+      );
+    }
+    return Container(
+      margin: EdgeInsets.only(left: 40.0, right: 40.0, bottom: 30.0),
+      child: RichText(
+        text: TextSpan(
+          children: textSpans,
         ),
       ),
     );
@@ -239,15 +262,12 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
 
   /// Quit game button.
   Widget _quitGameButton(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(left: 20.0, right: 20.0),
-      child: OutlinedButton(
-        child: Text(
-          stringQuitGame,
-          style: TextStyle(fontSize: 35.0),
-        ),
-        onPressed: () { _onQuitGamePressed(context); },
+    return IconButton(
+      icon: Icon(
+        Icons.exit_to_app_rounded,
+        color: Colors.white,
       ),
+      onPressed: () { _onQuitGamePressed(context); },
     );
   }
 }

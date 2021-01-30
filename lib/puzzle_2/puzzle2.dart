@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_base/puzzleBase.dart';
-
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2MainScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/storyText.dart';
 import 'package:page_transition/page_transition.dart';
 
 class Puzzle2 extends PuzzleBase {
@@ -24,12 +24,18 @@ class Puzzle2 extends PuzzleBase {
     return LatLng(48.012684, 7.835044);
   }
 
-  List<String> getIntroTexts() {
-    return ["Intro 1", "Intro 2", "Intro 3"];
+  List<StoryText> getIntroTexts() {
+    return [StoryText("Intro 1", false),
+      StoryText("Intro 2", false),
+      StoryText("Intro 3", false),
+    ];
   }
 
-  List<String> getOutroTexts() {
-    return ["Outro 1", "Outro 2", "Outro 3"];
+  List<StoryText> getOutroTexts() {
+    return [StoryText("Outro 1", false),
+    StoryText("Outro 2", false),
+    StoryText("Outro 3", false),
+    ];
   }
 
   void startPuzzle(BuildContext context) {
