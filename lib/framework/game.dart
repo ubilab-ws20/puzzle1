@@ -34,7 +34,8 @@ class Game {
   GlobalKey<StoryWidgetState> storyIntroWidgetyKey = GlobalKey();
   GlobalKey<StoryWidgetState> storyOutroWidgetyKey = GlobalKey();
   GlobalKey<GameProgressBarState> gameProgressBarStateKey = GlobalKey();
-  List<String> gameStartTexts = ["A few days ago something mysterious happened in Freiburg.",
+  List<String> gameStartTexts = [
+    "A few days ago something mysterious happened in Freiburg.",
     "The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.",
     "The official version is that he is suffering from a severe illness.",
     "But people who were working closely with him are heavily doubting this.",
@@ -190,7 +191,8 @@ class Game {
     if (distance <= 10) {
       nextState();
       _puzzle.setFinishedCallback(onPuzzleFinished);
-      storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
+      storyIntroWidgetyKey.currentState
+          .show(_puzzle.getIntroTexts(), onStartPuzzle, true);
       _addTextsToAlreadyShown(_puzzle.getIntroTexts());
     }
   }

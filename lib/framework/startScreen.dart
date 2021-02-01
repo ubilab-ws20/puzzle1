@@ -5,12 +5,16 @@ import 'package:ubilab_scavenger_hunt/framework/introScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
 import 'dart:async';
 
+import 'package:ubilab_scavenger_hunt/globals.dart';
+
 const String stringAppName = "Ubilab Scavenger Hunt";
 const String stringTeamName = "Team name";
 const String stringTeamSize = "Number of members";
 const String stringNoTeamName = "Please enter a team name!";
 const String stringNoTeamSize = "Please enter the number of team members!";
 const String stringStart = "Start";
+const String stringHostName =
+    "wss://earth.informatik.uni-freiburg.de/ubilab/ws/";
 var listTeamDetails = [];
 
 class StartScreen extends StatefulWidget {
@@ -24,9 +28,6 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MQTTManager manager =
-        MQTTManager(host: 'wss://earth.informatik.uni-freiburg.de/ubilab/ws/');
-    manager.initialiseMQTTClient();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -86,7 +87,7 @@ class _StartScreenState extends State<StartScreen> {
 
   void startGame(BuildContext context, MQTTManager manager) {
     Game game = Game.getInstance();
-    manager.connect();
+    //manager.connect();
     if (_nameController.text.isEmpty) {
       showDialog(
         context: context,
@@ -119,6 +120,7 @@ class _StartScreenState extends State<StartScreen> {
     game.setTeamName(_nameController.text);
     game.setTeamSize(int.parse(_sizeController.text));
     print(game.getProgress());
+    globalTeamName = _nameController.text;
     Timer.periodic(Duration(seconds: 2), (timer) {
       listTeamDetails.add(_nameController.text);
       listTeamDetails.add(_sizeController.text);

@@ -4,6 +4,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:ubilab_scavenger_hunt/main.dart';
 import 'package:ubilab_scavenger_hunt/framework/framework.dart';
 
+import 'package:ubilab_scavenger_hunt/globals.dart';
+
 const String stringContinueToGame = "Continue";
 const String stringIntroText = "Hey there!\n\n"
     "Before you start, we just wanna give you a few explanations and clues.\n\n"
@@ -22,6 +24,7 @@ const String stringIntroText = "Hey there!\n\n"
 class IntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    manager.initialiseMQTTClient();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -53,7 +56,10 @@ class IntroScreen extends StatelessWidget {
                     stringContinueToGame,
                     style: TextStyle(fontSize: 40),
                   ),
-                  onPressed: () { continueToGame(context); },
+                  onPressed: () {
+                    manager.connect();
+                    continueToGame(context);
+                  },
                 ),
               ),
             ],
@@ -64,13 +70,11 @@ class IntroScreen extends StatelessWidget {
   }
 
   void continueToGame(BuildContext context) {
-    Navigator.of(context).push(
-        PageTransition(
-          type: PageTransitionType.fade,
-          duration: Duration(seconds: 1),
-          reverseDuration: Duration(seconds: 1),
-          child: GameMainScreen(),
-        )
-    );
+    Navigator.of(context).push(PageTransition(
+      type: PageTransitionType.fade,
+      duration: Duration(seconds: 1),
+      reverseDuration: Duration(seconds: 1),
+      child: GameMainScreen(),
+    ));
   }
 }

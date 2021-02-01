@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'game.dart';
 import 'gameProgressBar.dart';
+import 'package:ubilab_scavenger_hunt/globals.dart';
 
 const String stringProgress = "Progress";
 const String stringQuitGame = "Quit Game";
@@ -18,13 +19,10 @@ Widget gameMenuIconButton(BuildContext context) {
       color: Colors.white,
     ),
     onPressed: () {
-      Navigator.of(context).push(
-          MaterialPageRoute<void>(
-              builder: (BuildContext context) {
-                return GameMenuScreen();
-              }
-          )
-      );
+      Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+        return GameMenuScreen();
+      }));
     },
   );
 }
@@ -82,7 +80,7 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
   void _onQuitGamePressed(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context){
+      builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
             stringReallyQuit,
@@ -93,11 +91,11 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
                 child: Text(stringCancel),
                 onPressed: () {
                   Navigator.of(context).pop();
-                }
-            ),
+                }),
             FlatButton(
               child: Text(stringQuit),
               onPressed: () {
+                manager.disconnect();
                 Game.getInstance().reset();
                 Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
               },
@@ -130,18 +128,17 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
             ),
           ),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                teamName,
-                style: TextStyle(fontSize: 25.0),
-              ),
-              Text(
-                teamSize,
-                style: TextStyle(fontSize: 25.0),
-              ),
-            ]
-          ),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  teamName,
+                  style: TextStyle(fontSize: 25.0),
+                ),
+                Text(
+                  teamSize,
+                  style: TextStyle(fontSize: 25.0),
+                ),
+              ]),
         ],
       ),
     );
@@ -246,7 +243,9 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
           stringQuitGame,
           style: TextStyle(fontSize: 35.0),
         ),
-        onPressed: () { _onQuitGamePressed(context); },
+        onPressed: () {
+          _onQuitGamePressed(context);
+        },
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'dart:convert';
 import 'dart:async';
 
@@ -13,9 +14,7 @@ class MQTTManager {
   MQTTManager({@required String host}) : _host = host;
 
   void initialiseMQTTClient() {
-    client = MqttServerClient(_host, 'android_436');
-
-    //client.clientIdentifier = 'TestID';
+    client = MqttServerClient(_host, globalTeamName);
     client.useWebSocket = true;
     client.port = 443;
     //client.secure = true;
@@ -49,7 +48,8 @@ class MQTTManager {
   }
 
   void disconnect() {
-    print('Disconnected');
+    publishString(topicName, "$globalTeamName Disconnecting from $_host");
+    print('Disconnected from $_host');
     client.disconnect();
   }
 
@@ -60,7 +60,7 @@ class MQTTManager {
 
   void _subscribeToTopic(String topicName) {
     print('MQTTClientWrapper::Subscribing to the $topicName topic');
-    //publish(topicName, teamDetails);
+    publishList(topicName, teamDetails);
 
     //client.subscribe(topicName, MqttQos.atMostOnce);
   }
@@ -80,7 +80,7 @@ class MQTTManager {
     print('Unsubscribed topic: $topic');
   }
 
-  void publish(String topic, var teamDetails) {
+  void publishList(String topic, var teamDetails) {
     final builder = MqttClientPayloadBuilder();
     if (teamDetails != null) {
       for (int i = 0; i < teamDetails.length - 1; i++) {
@@ -94,12 +94,18 @@ class MQTTManager {
     client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
   }
 
+  void publishString(String topic, String message) {
+    final builder = MqttClientPayloadBuilder();
+    builder.addString(message);
+    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
+  }
+
   void updateDetail(List<dynamic> listTeamDetails) {
     print("Function updateDetail called");
     for (int i = 0; i < listTeamDetails.length - 1; i++) {
       teamDetails = listTeamDetails;
     }
-    publish(topicName, teamDetails);
+    publishList(topicName, teamDetails);
     clear(teamDetails);
   }
 
