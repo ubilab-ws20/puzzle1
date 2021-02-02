@@ -69,17 +69,21 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
         ],
       ),
       body: SafeArea(
-        child: ListView(
+        child: Column(
           children: <Widget>[
             GameProgressBar(),
-            _teamName(),
-            Divider(),
-            _alreadyUsedHints(),
-            Divider(),
-            _alreadyPlayedTime(),
-            Divider(),
-            _storySoFar(),
-            _alreadyShownTexts(),
+            Expanded(
+              child: ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  _teamName(),
+                  _alreadyUsedHints(),
+                  _alreadyPlayedTime(),
+                  _storySoFar(),
+                  _alreadyShownTexts(),
+                ],
+              ),
+            ),
           ],
         ),
       ),

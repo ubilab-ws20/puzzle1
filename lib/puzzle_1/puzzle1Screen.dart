@@ -15,21 +15,34 @@ const String stringScreenName = "The Vault";
 const String stringSubmitButtonText = "Open";
 const String stringNotSolved = "Wrong combination.";
 
-/// Bluetooth beacon UUIDs
-const String idBeacon1_46 = "5CCD88B5-60A4-1990-F769-378BBDAB3D4D";
-const String idBeacon2_2 = "7C05140C-8627-9D06-AEB7-FB9F172AFE2D";
-const String idBeacon3_30 = "291216FB-CD5A-1B8C-748F-C78FE8979FF3";
-const String idBeacon4_89 = "27CDCEB1-D951-036A-BA16-5652FFDB660C";
-const String idBeacon5_51 = "C712B898-49AE-C751-C28F-B97469E5AAF1";
-const String idBeacon6_73 = "A6022DE5-F851-9776-23A9-37C26B4695C4";
+/// Bluetooth beacon MAC addresses
+const List<int> macBeacon1_46 = [0xC9, 0x96, 0xD9, 0xA0, 0xEC, 0xB2];
+const List<int> macBeacon2_2 = [0xDB, 0xCD, 0xDF, 0x5A, 0xE1, 0xC7];
+const List<int> macBeacon3_30 = [0xE8, 0x63, 0x97, 0xD4, 0xEB, 0x3B];
+const List<int> macBeacon4_89 = [0xD9, 0xF5, 0xB7, 0xB1, 0x57, 0x64];
+const List<int> macBeacon5_51 = [0xCB, 0x69, 0x61, 0x67, 0xA9, 0xB9];
+const List<int> macBeacon6_73 = [0xEB, 0x65, 0x46, 0x4A, 0x5E, 0x21];
 
 /// Convenience class for working with the Bluetooth beacons.
 class Beacon {
   String name;
-  String id;
+  List<int> mac;
   Function sound;
   double distance = -1;
-  Beacon(this.name, this.id, this.sound);
+
+  Beacon(this.name, this.mac, this.sound);
+
+  bool isMacInData(List<int> data) {
+    if (data.length < 6) {
+      return false;
+    }
+    for (int i = 1; i <= 6; i++) {
+      if (data[data.length - i] != mac[mac.length - i]) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
 
 /// Wrapper class for int secrets for passing by reference.
@@ -70,12 +83,12 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
     _flutterBlue.scanResults.listen((results) {
       _onDevicesDiscovered(results);
     });
-    _beacons = [Beacon("1_46", idBeacon1_46, _playSecret1_46),
-      Beacon("2_2", idBeacon2_2, _playSecret2_2),
-      Beacon("3_30", idBeacon3_30, _playSecret3_30),
-      Beacon("4_89", idBeacon4_89, _playSecret4_89),
-      Beacon("5_51", idBeacon5_51, _playSecret5_51),
-      Beacon("6_73", idBeacon6_73, _playSecret6_73)];
+    _beacons = [Beacon("1_46", macBeacon1_46, _playSecret1_46),
+      Beacon("2_2", macBeacon2_2, _playSecret2_2),
+      Beacon("3_30", macBeacon3_30, _playSecret3_30),
+      Beacon("4_89", macBeacon4_89, _playSecret4_89),
+      Beacon("5_51", macBeacon5_51, _playSecret5_51),
+      Beacon("6_73", macBeacon6_73, _playSecret6_73)];
     // Hints
     Game.getInstance().updateCurrentHints(Puzzle1.getInstance().hintTexts1FindSounds);
   }
@@ -115,12 +128,16 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                _testSecretOrderHintStack(),
-                _secretPickerRow1(),
-                _secretPickerRow2(),
+                Column(
+                  children: <Widget>[
+                    _secretPickerRow1(),
+                    _secretPickerRow2(),
+                  ],
+                ),
                 _openButton(),
-                Spacer(),
-                Spacer(),
+                Expanded(
+                  child: _testSecretOrderHintStack(),
+                ),
               ],
             ),
           ),
@@ -170,33 +187,29 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   /// Method for scanning for the Bluetooth beacons triggering the sounds.
   void _handleBeacons() {
     _playClosestBeaconSound();
-    _flutterBlue.startScan(timeout: Duration(seconds: 3));
+    for (Beacon beacon in _beacons) {
+      beacon.distance = -1;
+    }
+    _flutterBlue.startScan(timeout: Duration(seconds: 4));
   }
 
   /// Callback for discovered Bluetooth devices.
   void _onDevicesDiscovered(List<ScanResult> results) {
-    List<bool> foundBeacons = [false, false, false, false, false, false];
-    String id = "";
-    int rssi = 0, idx = 0;
+    int rssi = 0;
+    List<int> data;
     for (ScanResult result in results) {
-      id = result.device.id.id;
+      if (!result.advertisementData.manufacturerData.containsKey(1177)) {
+        continue;
+      }
+      data = result.advertisementData.manufacturerData[1177];
       rssi = result.rssi;
-      idx = 0;
       for (Beacon beacon in _beacons) {
-        if (beacon.id == id) {
+        if (beacon.isMacInData(data)) {
           // Formula for distance based on rssi
           beacon.distance = pow(10, ((-69 - rssi) / (10 * 4)));
-          foundBeacons[idx] = true;
+          break;
         }
-        idx++;
       }
-    }
-    idx = 0;
-    for (bool found in foundBeacons) {
-      if (!found) {
-        _beacons[idx].distance = -1;
-      }
-      idx++;
     }
   }
 
@@ -216,6 +229,12 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
     if ((closestBeacon != null) && (closestBeacon.distance <= _maxBeaconDist)) {
       print("Beacon ${closestBeacon.name} is closest!");
       closestBeacon.sound();
+    } else {
+      if (closestBeacon == null) {
+        print("No beacon found to play sound!");
+      } else {
+        print("No beacon in range to play sound!");
+      }
     }
   }
 
@@ -295,9 +314,12 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
 
   Widget _secretOrderHint() {
     return Container(
-      margin: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
-      child: Image(
-        image: AssetImage("assets/numberPickerHintScratches.png"),
+      margin: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 10.0, right: 10.0),
+      alignment: Alignment.center,
+      child: Center(
+        child: Image(
+          image: AssetImage("assets/numberPickerHintScratches.png"),
+        ),
       ),
     );
   }
@@ -361,7 +383,7 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
   /// Creates the open button for submitting the secrets.
   Widget _openButton() {
     return Container(
-      margin: EdgeInsets.only(top: 30.0),
+      margin: EdgeInsets.only(top: 20.0),
       child: ElevatedButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(Colors.orangeAccent),
@@ -382,11 +404,13 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
 
   Widget _testSecretOrderHintStack() {
     return Container(
-      margin: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+      margin: EdgeInsets.only(top: 20.0, bottom: 20.0, left: 10.0, right: 10.0),
       child: Stack(
         children: <Widget>[
-          Image(
-            image: AssetImage("assets/numberPickerHintScratches.png"),
+          Center(
+            child: Image(
+              image: AssetImage("assets/numberPickerHintScratches.png"),
+            ),
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,

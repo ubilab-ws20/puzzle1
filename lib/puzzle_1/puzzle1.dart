@@ -19,7 +19,7 @@ class Puzzle1 extends PuzzleBase {
     "TBD hint to the exact locations.",
   ];
 
-  List<String> hintTexts3SecretOrder = ["What may these black scratches at the top be about? Are they there for a reason?",
+  List<String> hintTexts3SecretOrder = ["What may these black scratches at the bottom be about? Are they there for a reason?",
     "The order of the numbers can be derived from the black scratches.",
     "Each point where 2 scratches meet represents one of the numbers. Their relative positions to each other tell you the order how they have to be inserted in the number pickers.",
   ];

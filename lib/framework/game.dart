@@ -190,8 +190,7 @@ class Game {
       return;
     }
     LatLng pCoords = _puzzle.getStartLocation();
-    double distance = Geolocator.distanceBetween(
-        coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
+    double distance = Geolocator.distanceBetween(coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
     if (distance <= 10) {
       nextState();
       _puzzle.setFinishedCallback(onPuzzleFinished);
@@ -215,8 +214,7 @@ class Game {
       return;
     }
     nextState();
-    storyOutroWidgetyKey.currentState
-        .show(_puzzle.getOutroTexts(), nextState, false);
+    storyOutroWidgetyKey.currentState.show(_puzzle.getOutroTexts(), nextState, false);
     addTextsToAlreadyShown(_puzzle.getOutroTexts());
     _puzzle = null;
   }
@@ -246,17 +244,17 @@ class Game {
     } else if (_state == gameState.outroPuzzle1) {
       _progress = 0.333; // Finished puzzle 1
       gameProgressBarStateKey.currentState.setStateCallback();
-    } else if (_state == gameState.introPuzzle2) {
-      _progress = 0.5; // Found puzzle 2
-      gameProgressBarStateKey.currentState.setStateCallback();
-    } else if (_state == gameState.outroPuzzle2) {
-      _progress = 0.666; // Finished puzzle 2
-      gameProgressBarStateKey.currentState.setStateCallback();
     } else if (_state == gameState.introPuzzle3) {
-      _progress = 0.833; // Found puzzle 3
+      _progress = 0.5; // Found puzzle 3
       gameProgressBarStateKey.currentState.setStateCallback();
     } else if (_state == gameState.outroPuzzle3) {
-      _progress = 1.0; // Finished puzzle 3
+      _progress = 0.666; // Finished puzzle 3
+      gameProgressBarStateKey.currentState.setStateCallback();
+    } else if (_state == gameState.introPuzzle2) {
+      _progress = 0.833; // Found puzzle 2
+      gameProgressBarStateKey.currentState.setStateCallback();
+    } else if (_state == gameState.outroPuzzle2) {
+      _progress = 1.0; // Finished puzzle 2
       gameProgressBarStateKey.currentState.setStateCallback();
     }
     _testPrintState();
@@ -283,8 +281,7 @@ class Game {
     }
     nextState();
     _puzzle.setFinishedCallback(onPuzzleFinished);
-    storyIntroWidgetyKey.currentState
-        .show(_puzzle.getIntroTexts(), onStartPuzzle, true);
+    storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
     addTextsToAlreadyShown(_puzzle.getIntroTexts());
   }
 
