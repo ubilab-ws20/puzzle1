@@ -65,13 +65,14 @@ class Puzzle1 extends PuzzleBase {
 
   @override
   List<StoryText> getOutroTexts() {
-    // TODO:
-    // Add hint where to find location for puzzle 2.
     return [StoryText("Hey! Seems like you managed to open this phone hijacking vault...after all.", false),
       StoryText("But nevertheless, what is going on here?", false),
       StoryText("The only reasonable explanation is that really Prof. Y is sending you all these messages, hints and challenges.", false),
       StoryText("And that he needs you to help him!", false),
-      StoryText("TBD hint where to find location for puzzle 2.", false),
+      StoryText("Very often people are much more convenient with giving help than receiving it. But especially when you are new to something it can make your life a lot easier to let people help you. "
+          "So as the third advice: Whenever you’re new to a situation, find some experts who offer their help and let them guide you!", true),
+      StoryText("Oh! Again one of these messages!", false),
+      StoryText("Now...what could that mean...", false),
     ];
   }
 

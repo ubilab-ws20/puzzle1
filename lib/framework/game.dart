@@ -40,7 +40,7 @@ class Game {
     StoryText("The official version is that he is suffering from a severe illness.", false),
     StoryText("But people who were working closely with him are heavily doubting this.", false),
     StoryText("While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:", false),
-    StoryText("Scientists discovered the 6 key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?", true),
+    StoryText("Scientists discovered the key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?", true),
     StoryText("Strange...", false)
   ];
 
