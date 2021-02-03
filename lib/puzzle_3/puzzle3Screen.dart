@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
+import 'package:ubilab_scavenger_hunt/framework/storyText.dart';
 import '../puzzle_base/puzzleBase.dart';
 import 'puzzle3.dart';
 
@@ -47,12 +48,12 @@ class MyAlertDialog extends StatelessWidget {
     return AlertDialog(
       title: Text(
         this.title,
-        style: Theme.of(context).textTheme.title,
+        style: TextStyle(fontSize: 22, fontFamily: "VT323",),
       ),
       actions: this.actions,
       content: Text(
         this.content,
-        style: TextStyle(fontSize: 16),
+        style: TextStyle(fontSize: 18, fontFamily: "VT323",),
       ),
     );
   }
@@ -61,7 +62,8 @@ class MyAlertDialog extends StatelessWidget {
 
 Color c5 = Colors.blue;
 double soundIconSize = 60;
-
+double appBarHeight;
+double statusBarHeight;
 
 class _ThirdRouteState extends State<ThirdRoute > {
 
@@ -81,12 +83,13 @@ class _ThirdRouteState extends State<ThirdRoute > {
   }
 
   void onData(NoiseReading noiseReading) {
-    this.setState(() {
-      if (!this._isRecording) {
-        this._isRecording = true;
-      }
-    });
-
+    if (this.mounted) {
+      this.setState(() {
+        if (!this._isRecording) {
+          this._isRecording = true;
+        }
+      });
+    }
     if (DateTime.now().millisecondsSinceEpoch - disableTime > 250) {
       disableKnock = false;
       c5 = Colors.blue;
@@ -145,9 +148,11 @@ class _ThirdRouteState extends State<ThirdRoute > {
         _noiseSubscription.cancel();
         _noiseSubscription = null;
       }
-      this.setState(() {
-        this._isRecording = false;
-      });
+      if (this.mounted) {
+        this.setState(() {
+          this._isRecording = false;
+        });
+      }
     } catch (err) {
       print('stopRecorder error: $err');
     }
@@ -309,6 +314,21 @@ class _ThirdRouteState extends State<ThirdRoute > {
                   ),
                 ),
               ),
+              Positioned(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ElevatedButton(
+                        child: Text('Skip'),
+                        onPressed: () {
+                          Puzzle3.getInstance().onFinished();
+                          Navigator.of(context).pop();
+                        },
+                      )
+                  ),
+                ),
+              ),
             ]
         ))
     );
@@ -325,14 +345,18 @@ Color c2 = Colors.blue;
 Color c3 = Colors.blue;
 Color c4 = Colors.blue;
 Color cursorColor = Color.fromRGBO(255, 0, 0, 0);
+int xl = 0;
+int xr = 24;
+double yu = appBarHeight + 0;
+double yd = appBarHeight + 24;
 
 bool checkReachedNode(double x, double y) {
-  if ( (x > x0+15 && x < x0+30 && y > y0+95 && y < y0+110) || (x > x1+15 && x < x1+30 && y > y1+95 && y < y1+110) ||
-      (x > x2+15 && x < x2+30 && y > y2+95 && y < y2+110) || (x > x3+15 && x < x3+30 && y > y3+95 && y < y3+110) ||
-      (x > x4+15 && x < x4+30 && y > y4+95 && y < y4+110) || (x > x5+15 && x < x5+30 && y > y5+95 && y < y5+110) ||
-      (x > x6+15 && x < x6+30 && y > y6+95 && y < y6+110) || (x > x7+15 && x < x7+30 && y > y7+95 && y < y7+110) ||
-      (x > x8+15 && x < x8+30 && y > y8+95 && y < y8+110) || (x > x9+15 && x < x9+30 && y > y9+95 && y < y9+110) ||
-      (x > x10+15 && x < x10+30 && y > y10+95 && y < y10+110) || (x > x11+15 && x < x11+30 && y > y11+95 && y < y11+110)) {
+  if ( (x > x0+xl && x < x0+xr && y > y0+yu && y < y0+yd) || (x > x1+xl && x < x1+xr && y > y1+yu && y < y1+yd) ||
+      (x > x2+xl && x < x2+xr && y > y2+yu && y < y2+yd) || (x > x3+xl && x < x3+xr && y > y3+yu && y < y3+yd) ||
+      (x > x4+xl && x < x4+xr && y > y4+yu && y < y4+yd) || (x > x5+xl && x < x5+xr && y > y5+yu && y < y5+yd) ||
+      (x > x6+xl && x < x6+xr && y > y6+yu && y < y6+yd) || (x > x7+xl && x < x7+xr && y > y7+yu && y < y7+yd) ||
+      (x > x8+xl && x < x8+xr && y > y8+yu && y < y8+yd) || (x > x9+xl && x < x9+xr && y > y9+yu && y < y9+yd) ||
+      (x > x10+xl && x < x10+xr && y > y10+yu && y < y10+yd) || (x > x11+xl && x < x11+xr && y > y11+yu && y < y11+yd)) {
     return true;
   }
   return false;
@@ -382,14 +406,15 @@ class _SecondRouteState extends State<SecondRoute > {
 
   void _updateLocation(PointerEvent details) {
     double X = details.position.dx;
-    double Y = details.position.dy;
+    double Y = details.position.dy - statusBarHeight;
     xpos = X;
     ypos = Y;
     setState(() {
       x = X;
       y = Y;
     });
-    if (X > x0 + 15 && X < x0 + 30 && Y > y0 + 95 && Y < y0 + 110 &&
+
+    if (X > x0 + xl && X < x0 + xr && Y > y0 + yu && Y < y0 + yd &&
         lastNode == 0) {
       nodex = x0;
       nodey = y0;
@@ -399,9 +424,9 @@ class _SecondRouteState extends State<SecondRoute > {
       print("first node");
     }
     if (checkReachedNode(X, Y)) {
-      if (!(X > x0 + 15 && X < x0 + 30 && Y > y0 + 95 && Y < y0 + 110) &&
+      if (!(X > x0 + xl && X < x0 + xr && Y > y0 + yu && Y < y0 + yd) &&
           lastNode == 1) {
-        if (X > x3 + 15 && X < x3 + 30 && Y > y3 + 95 && Y < y3 + 110) {
+        if (X > x3 + xl && X < x3 + xr && Y > y3 + yu && Y < y3 + yd) {
           lastNode = 2;
           nodex = x3;
           nodey = y3;
@@ -416,9 +441,9 @@ class _SecondRouteState extends State<SecondRoute > {
         }
       }
 
-      if (!(X > x3 + 15 && X < x3 + 30 && Y > y3 + 95 && Y < y3 + 110) &&
+      if (!(X > x3 + xl && X < x3 + xr && Y > y3 + yu && Y < y3 + yd) &&
           lastNode == 2){
-        if (X > x5 + 15 && X < x5 + 30 && Y > y5 + 95 && Y < y5 + 110) {
+        if (X > x5 + xl && X < x5 + xr && Y > y5 + yu && Y < y5 + yd) {
           lastNode = 3;
           nodex = x5;
           nodey = y5;
@@ -434,9 +459,9 @@ class _SecondRouteState extends State<SecondRoute > {
         }
       }
 
-      if (!(X > x5 + 15 && X < x5 + 30 && Y > y5 + 95 && Y < y5 + 110) &&
+      if (!(X > x5 + xl && X < x5 + xr && Y > y5 + yu && Y < y5 + yd) &&
           lastNode == 3){
-        if (X > x11 + 15 && X < x11 + 30 && Y > y11 + 95 && Y < y11 + 110) {
+        if (X > x11 + xl && X < x11 + xr && Y > y11 + yu && Y < y11 + yd) {
           lastNode = 4;
           nodex = x11;
           nodey = y11;
@@ -453,9 +478,9 @@ class _SecondRouteState extends State<SecondRoute > {
         }
       }
 
-      if(!(X > x11 + 15 && X < x11 + 30 && Y > y11 + 95 && Y < y11 + 110) && lastNode == 4){
+      if(!(X > x11 + xl && X < x11 + xr && Y > y11 + yu && Y < y11 + yd) && lastNode == 4){
         cursorColor = Color.fromRGBO(255, 0, 0, 0);
-        if (X > x1+15 && X < x1+30 && Y > y1+95 && Y < y1+110 ) {
+        if (X > x1+xl && X < x1+xr && Y > y1+yu && Y < y1+yd ) {
           lastNode = 5;
           c5 = Colors.green;
           // switch to the next screen
@@ -494,7 +519,7 @@ class _SecondRouteState extends State<SecondRoute > {
 
   Widget ourText() {
     return lastNode == 5 ?
-    Text("Congratulations! You have found the correct path!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))
+    Text("Congratulations! You have found the correct path!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, fontFamily: "VT323"))
         :
     Text("", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16) );
   }
@@ -518,27 +543,34 @@ class _SecondRouteState extends State<SecondRoute > {
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    statusBarHeight = MediaQuery.of(context).padding.top;
     if (height < width) {
-      refWidth = 683.4;
-      refHeight = 411.4;
+      double tmp = height;
+      height = width;
+      width = tmp;
     }
     heightRatio = height/refHeight;
     widthRatio = width/refWidth;
-    x0 = 50*heightRatio; y0 = 150*widthRatio; x1 = 600*heightRatio; y1 = 150*widthRatio; x2 = 350*heightRatio; y2 = 50*widthRatio; x3 = 150*heightRatio; y3 = 50*widthRatio; x4 = 153*heightRatio; y4 = 103*widthRatio; x5 = 239*heightRatio ;
+    x0 = 50*heightRatio; y0 = 150*widthRatio; x1 = 600*heightRatio; y1 = 150*widthRatio; x2 = 350*heightRatio; y2 = 50*widthRatio; x3 = 150*heightRatio; y3 = 50*widthRatio; x4 = 138*heightRatio; y4 = 113*widthRatio; x5 = 239*heightRatio ;
     y5 = 240*widthRatio; x6 = 135*heightRatio; y6 = 201*widthRatio; x7 = 400*heightRatio; y7 = 250*widthRatio; x8 = 489*heightRatio; y8 = 105*widthRatio; x9 = 350*heightRatio; y9 = 189*widthRatio; x10 = 230*heightRatio; y10 = 130*widthRatio; x11 = 530*heightRatio; y11 = 200*widthRatio;
 
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft,DeviceOrientation.landscapeRight]);
+
+    AppBar appBar = AppBar(
+      title: Text('The path'),
+      automaticallyImplyLeading: false,
+      actions: [
+        hintIconButton(context),
+        gameMenuIconButton(context),
+      ],
+    );
+    appBarHeight = appBar.preferredSize.height;
+    double iconsize = 24;
+    print(appBarHeight);
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-        appBar: AppBar(
-          title: Text("The path"),
-          automaticallyImplyLeading: false,
-          actions: [
-            hintIconButton(context),
-            gameMenuIconButton(context),
-          ],
-        ),
+        appBar: appBar,
         body: Builder(
           builder: (context) => Stack(
               children: <Widget>[
@@ -552,6 +584,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   child: Column(
                       children: <Widget>[
                         IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: BoxConstraints(),
+                          iconSize: iconsize,
                           icon: Icon(Icons.circle),
                           color: c5,
                           onPressed: () {
@@ -565,8 +600,12 @@ class _SecondRouteState extends State<SecondRoute > {
                   child: Column(
                       children: <Widget>[
                         IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: BoxConstraints(),
+                          iconSize: iconsize,
                           icon: Icon(Icons.circle),
                           color: c1,
+                          //color: Color.fromRGBO(255, 255, 255, 0.5),
                           onPressed: () {
                           },
                         ),
@@ -576,6 +615,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   top: y2,
                   left: x2,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: iconsize,
                     icon: Icon(Icons.circle),
                     color: Colors.blue,
                     onPressed: () {
@@ -585,6 +627,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   top: y3,
                   left: x3,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: iconsize,
                     icon: Icon(Icons.circle),
                     color: c2,
                     onPressed: () {
@@ -594,6 +639,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   top: y4,
                   left: x4,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: iconsize,
                     icon: Icon(Icons.circle),
                     color: Colors.blue,
                     onPressed: () {
@@ -603,6 +651,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   top: y5,
                   left: x5,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: iconsize,
                     icon: Icon(Icons.circle),
                     color: c3,
                     onPressed: () {
@@ -612,6 +663,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   top: y6,
                   left: x6,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: iconsize,
                     icon: Icon(Icons.circle),
                     color: Colors.blue,
                     onPressed: () {
@@ -621,6 +675,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   top: y7,
                   left: x7,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: iconsize,
                     icon: Icon(Icons.circle),
                     color: Colors.blue,
                     onPressed: () {
@@ -630,6 +687,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   top: y8,
                   left: x8,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: iconsize,
                     icon: Icon(Icons.circle),
                     color: Colors.blue,
                     onPressed: () {
@@ -639,6 +699,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   top: y9,
                   left: x9,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: iconsize,
                     icon: Icon(Icons.circle),
                     color: Colors.blue,
                     onPressed: () {
@@ -648,6 +711,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   top: y10,
                   left: x10,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: iconsize,
                     icon: Icon(Icons.circle),
                     color: Colors.blue,
                     onPressed: () {
@@ -657,6 +723,9 @@ class _SecondRouteState extends State<SecondRoute > {
                   top: y11,
                   left: x11,
                   child: IconButton(
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    iconSize: iconsize,
                     icon: Icon(Icons.circle),
                     color: c4,
                     onPressed: () {
@@ -682,12 +751,14 @@ class _SecondRouteState extends State<SecondRoute > {
                     ),
                   ),),
                 Positioned(
-                  top: 250*widthRatio,
-                  left: 580*heightRatio,
-                  child: Column(
-                      children: <Widget>[
-                        ourButton(context)
-                      ]),),
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: ourButton(context),
+                    ),
+                  ),
+                ),
                 Positioned(
                   child: Padding(
                     padding: EdgeInsets.all(16.0),
@@ -858,8 +929,25 @@ class _SecondRouteState extends State<SecondRoute > {
                     ),
                   ),
                 ),
+                Positioned(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ElevatedButton(
+                        child: Text('Skip'),
+                        onPressed: () {
+                          Game.getInstance().updateCurrentHints(hintKnock);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => ThirdRoute()),
+                          );
+                        },
+                      )
+                    ),
+                  ),
+                ),
               ]),)
-
     ));
   }
 
@@ -869,20 +957,21 @@ class _SecondRouteState extends State<SecondRoute > {
 class MyPainter extends CustomPainter { //         <-- CustomPainter class
   @override
   void paint(Canvas canvas, Size size) {
-    final p0 = Offset(x0+25, y0+25);
-    final p1 = Offset(x1+25, y1+25);
-    final p2 = Offset(x2+25, y2+25);
-    final p3 = Offset(x3+25, y3+25);
-    final p4 = Offset(x4+25, y4+25);
-    final p5 = Offset(x5+25, y5+25);
-    final p6 = Offset(x6+25, y6+25);
-    final p7 = Offset(x7+25, y7+25);
-    final p8 = Offset(x8+25, y8+25);
-    final p9 = Offset(x9+25, y9+25);
-    final p10 = Offset(x10+25, y10+25);
-    final p11 = Offset(x11+25, y11+25);
-    final node = Offset(nodex+25, nodey+25);
-    final cursor = Offset(xpos,ypos-75);
+    double offset = 12;
+    final p0 = Offset(x0+offset, y0+offset);
+    final p1 = Offset(x1+offset, y1+offset);
+    final p2 = Offset(x2+offset, y2+offset);
+    final p3 = Offset(x3+offset, y3+offset);
+    final p4 = Offset(x4+offset, y4+offset);
+    final p5 = Offset(x5+offset, y5+offset);
+    final p6 = Offset(x6+offset, y6+offset);
+    final p7 = Offset(x7+offset, y7+offset);
+    final p8 = Offset(x8+offset, y8+offset);
+    final p9 = Offset(x9+offset, y9+offset);
+    final p10 = Offset(x10+offset, y10+offset);
+    final p11 = Offset(x11+offset, y11+offset);
+    final node = Offset(nodex+offset, nodey+offset);
+    final cursor = Offset(xpos,ypos-appBarHeight);
     final paint = Paint()
       ..color = Colors.blue
       ..strokeWidth = 4;
