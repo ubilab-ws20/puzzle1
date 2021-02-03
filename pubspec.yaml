@@ -72,8 +72,8 @@ flutter:
     - assets/vault.jpg
     - assets/numberPickerHintScratches.png
     - assets/555.png
-    - assets/fileTransfer.gif
-    - assets/downloadCanceled.jpg
+    - assets/downloadNotStarted.gif
+    - assets/downloadStarted.gif
     - assets/door.jpg
     - assets/door2.jpg
     - assets/graphBackground.jpg

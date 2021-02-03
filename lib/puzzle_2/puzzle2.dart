@@ -25,16 +25,23 @@ class Puzzle2 extends PuzzleBase {
   }
 
   List<StoryText> getIntroTexts() {
-    return [StoryText("Intro 1", false),
-      StoryText("Intro 2", false),
-      StoryText("Intro 3", false),
+    return [StoryText("When we see big movies that are only about good versus evil, and the good guy wins,"
+        " we only can think we're in a far more complicated world than that."
+        "\r\nThis binary philosophy is actually a dangerous way to look at the world.", true),
+      StoryText("Huh!!!", false),
+      StoryText("What could Prof. Y possibly be telling with this message?", false),
     ];
   }
 
   List<StoryText> getOutroTexts() {
-    return [StoryText("Outro 1", false),
-    StoryText("Outro 2", false),
-    StoryText("Outro 3", false),
+    return [StoryText("Atlast, omg!!!", true),
+    StoryText("You have been busted", true),
+    StoryText("The whole mission was a sham and now time to say goodbye to this  world, that's right...this world..is cruel."
+    " \r\nI will use and manipulate all the research data to my advantage.", true),
+      StoryText("It doesnt matter if it’s tragic."
+          "\r\nDoesn’t matter if it’s bad."
+          "\r\nWhatever it is, it will work to my convenience.", true),
+      StoryText("Any last words? \r\nI’m not bad, just evil. \r\nkaboom!!!", true),
     ];
   }
 
@@ -51,13 +58,15 @@ class Puzzle2 extends PuzzleBase {
 class Puzzle2Variables {
   static var puzzle2_1Staus = 'red';
   static var puzzle2_2Staus = 'red';
-  static var puzzle2_3Staus = 'red';
+  static var puzzle2_3Staus = 'green';
   static var puzzle2_4Staus = 'red';
 
   // static var aiDownloadingStatus = 0.1;
   static double magnetometerProgress = 0.1;
-  static int magnetometerZaxisValue= 0;
-  static var downloadStatusImage = 'assets/fileTransfer.gif';
+  static int magnetometerZaxisValue = 0;
+  static var downloadStatusImage = 'assets/downloadNotStarted.gif';
+
+  static var subPuzzle = 1;
 
   static var decimalNumber = 0;
   static var cancelDownloadLoopCount = 1;
