@@ -230,9 +230,9 @@ class Game {
     if (_state == gameState.searchPuzzle1) {
       _puzzle = Puzzle1.getInstance();
     } else if (_state == gameState.searchPuzzle2) {
-      _puzzle = Puzzle2.getInstance();
-    } else if (_state == gameState.searchPuzzle3) {
       _puzzle = Puzzle3.getInstance();
+    } else if (_state == gameState.searchPuzzle3) {
+      _puzzle = Puzzle2.getInstance();
     }
     // Update hints
     _currentHints.clear();
