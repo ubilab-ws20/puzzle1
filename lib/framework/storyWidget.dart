@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
-import 'package:ubilab_scavenger_hunt/framework/game.dart';
+import 'game.dart';
+import 'storyText.dart';
 
 const String stringNext = "Next";
 const String stringStart = "Start";
@@ -14,14 +15,15 @@ class StoryWidget extends StatefulWidget {
 }
 
 class StoryWidgetState extends State<StoryWidget> {
-  List<String> _texts = [];
+  List<StoryText> _texts = [];
   Function _onFinished;
 
   int _textIndex = 0;
-  String _storyText = "";
+  StoryText _storyText = StoryText("", false);
   String _buttonText = stringNext;
   bool _isVisible = false;
   bool _isIntro = true;
+  String _font = fontNarration;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class StoryWidgetState extends State<StoryWidget> {
   }
 
   /// Starts the widget with the given content.
-  void show(List<String> texts, Function onFinished, bool isIntro) {
+  void show(List<StoryText> texts, Function onFinished, bool isIntro) {
     _texts = texts;
     _onFinished = onFinished;
     _textIndex = -1;
@@ -68,7 +70,7 @@ class StoryWidgetState extends State<StoryWidget> {
     _textIndex = -1;
     setState(() {
       _isVisible = false;
-      _storyText = "";
+      _storyText = StoryText("", false);
       _buttonText = "";
     });
   }
@@ -87,6 +89,11 @@ class StoryWidgetState extends State<StoryWidget> {
         }
       } else {
         _buttonText = stringNext;
+      }
+      if (_storyText.fromAi) {
+        _font = fontAi;
+      } else {
+        _font = fontNarration;
       }
     });
   }
@@ -107,8 +114,11 @@ class StoryWidgetState extends State<StoryWidget> {
   Widget _text() {
     return Container(
       margin: EdgeInsets.only(top: 10.0, right: 10.0, left: 10.0, bottom: 5.0),
-      child: Text(_storyText,
-        style: TextStyle(fontSize: 20),
+      child: Text(_storyText.text,
+        style: TextStyle(
+          fontFamily: _font,
+          fontSize: 20,
+        ),
       ),
     );
   }

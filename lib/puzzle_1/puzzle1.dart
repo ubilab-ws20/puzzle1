@@ -3,6 +3,7 @@ import 'package:latlong/latlong.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_base/puzzleBase.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1Screen.dart';
+import 'package:ubilab_scavenger_hunt/framework/storyText.dart';
 
 class Puzzle1 extends PuzzleBase {
   static Puzzle1 _instance;
@@ -51,26 +52,26 @@ class Puzzle1 extends PuzzleBase {
   }
 
   @override
-  List<String> getIntroTexts() {
-    return ["Ok, let's be honest. Of course you could not resist the feeling that this odd text message had a reason.",
-      "The \"whY\" must have been a hint to Prof. Dr. Y! ...what a silly thought.",
-      "You went to the canteen and found absolutely nothing...of course not. It was just a stupid advertising message.",
-      "But suddenly another text message comes in:",
-      "\"The second key for a better life is living in the here and now. Whereever you are, discover your surrounding and listen to what it tells you!\"",
-      "Ok...well that was...but wait? Your phone starts to show something like a vault...and you cannot control it anymore!",
-      "What is happening???",
+  List<StoryText> getIntroTexts() {
+    return [StoryText("Ok, let's be honest. Of course you could not resist the feeling that this odd text message had a reason.", false),
+      StoryText("The \"whY\" must have been a hint to Prof. Dr. Y! ...what a silly thought.", false),
+      StoryText("You went to the canteen and found absolutely nothing...of course not. It was just a stupid advertising message.", false),
+      StoryText("But suddenly another text message comes in:", false),
+      StoryText("The second key for a better life is living in the here and now. Whereever you are, discover your surrounding and listen to what it tells you!", true),
+      StoryText("Ok...well that was...but wait? Your phone starts to show something like a vault...and you cannot control it anymore!", false),
+      StoryText("What is happening???", false),
     ];
   }
 
   @override
-  List<String> getOutroTexts() {
+  List<StoryText> getOutroTexts() {
     // TODO:
     // Add hint where to find location for puzzle 2.
-    return ["Hey! Seems like you managed to open this phone hijacking vault...after all.",
-      "But nevertheless, what is going on here?",
-      "The only reasonable explanation is that really Prof. Y is sending you all these messages, hints and challenges.",
-      "And that he needs you to help him!",
-      "TBD hint where to find location for puzzle 2.",
+    return [StoryText("Hey! Seems like you managed to open this phone hijacking vault...after all.", false),
+      StoryText("But nevertheless, what is going on here?", false),
+      StoryText("The only reasonable explanation is that really Prof. Y is sending you all these messages, hints and challenges.", false),
+      StoryText("And that he needs you to help him!", false),
+      StoryText("TBD hint where to find location for puzzle 2.", false),
     ];
   }
 

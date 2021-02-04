@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
+import 'package:ubilab_scavenger_hunt/framework/storyText.dart';
 
 abstract class PuzzleBase {
   Function onFinished;
@@ -13,7 +14,7 @@ abstract class PuzzleBase {
   }
 
   LatLng getStartLocation();
-  List<String> getIntroTexts();
-  List<String> getOutroTexts();
+  List<StoryText> getIntroTexts();
+  List<StoryText> getOutroTexts();
   void startPuzzle(BuildContext context);
 }

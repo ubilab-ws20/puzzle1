@@ -9,6 +9,7 @@ import 'package:ubilab_scavenger_hunt/puzzle_3/puzzle3.dart';
 import 'gameProgressBar.dart';
 import 'storyWidget.dart';
 import 'hint.dart';
+import 'storyText.dart';
 
 enum gameState {
   none,
@@ -17,14 +18,14 @@ enum gameState {
   introPuzzle1,
   puzzle1,
   outroPuzzle1,
-  searchPuzzle2,
-  introPuzzle2,
-  puzzle2,
-  outroPuzzle2,
   searchPuzzle3,
   introPuzzle3,
   puzzle3,
   outroPuzzle3,
+  searchPuzzle2,
+  introPuzzle2,
+  puzzle2,
+  outroPuzzle2,
   end,
 }
 
@@ -34,14 +35,15 @@ class Game {
   GlobalKey<StoryWidgetState> storyIntroWidgetyKey = GlobalKey();
   GlobalKey<StoryWidgetState> storyOutroWidgetyKey = GlobalKey();
   GlobalKey<GameProgressBarState> gameProgressBarStateKey = GlobalKey();
-  List<String> gameStartTexts = [
-    "A few days ago something mysterious happened in Freiburg.",
-    "The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.",
-    "The official version is that he is suffering from a severe illness.",
-    "But people who were working closely with him are heavily doubting this.",
-    "While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:",
-    "\"Scientists discovered the 6 key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for you personal needs?\"",
-    "Strange..."
+
+  List<StoryText> gameStartTexts = [StoryText("A few days ago something mysterious happened in Freiburg.", false),
+    StoryText("The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.", false),
+    StoryText("The official version is that he is suffering from a severe illness.", false),
+    StoryText("But people who were working closely with him are heavily doubting this.", false),
+    StoryText("While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:", false),
+    StoryText("Scientists discovered the 6 key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?", true),
+    StoryText("Strange...", false)
+
   ];
 
   BuildContext _context;
@@ -52,7 +54,7 @@ class Game {
   PuzzleBase _puzzle;
 
   Stopwatch _stopWatch = Stopwatch();
-  List<String> _alreadyShownTexts = [];
+  List<StoryText> _alreadyShownTexts = [];
 
   List<Hint> _currentHints = [];
   int _totalHints = 0;
@@ -110,15 +112,19 @@ class Game {
     return "$_hintsUsed/$_totalHints";
   }
 
-  /// Getter for already shown texts.
-  List<String> getAlreadyShownTexts() {
-    return _alreadyShownTexts;
+  /// Getter (deep copy) for already shown texts.
+  List<StoryText> getAlreadyShownTexts() {
+    List<StoryText> alreadyShownTexts = [];
+    for (StoryText storyText in _alreadyShownTexts) {
+      alreadyShownTexts.add(StoryText(storyText.text, storyText.fromAi));
+    }
+    return alreadyShownTexts;
   }
 
   /// Adds new texts to the already shown ones, along with a seperator.
-  void _addTextsToAlreadyShown(List<String> texts) {
+  void addTextsToAlreadyShown(List<StoryText> texts) {
     if (_alreadyShownTexts.isNotEmpty) {
-      _alreadyShownTexts.add("- - - - - - - - - - - - - - -");
+      _alreadyShownTexts.add(StoryText("- - - - - - - - - - - - - - -", false));
     }
     _alreadyShownTexts.addAll(texts);
   }
@@ -158,7 +164,7 @@ class Game {
     _uuid = uuid.v1();
     _puzzle = null;
     _stopWatch.start();
-    _addTextsToAlreadyShown(gameStartTexts);
+    addTextsToAlreadyShown(gameStartTexts);
     nextState();
     return true;
   }
@@ -191,9 +197,8 @@ class Game {
     if (distance <= 10) {
       nextState();
       _puzzle.setFinishedCallback(onPuzzleFinished);
-      storyIntroWidgetyKey.currentState
-          .show(_puzzle.getIntroTexts(), onStartPuzzle, true);
-      _addTextsToAlreadyShown(_puzzle.getIntroTexts());
+      storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
+      addTextsToAlreadyShown(_puzzle.getIntroTexts());
     }
   }
 
@@ -214,7 +219,7 @@ class Game {
     nextState();
     storyOutroWidgetyKey.currentState
         .show(_puzzle.getOutroTexts(), nextState, false);
-    _addTextsToAlreadyShown(_puzzle.getOutroTexts());
+    addTextsToAlreadyShown(_puzzle.getOutroTexts());
     _puzzle = null;
   }
 
@@ -303,7 +308,7 @@ class Game {
     _puzzle.setFinishedCallback(onPuzzleFinished);
     storyIntroWidgetyKey.currentState
         .show(_puzzle.getIntroTexts(), onStartPuzzle, true);
-    _addTextsToAlreadyShown(_puzzle.getIntroTexts());
+    addTextsToAlreadyShown(_puzzle.getIntroTexts());
   }
 
   void _testPrintState() {
