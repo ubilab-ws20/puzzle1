@@ -6,6 +6,11 @@ import 'package:beacons_plugin/beacons_plugin.dart';
 import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
+import 'package:ubilab_scavenger_hunt/framework/storyText.dart';
+
+import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2MainScreen.dart';
 
 class Puzzle2Screen4 extends StatefulWidget {
   @override
@@ -21,9 +26,8 @@ class Puzzle2Screen4State extends State<Puzzle2Screen4> {
   StreamController<String>.broadcast();
 
   List<String> hintTexts = [
-    "some hint 1",
-    "some hint 2",
-    "some hint 3"
+    "{1000101011}",
+    "A place to read & where you shouldn't make noise."
   ];
   @override
   void initState() {
@@ -53,7 +57,7 @@ class Puzzle2Screen4State extends State<Puzzle2Screen4> {
     BeaconsPlugin.listenToBeacons(beaconEventsController);
 
     await BeaconsPlugin.addRegion(
-        "BeaconType1", "909c3cf9-fc5c-4841-b695-380958a51a5a");
+        "BeaconType1", "D2:EA:2B:A4:F8:3C");
     await BeaconsPlugin.addRegion(
         "BeaconType2", "6a84c716-0f2a-1ce9-f210-6a63bd873dd9");
 
@@ -108,8 +112,17 @@ class Puzzle2Screen4State extends State<Puzzle2Screen4> {
         body: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              Container(
+                margin: EdgeInsets.all(10.0),
+                child: Text(
+                  'Reach towards the location quickly and find a safe spot '
+                      'to fire up a strong Electromagnetic Pulse signal to stop the forces.',
+                  textAlign: TextAlign.justify,
+                  style: TextStyle(fontFamily: 'VT323', fontSize: 22.0),
+                ),
+              ),
               Text('$_beaconResult'),
               Padding(
                 padding: EdgeInsets.all(10.0),
@@ -149,7 +162,47 @@ class Puzzle2Screen4State extends State<Puzzle2Screen4> {
                   },
                   child: Text('Start Scanning', style: TextStyle(fontSize: 20)),
                 ),
-              )
+              ),
+              RaisedButton.icon(
+                padding: EdgeInsets.all(10),
+                onPressed: () {
+                  Puzzle2Variables.subPuzzle = 5;///delete this
+                  if (Puzzle2Variables.subPuzzle == 4){
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(
+                            'Solve the puzzle to proceed.',
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                    );
+                  }
+
+                  else if (Puzzle2Variables.subPuzzle == 5){
+                    Puzzle2MainScreenState.getInstance().setStateCallback();
+                    Navigator.of(context).pop();
+                    Puzzle2.getInstance().onFinished();
+                    Navigator.of(context).pop();
+                  }
+                },
+                icon: Icon(
+                  Icons.next_plan_outlined,
+                  color: Colors.white,
+                  size: 30.0,
+                ),
+                label: Text(
+                  'Next',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0),
+                ),
+                color: Colors.green,
+              ),
             ],
           ),
         ),

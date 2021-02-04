@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
-
 import 'package:page_transition/page_transition.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2Screen1.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2Screen2.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2Screen3.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2Screen4.dart';
+import 'package:ubilab_scavenger_hunt/framework/storyText.dart';
 
 class Puzzle2MainScreen extends StatefulWidget {
   @override
@@ -33,6 +33,125 @@ class Puzzle2MainScreenState extends State<Puzzle2MainScreen> {
     });
   }
 
+  Widget displayStory() {
+    if (Puzzle2Variables.subPuzzle == 1) {
+      return Container(
+        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Text(
+          'Prof Y has this philosophy of getting rid of stagnant thoughts.\r\n\r\n'
+              'He always suggest to use your quick thinking to create a picture '
+              'in your head for whatever comes next in life.\r\n\r\n'
+              'Now, apply your decipher skills to propagate in a way a super computer does.',
+          textAlign: TextAlign.justify,
+          /*
+          style: TextStyle(
+              fontSize: 20.0, fontWeight: FontWeight.bold, letterSpacing: 2.0),
+        */
+        ),
+        ///add location text box
+      );
+    } else if (Puzzle2Variables.subPuzzle == 2) {
+      return Container(
+        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Text(
+          'A normal human mind cannot process all this research data, '
+              'which is why Prof. Y has developed a super powered AI for high efficiency.\r\n\r\n'
+              'You must help the AI which is trying to download the research of Prof Y'
+              '\r\n\r\n......'
+              'However they are being deleted by unknown external forces.',
+          textAlign: TextAlign.justify,
+          /*
+          style: TextStyle(
+              fontSize: 20.0, fontWeight: FontWeight.bold, letterSpacing: 2.0),
+          */
+        ),
+      );
+    } else if (Puzzle2Variables.subPuzzle == 3) {
+      return Container(
+        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Text(
+          'Eating healthy has no setbacks but only awesomness '
+              'and you get sufficient energy to process.'
+              '\r\n\r\nSame goes for a computer, you need to help the '
+              'system in generating high input signal to improve '
+              'performance for faster processing.',
+          textAlign: TextAlign.justify,
+          /*
+          style: TextStyle(
+              fontSize: 20.0, fontWeight: FontWeight.bold, letterSpacing: 2.0),
+        */
+        ),
+      );
+    } else if (Puzzle2Variables.subPuzzle == 4) {
+      return Container(
+        margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Text(
+          'Whoa! AI is getting strong disturbance pulses from the unknown '
+              'forces and it is not able to counteract, because it does not want '
+              'to affect the download procedure.'
+              '\r\nTime to do some physical exercise. You better run because your life depends on it literally. '
+              '\r\n\r\nThe building location was hidden in the Prof.Y password which you decoded.',
+          textAlign: TextAlign.justify,
+          /*
+          style: TextStyle(
+              fontSize: 20.0, fontWeight: FontWeight.bold, letterSpacing: 2.0),
+        */
+        ),
+      );
+    }
+
+    else if (Puzzle2Variables.subPuzzle == 5) {
+        // Puzzle2.getInstance().onFinished();
+        // Navigator.of(context).pop();
+
+      return Container(
+        /*
+          margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: Text(
+          'You have solved all the Puzzles! \r\nBut . . .',
+          textAlign: TextAlign.justify,
+          /*
+          style: TextStyle(
+              fontSize: 20.0, fontWeight: FontWeight.bold, letterSpacing: 2.0),
+        */
+        ),
+
+        */
+      );
+    }
+    else
+      return Column();
+  }
+
+  displaySubPuzzle() {
+    if (Puzzle2Variables.subPuzzle == 1) {
+      Navigator.of(context).push(PageTransition(
+        type: PageTransitionType.bottomToTop,
+        child: Puzzle2Screen1(),
+      ));
+    } else if (Puzzle2Variables.subPuzzle == 2) {
+      Navigator.of(context).push(PageTransition(
+        type: PageTransitionType.bottomToTop,
+        child: Puzzle2Screen2(),
+      ));
+    } else if (Puzzle2Variables.subPuzzle == 3) {
+      Navigator.of(context).push(PageTransition(
+        type: PageTransitionType.bottomToTop,
+        child: Puzzle2Screen3(),
+      ));
+    } else if (Puzzle2Variables.subPuzzle == 4) {
+      Navigator.of(context).push(PageTransition(
+        type: PageTransitionType.bottomToTop,
+        child: Puzzle2Screen4(),
+      ));
+    }
+    else if (Puzzle2Variables.subPuzzle == 5) {
+      Puzzle2.getInstance().onFinished();
+      Navigator.of(context).pop();
+    }
+    return Column();
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -40,13 +159,14 @@ class Puzzle2MainScreenState extends State<Puzzle2MainScreen> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text('Puzzle 2'),
+          title: Text('Finale: The Destiny'),
         ),
         body: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              /*
               Text(
                 'Puzzle 2 main screen',
                 style: TextStyle(
@@ -54,209 +174,8 @@ class Puzzle2MainScreenState extends State<Puzzle2MainScreen> {
                     fontWeight: FontWeight.bold,
                     letterSpacing: 2.0),
               ),
-              Text(
-                'List of puzzles',
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0),
-              ),
-              Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RaisedButton.icon(
-                      padding: EdgeInsets.all(10),
-                      onPressed: () {
-                        Navigator.of(context).push(PageTransition(
-                          type: PageTransitionType.bottomToTop,
-                          child: Puzzle2Screen1(),
-                        ));
-                      },
-                      icon: Icon(
-                        Puzzle2Variables.puzzle2_1Staus == 'green'
-                            ? Icons.event_available_rounded
-                            : Icons.event_busy_rounded,
-                        size: 30.0,
-                        color: Puzzle2Variables.puzzle2_1Staus == 'green'
-                            ? Colors.green
-                            : Colors.red,
-                      ),
-                      label: Text(
-                        'Puzzle 2.1',
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2.0),
-                      ),
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          side: BorderSide(color: Colors.blue)),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RaisedButton.icon(
-                      padding: EdgeInsets.all(10),
-                      onPressed: () {
-                        Puzzle2Variables.puzzle2_1Staus == 'green'
-                            ? Navigator.of(context).push(PageTransition(
-                                type: PageTransitionType.bottomToTop,
-                                child: Puzzle2Screen2(),
-                              ))
-                            : showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text(
-                                      'Complete puzzle 2.1',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  );
-                                },
-                              );
-                      },
-                      icon: Icon(
-                        Puzzle2Variables.puzzle2_2Staus == 'green'
-                            ? Icons.event_available_rounded
-                            : Icons.event_busy_rounded,
-                        size: 30.0,
-                        color: Puzzle2Variables.puzzle2_2Staus == 'green'
-                            ? Colors.green
-                            : Colors.red,
-                      ),
-                      label: Text(
-                        'Puzzle 2.2',
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2.0),
-                      ),
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          side: BorderSide(color: Colors.blue)),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RaisedButton.icon(
-                      padding: EdgeInsets.all(10),
-                      onPressed: () {
-                        setState(() {
-                          Puzzle2Variables.puzzle2_2Staus == 'green'
-                              ? Navigator.of(context).push(PageTransition(
-                                  type: PageTransitionType.bottomToTop,
-                                  child: Puzzle2Screen3(),
-                                ))
-                              : showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text(
-                                        'Complete puzzle 2.2',
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    );
-                                  },
-                                );
-                        });
-                      },
-                      icon: Icon(
-                        Puzzle2Variables.puzzle2_3Staus == 'green'
-                            ? Icons.event_available_rounded
-                            : Icons.event_busy_rounded,
-                        size: 30.0,
-                        color: Puzzle2Variables.puzzle2_3Staus == 'green'
-                            ? Colors.green
-                            : Colors.red,
-                      ),
-                      label: Text(
-                        'Puzzle 2.3',
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2.0),
-                      ),
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          side: BorderSide(color: Colors.blue)),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RaisedButton.icon(
-                      padding: EdgeInsets.all(10),
-                      onPressed: () {
-                        setState(() {
-                          Puzzle2Variables.puzzle2_3Staus == 'green'
-                              ? Navigator.of(context).push(PageTransition(
-                                  type: PageTransitionType.bottomToTop,
-                                  child: Puzzle2Screen4(),
-                                ))
-                              : showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: Text(
-                                        'Complete puzzle 2.3',
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    );
-                                  },
-                                );
-                        });
-                      },
-                      icon: Icon(
-                        Puzzle2Variables.puzzle2_4Staus == 'green'
-                            ? Icons.event_available_rounded
-                            : Icons.event_busy_rounded,
-                        size: 30.0,
-                        color: Puzzle2Variables.puzzle2_4Staus == 'green'
-                            ? Colors.green
-                            : Colors.red,
-                      ),
-                      label: Text(
-                        'Puzzle 2.4',
-                        style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2.0),
-                      ),
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          side: BorderSide(color: Colors.blue)),
-                    ),
-                  ],
-                ),
-              ),
+              */
+              displayStory(),
               Expanded(
                 flex: 1,
                 child: Container(
@@ -266,6 +185,7 @@ class Puzzle2MainScreenState extends State<Puzzle2MainScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
+                      /*
                       RaisedButton.icon(
                         padding: EdgeInsets.all(10),
                         onPressed: () {
@@ -287,16 +207,11 @@ class Puzzle2MainScreenState extends State<Puzzle2MainScreen> {
                         ),
                         color: Colors.red,
                       ),
+                      */
                       RaisedButton.icon(
                         padding: EdgeInsets.all(10),
                         onPressed: () {
-                          // Puzzle2.getInstance().onFinished();
-                          // Navigator.of(context).pop();
-
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(builder: (context) => Test()),
-                          // );
+                          displaySubPuzzle();
                         },
                         icon: Icon(
                           Icons.next_plan_outlined,
@@ -324,24 +239,3 @@ class Puzzle2MainScreenState extends State<Puzzle2MainScreen> {
     );
   }
 }
-
-/*
-Container(
-            padding: EdgeInsets.all(0),
-            child: FlatButton(
-              child: Text(
-                'Quit',
-                style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 2.0),
-              ),
-              textColor: Colors.white,
-              color: Colors.blue,
-              onPressed: () {
-                Puzzle2.getInstance().onFinished();
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
- */
