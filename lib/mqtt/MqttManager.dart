@@ -5,16 +5,22 @@ import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'dart:convert';
 import 'dart:async';
 
+import 'package:uuid/uuid.dart';
+
 class MQTTManager {
   MqttServerClient client;
   final String _host;
   final String topicName = "testID/testtopic";
   var teamDetails = [];
+  String _uuid = "";
+  Uuid uuid = Uuid();
 
   MQTTManager({@required String host}) : _host = host;
 
   void initialiseMQTTClient() {
-    client = MqttServerClient(_host, globalTeamName);
+    _uuid = uuid.v1();
+    client = MqttServerClient(_host, _uuid);
+
     client.useWebSocket = true;
     client.port = 443;
     //client.secure = true;
@@ -50,6 +56,7 @@ class MQTTManager {
   void disconnect() {
     publishString(topicName, "$globalTeamName Disconnecting from $_host");
     print('Disconnected from $_host');
+    clear(teamDetails);
     client.disconnect();
   }
 
@@ -82,7 +89,7 @@ class MQTTManager {
 
   void publishList(String topic, var teamDetails) {
     final builder = MqttClientPayloadBuilder();
-    if (teamDetails != null) {
+    if ((teamDetails != null) || (teamDetails.length > 0)) {
       for (int i = 0; i < teamDetails.length - 1; i++) {
         builder.addString(teamDetails[i]);
         builder.addString(",");

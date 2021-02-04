@@ -271,6 +271,27 @@ class Game {
     }
   }
 
+  int getCurrentPuzzleInfo() {
+    switch (_state) {
+      case gameState.puzzle1:
+      case gameState.introPuzzle1:
+      case gameState.searchPuzzle1:
+      case gameState.outroPuzzle1:
+        return 1;
+      case gameState.puzzle2:
+      case gameState.introPuzzle2:
+      case gameState.searchPuzzle2:
+      case gameState.outroPuzzle2:
+        return 2;
+      case gameState.puzzle3:
+      case gameState.introPuzzle3:
+      case gameState.searchPuzzle3:
+      case gameState.outroPuzzle3:
+        return 3;
+      default:
+        return 0;
+    }
+  }
   // Functions for development & testing
 
   /// Test callback for reaching the location for puzzle 1.
