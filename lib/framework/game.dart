@@ -35,6 +35,7 @@ class Game {
   GlobalKey<StoryWidgetState> storyIntroWidgetyKey = GlobalKey();
   GlobalKey<StoryWidgetState> storyOutroWidgetyKey = GlobalKey();
   GlobalKey<GameProgressBarState> gameProgressBarStateKey = GlobalKey();
+
   List<StoryText> gameStartTexts = [StoryText("A few days ago something mysterious happened in Freiburg.", false),
     StoryText("The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.", false),
     StoryText("The official version is that he is suffering from a severe illness.", false),
@@ -42,6 +43,7 @@ class Game {
     StoryText("While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:", false),
     StoryText("Scientists discovered the key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?", true),
     StoryText("Strange...", false)
+
   ];
 
   BuildContext _context;
@@ -272,6 +274,27 @@ class Game {
     }
   }
 
+  int getCurrentPuzzleInfo() {
+    switch (_state) {
+      case gameState.puzzle1:
+      case gameState.introPuzzle1:
+      case gameState.searchPuzzle1:
+      case gameState.outroPuzzle1:
+        return 1;
+      case gameState.puzzle2:
+      case gameState.introPuzzle2:
+      case gameState.searchPuzzle2:
+      case gameState.outroPuzzle2:
+        return 2;
+      case gameState.puzzle3:
+      case gameState.introPuzzle3:
+      case gameState.searchPuzzle3:
+      case gameState.outroPuzzle3:
+        return 3;
+      default:
+        return 0;
+    }
+  }
   // Functions for development & testing
 
   /// Test callback for reaching the location for puzzle 1.

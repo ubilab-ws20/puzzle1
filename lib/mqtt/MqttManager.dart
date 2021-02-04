@@ -1,19 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:ubilab_scavenger_hunt/globals.dart';
+import 'dart:convert';
+import 'dart:async';
+
+import 'package:uuid/uuid.dart';
 
 class MQTTManager {
   MqttServerClient client;
   final String _host;
   final String topicName = "testID/testtopic";
-  List<String> teamDetails = [];
+  var teamDetails = [];
+  String _uuid = "";
+  Uuid uuid = Uuid();
 
   MQTTManager({@required String host}) : _host = host;
 
   void initialiseMQTTClient() {
-    client = MqttServerClient(_host, 'android_123');
+    _uuid = uuid.v1();
+    client = MqttServerClient(_host, _uuid);
 
-    //client.clientIdentifier = 'TestID';
     client.useWebSocket = true;
     client.port = 443;
     //client.secure = true;
@@ -23,10 +30,6 @@ class MQTTManager {
     client.resubscribeOnAutoReconnect = true;
     client.onConnected = onConnected;
     client.onSubscribed = onSubscribed;
-
-    //final connMessage = MqttConnectMessage().authenticateAs('ubilab', 'ubilab');
-
-    //client.connectionMessage = connMessage;
   }
 
   void connect() async {
@@ -51,7 +54,9 @@ class MQTTManager {
   }
 
   void disconnect() {
-    print('Disconnected');
+    publishString(topicName, "$globalTeamName Disconnecting from $_host");
+    print('Disconnected from $_host');
+    clear(teamDetails);
     client.disconnect();
   }
 
@@ -61,10 +66,10 @@ class MQTTManager {
   }
 
   void _subscribeToTopic(String topicName) {
-    //print('MQTTClientWrapper::Subscribing to the $topicName topic');
+    print('MQTTClientWrapper::Subscribing to the $topicName topic');
+    publishList(topicName, teamDetails);
 
     //client.subscribe(topicName, MqttQos.atMostOnce);
-    publish(topicName);
   }
 
 // subscribe to topic succeeded
@@ -82,17 +87,36 @@ class MQTTManager {
     print('Unsubscribed topic: $topic');
   }
 
-  void publish(String topic) {
+  void publishList(String topic, var teamDetails) {
     final builder = MqttClientPayloadBuilder();
-    builder.addString(teamDetails[0]);
-    builder.addString(",");
-    builder.addString(teamDetails[1]);
-
+    if ((teamDetails != null) || (teamDetails.length > 0)) {
+      for (int i = 0; i < teamDetails.length - 1; i++) {
+        builder.addString(teamDetails[i]);
+        builder.addString(",");
+      }
+      builder.addString(teamDetails[teamDetails.length - 1]);
+    } else {
+      builder.addString('');
+    }
     client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
   }
 
-  void setTeamDetails(String teamName, String teamSize) {
-    teamDetails.add(teamName);
-    teamDetails.add(teamSize);
+  void publishString(String topic, String message) {
+    final builder = MqttClientPayloadBuilder();
+    builder.addString(message);
+    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  void updateDetail(List<dynamic> listTeamDetails) {
+    print("Function updateDetail called");
+    for (int i = 0; i < listTeamDetails.length - 1; i++) {
+      teamDetails = listTeamDetails;
+    }
+    publishList(topicName, teamDetails);
+    clear(teamDetails);
+  }
+
+  void clear(var teamDetails) {
+    teamDetails.clear();
   }
 }

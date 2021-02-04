@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'game.dart';
 import 'gameProgressBar.dart';
+import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'storyText.dart';
 import 'hintScreen.dart';
 
@@ -100,7 +101,7 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
   void _onQuitGamePressed(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context){
+      builder: (BuildContext context) {
         return AlertDialog(
           title: Text(
             stringReallyQuit,
@@ -111,11 +112,11 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
                 child: Text(stringCancel),
                 onPressed: () {
                   Navigator.of(context).pop();
-                }
-            ),
+                }),
             FlatButton(
               child: Text(stringQuit),
               onPressed: () {
+                manager.disconnect();
                 Game.getInstance().reset();
                 Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
               },
@@ -148,18 +149,17 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
             ),
           ),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                teamName,
-                style: TextStyle(fontSize: 25.0),
-              ),
-              Text(
-                teamSize,
-                style: TextStyle(fontSize: 25.0),
-              ),
-            ]
-          ),
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  teamName,
+                  style: TextStyle(fontSize: 25.0),
+                ),
+                Text(
+                  teamSize,
+                  style: TextStyle(fontSize: 25.0),
+                ),
+              ]),
         ],
       ),
     );
