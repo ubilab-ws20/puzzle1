@@ -37,12 +37,24 @@ class Game {
   GlobalKey<StoryWidgetState> storyOutroWidgetyKey = GlobalKey();
   GlobalKey<GameProgressBarState> gameProgressBarStateKey = GlobalKey();
 
-  List<StoryText> gameStartTexts = [StoryText("A few days ago something mysterious happened in Freiburg.", false),
-    StoryText("The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.", false),
-    StoryText("The official version is that he is suffering from a severe illness.", false),
-    StoryText("But people who were working closely with him are heavily doubting this.", false),
-    StoryText("While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:", false),
-    StoryText("Scientists discovered the key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?", true),
+  List<StoryText> gameStartTexts = [
+    StoryText(
+        "A few days ago something mysterious happened in Freiburg.", false),
+    StoryText(
+        "The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.",
+        false),
+    StoryText(
+        "The official version is that he is suffering from a severe illness.",
+        false),
+    StoryText(
+        "But people who were working closely with him are heavily doubting this.",
+        false),
+    StoryText(
+        "While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:",
+        false),
+    StoryText(
+        "Scientists discovered the key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?",
+        true),
     StoryText("Strange...", false)
   ];
 
@@ -184,17 +196,24 @@ class Game {
     _progress = 0.01;
   }
 
+  void mqttDisconnect() {
+    globalTimer.cancel();
+    manager.disconnect();
+  }
+
   /// Callback for map when location of player changed.
   void onLocationChanged(LatLng coords) {
     if ((_puzzle == null) || !isSearchingForPuzzle()) {
       return;
     }
     LatLng pCoords = _puzzle.getStartLocation();
-    double distance = Geolocator.distanceBetween(coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
+    double distance = Geolocator.distanceBetween(
+        coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
     if (distance <= 10) {
       nextState();
       _puzzle.setFinishedCallback(onPuzzleFinished);
-      storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
+      storyIntroWidgetyKey.currentState
+          .show(_puzzle.getIntroTexts(), onStartPuzzle, true);
       addTextsToAlreadyShown(_puzzle.getIntroTexts());
     }
   }
@@ -214,7 +233,8 @@ class Game {
       return;
     }
     nextState();
-    storyOutroWidgetyKey.currentState.show(_puzzle.getOutroTexts(), nextState, false);
+    storyOutroWidgetyKey.currentState
+        .show(_puzzle.getOutroTexts(), nextState, false);
     addTextsToAlreadyShown(_puzzle.getOutroTexts());
     _puzzle = null;
   }
@@ -303,7 +323,8 @@ class Game {
     }
     nextState();
     _puzzle.setFinishedCallback(onPuzzleFinished);
-    storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
+    storyIntroWidgetyKey.currentState
+        .show(_puzzle.getIntroTexts(), onStartPuzzle, true);
     addTextsToAlreadyShown(_puzzle.getIntroTexts());
   }
 

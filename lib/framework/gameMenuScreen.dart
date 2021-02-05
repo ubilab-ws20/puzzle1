@@ -21,13 +21,10 @@ Widget gameMenuIconButton(BuildContext context) {
       color: Colors.white,
     ),
     onPressed: () {
-      Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (BuildContext context) {
-            return GameMenuScreen();
-          }
-        )
-      );
+      Navigator.of(context)
+          .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+        return GameMenuScreen();
+      }));
     },
   );
 }
@@ -116,8 +113,8 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
             FlatButton(
               child: Text(stringQuit),
               onPressed: () {
-                manager.disconnect();
                 Game.getInstance().reset();
+                Game.getInstance().mqttDisconnect();
                 Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
               },
             ),
@@ -243,16 +240,14 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
       } else {
         font = fontNarration;
       }
-      textSpans.add(
-        TextSpan(
-          text: storyText.text,
-          style: TextStyle(
-            fontFamily: font,
-            color: Colors.black,
-            fontSize: 15.0,
-          ),
-        )
-      );
+      textSpans.add(TextSpan(
+        text: storyText.text,
+        style: TextStyle(
+          fontFamily: font,
+          color: Colors.black,
+          fontSize: 15.0,
+        ),
+      ));
     }
     return Container(
       margin: EdgeInsets.only(left: 40.0, right: 40.0, bottom: 30.0),
@@ -271,7 +266,9 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
         Icons.exit_to_app_rounded,
         color: Colors.white,
       ),
-      onPressed: () { _onQuitGamePressed(context); },
+      onPressed: () {
+        _onQuitGamePressed(context);
+      },
     );
   }
 }
