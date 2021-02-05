@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_base/puzzleBase.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1.dart';
@@ -43,7 +44,6 @@ class Game {
     StoryText("While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:", false),
     StoryText("Scientists discovered the key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?", true),
     StoryText("Strange...", false)
-
   ];
 
   BuildContext _context;
@@ -158,7 +158,6 @@ class Game {
     if (_state != gameState.none) {
       return false;
     }
-    print("Game started");
     _state = gameState.none;
     Uuid uuid = Uuid();
     _uuid = uuid.v1();
@@ -187,7 +186,6 @@ class Game {
 
   /// Callback for map when location of player changed.
   void onLocationChanged(LatLng coords) {
-    //print("Location changed.");
     if ((_puzzle == null) || !isSearchingForPuzzle()) {
       return;
     }
@@ -230,9 +228,9 @@ class Game {
     if (_state == gameState.searchPuzzle1) {
       _puzzle = Puzzle1.getInstance();
     } else if (_state == gameState.searchPuzzle2) {
-      _puzzle = Puzzle3.getInstance();
-    } else if (_state == gameState.searchPuzzle3) {
       _puzzle = Puzzle2.getInstance();
+    } else if (_state == gameState.searchPuzzle3) {
+      _puzzle = Puzzle3.getInstance();
     }
     // Update hints
     _currentHints.clear();
@@ -295,9 +293,10 @@ class Game {
         return 0;
     }
   }
+
   // Functions for development & testing
 
-  /// Test callback for reaching the location for puzzle 1.
+  /// Test callback for reaching a puzzle location.
   void testOnPuzzleLocation() {
     if (!isSearchingForPuzzle()) {
       return;
@@ -308,8 +307,12 @@ class Game {
     addTextsToAlreadyShown(_puzzle.getIntroTexts());
   }
 
+  /// Prints the current state of the game.
   void _testPrintState() {
-    String temp = "In state: ";
+    if (!globalIsTesting) {
+      return;
+    }
+    String temp = "Game: In state: ";
     switch (_state) {
       case gameState.start:
         temp += "Start";
@@ -326,18 +329,6 @@ class Game {
       case gameState.outroPuzzle1:
         temp += "Puzzle 1 Outro";
         break;
-      case gameState.searchPuzzle2:
-        temp += "Puzzle 2 Search";
-        break;
-      case gameState.introPuzzle2:
-        temp += "Puzzle 2 Intro";
-        break;
-      case gameState.puzzle2:
-        temp += "Puzzle 2";
-        break;
-      case gameState.outroPuzzle2:
-        temp += "Puzzle 2 Outro";
-        break;
       case gameState.searchPuzzle3:
         temp += "Puzzle 3 Search";
         break;
@@ -349,6 +340,18 @@ class Game {
         break;
       case gameState.outroPuzzle3:
         temp += "Puzzle 3 Outro";
+        break;
+      case gameState.searchPuzzle2:
+        temp += "Puzzle 2 Search";
+        break;
+      case gameState.introPuzzle2:
+        temp += "Puzzle 2 Intro";
+        break;
+      case gameState.puzzle2:
+        temp += "Puzzle 2";
+        break;
+      case gameState.outroPuzzle2:
+        temp += "Puzzle 2 Outro";
         break;
       case gameState.end:
         temp += "End";

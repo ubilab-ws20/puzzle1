@@ -3,12 +3,12 @@ import 'dart:async';
 import 'game.dart';
 import 'hint.dart';
 
-const String stringHints = "Hints";
-const String stringPreviousHints = "All previous hints have to be opened first.";
-const String stringOk = "Ok";
-const String stringUseHint = "Do you really want to use a hint?";
-const String stringCancel = "Cancel";
-const String stringUse = "Use";
+final String stringHints = "Hints";
+final String stringPreviousHints = "All previous hints have to be opened first.";
+final String stringOk = "Ok";
+final String stringUseHint = "Do you really want to use a hint?";
+final String stringCancel = "Cancel";
+final String stringUse = "Use";
 
 /// Method to get the hint icon button s.t. it always looks the same.
 Widget hintIconButton(BuildContext context) {

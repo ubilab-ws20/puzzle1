@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:latlong/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'package:user_location/user_location.dart';
 import 'package:ubilab_scavenger_hunt/main.dart';
 import 'game.dart';
@@ -9,9 +10,6 @@ import 'gameProgressBar.dart';
 import 'storyWidget.dart';
 import 'gameMenuScreen.dart';
 import 'hintScreen.dart';
-
-// Coordinates of Technical Faculty
-// 48.012684, 7.835044
 
 class GameMainScreen extends StatefulWidget {
   @override
@@ -70,17 +68,30 @@ class _GameMainScreen extends State<GameMainScreen> {
               urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
               subdomains: ['a', 'b', 'c'],
             )),
-            Column(
-              children: <Widget>[
-                GameProgressBar(key: game.gameProgressBarStateKey),
-                _testPuzzleButtonRow(),
-                StoryWidget(key: game.storyIntroWidgetyKey),
-                StoryWidget(key: game.storyOutroWidgetyKey),
-              ],
-            ),
+            _mapOverlays(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _mapOverlays() {
+    if (globalIsTesting) {
+      return Column(
+        children: <Widget>[
+          GameProgressBar(key: game.gameProgressBarStateKey),
+          _testPuzzleButtonRow(),
+          StoryWidget(key: game.storyIntroWidgetyKey),
+          StoryWidget(key: game.storyOutroWidgetyKey),
+        ],
+      );
+    }
+    return Column(
+      children: <Widget>[
+        GameProgressBar(key: game.gameProgressBarStateKey),
+        StoryWidget(key: game.storyIntroWidgetyKey),
+        StoryWidget(key: game.storyOutroWidgetyKey),
+      ],
     );
   }
 
