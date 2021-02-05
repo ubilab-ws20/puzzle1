@@ -39,6 +39,7 @@ class MQTTManager {
       //_currentState.setAppConnectionState(MQTTAppConnectionState.connecting);
       await client.connect('ubilab', 'ubilab');
       print("connected");
+      mqttConnected = true;
     } on Exception catch (e) {
       print('EXAMPLE::client exception - $e');
       disconnect();
@@ -58,6 +59,7 @@ class MQTTManager {
     print('Disconnected from $_host');
     clear(teamDetails);
     client.disconnect();
+    mqttConnected = false;
   }
 
   void onConnected() {

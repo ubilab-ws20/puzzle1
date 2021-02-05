@@ -117,16 +117,20 @@ class _StartScreenState extends State<StartScreen> {
     game.reset();
     game.setTeamName(_nameController.text);
     game.setTeamSize(int.parse(_sizeController.text));
-    print(game.getProgress());
-    globalTeamName = _nameController.text;
-    Timer.periodic(Duration(seconds: 10), (timer) {
-      listTeamDetails.add(_nameController.text);
-      listTeamDetails.add(_sizeController.text);
-      listTeamDetails.add(game.getAlreadyUsedHints());
-      listTeamDetails.add(game.getProgress().toString());
-      listTeamDetails.add(game.getCurrentPuzzleInfo().toString());
-      manager.updateDetail(listTeamDetails);
+    globalTimer = Timer.periodic(Duration(seconds: 10), (Timer t) {
+      setState(() {
+        print("Mqtt connect $mqttConnected");
+        if (mqttConnected) {
+          listTeamDetails.add(_nameController.text);
+          listTeamDetails.add(_sizeController.text);
+          listTeamDetails.add(game.getAlreadyUsedHints());
+          listTeamDetails.add(game.getProgress().toString());
+          listTeamDetails.add(game.getCurrentPuzzleInfo().toString());
+          manager.updateDetail(listTeamDetails);
+        }
+      });
     });
+
     //
     Navigator.of(context)
         .push(MaterialPageRoute<void>(builder: (BuildContext context) {
