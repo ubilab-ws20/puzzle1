@@ -3,9 +3,9 @@ import 'package:vibration/vibration.dart';
 import 'game.dart';
 import 'storyText.dart';
 
-const String stringNext = "Next";
-const String stringStart = "Start";
-const String stringContinue = "Continue";
+final String stringNext = "Next";
+final String stringStart = "Start";
+final String stringContinue = "Continue";
 
 class StoryWidget extends StatefulWidget {
   StoryWidget({Key key}) : super(key:key);

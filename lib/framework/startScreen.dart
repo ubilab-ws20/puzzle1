@@ -7,14 +7,12 @@ import 'dart:async';
 
 import 'package:ubilab_scavenger_hunt/globals.dart';
 
-const String stringAppName = "Ubilab Scavenger Hunt";
-const String stringTeamName = "Team name";
-const String stringTeamSize = "Number of members";
-const String stringNoTeamName = "Please enter a team name!";
-const String stringNoTeamSize = "Please enter the number of team members!";
-const String stringStart = "Start";
-const String stringHostName =
-    "wss://earth.informatik.uni-freiburg.de/ubilab/ws/";
+final String stringAppName = "Prof. Y";
+final String stringTeamName = "Team name";
+final String stringTeamSize = "Number of members";
+final String stringNoTeamName = "Please enter a team name!";
+final String stringNoTeamSize = "Please enter the number of team members!";
+final String stringStart = "Start";
 var listTeamDetails = [];
 
 class StartScreen extends StatefulWidget {

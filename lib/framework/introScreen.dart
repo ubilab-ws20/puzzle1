@@ -3,11 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:ubilab_scavenger_hunt/main.dart';
 import 'package:ubilab_scavenger_hunt/framework/framework.dart';
-
 import 'package:ubilab_scavenger_hunt/globals.dart';
 
-const String stringContinueToGame = "Continue";
-const String stringIntroText = "Hey there!\n\n"
+final String stringContinueToGame = "Continue";
+final String stringIntroText = "Hey there!\n\n"
     "Before you start, we wanna give you a few explanations and clues. Please carefully ready through them.\n\n"
     "First of all: This game can only be played at the campus of the Faculty of Engineering of the University of Freiburg.\n\n"
     "During the game you will have to solve different kinds of riddles. "

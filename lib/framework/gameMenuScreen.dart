@@ -6,12 +6,12 @@ import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'storyText.dart';
 import 'hintScreen.dart';
 
-const String stringProgress = "Progress";
-const String stringQuitGame = "Quit Game";
-const String stringReallyQuit = "Are you sure you want to quit and give up?";
-const String stringQuit = "Quit";
-const String stringCancel = "Cancel";
-const String stringStorySoFar = "Story so far:";
+final String stringProgress = "Progress";
+final String stringQuitGame = "Quit Game";
+final String stringReallyQuit = "Are you sure you want to quit and give up?";
+final String stringQuit = "Quit";
+final String stringCancel = "Cancel";
+final String stringStorySoFar = "Story so far:";
 
 /// Method to get the game menu icon button s.t. it always looks the same.
 Widget gameMenuIconButton(BuildContext context) {
