@@ -20,6 +20,15 @@ class Puzzle2 extends PuzzleBase {
     return _instance;
   }
 
+  @override
+  List<String> getPuzzleSearchHints() {
+    return ["CVI? What could this mean?",
+      "The old Romans used letters for numbers.",
+      "C = 100, V = 5, I = 1. Take a look onto your map.",
+      "You have to go to building 106.",
+    ];
+  }
+
   LatLng getStartLocation() {
     return LatLng(48.012684, 7.835044);
   }
