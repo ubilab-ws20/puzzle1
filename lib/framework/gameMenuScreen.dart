@@ -114,7 +114,6 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
               child: Text(stringQuit),
               onPressed: () {
                 Game.getInstance().reset();
-                Game.getInstance().mqttDisconnect();
                 Navigator.pushNamedAndRemoveUntil(context, '/', (r) => false);
               },
             ),
