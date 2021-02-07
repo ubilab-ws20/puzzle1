@@ -49,6 +49,7 @@ class BeaconScanner {
   /// To add a beacon to the known ones by name and mac address.
   void addBeacon(String name, String mac) {
     String hex;
+    List<int> macAsList = [];
     if (name.isEmpty || mac.isEmpty) {
       return;
     }
@@ -58,13 +59,6 @@ class BeaconScanner {
         break;
       }
     }
-    for (Beacon beacon in _beacons) {
-      if (beacon.name == name) {
-
-        return;
-      }
-    }
-    List<int> macAsList = [];
     for (int i = 0; i < 12; i += 2) {
       hex = mac.substring(i, (i + 2));
       macAsList.add(int.parse(hex, radix: 16));
