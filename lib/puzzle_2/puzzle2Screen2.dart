@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
-
-// import 'package:flutter_magnetometer/flutter_magnetometer.dart';
+import 'package:flutter/services.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
 import 'dart:async';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2MainScreen.dart';
-
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'package:motion_sensors/motion_sensors.dart';
-
 import 'package:vibration/vibration.dart';
-
 import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
-import 'package:ubilab_scavenger_hunt/framework/storyText.dart';
 
 class Puzzle2Screen2 extends StatefulWidget {
   Function updateMagnetometerProgressbar;
@@ -23,12 +18,11 @@ class Puzzle2Screen2 extends StatefulWidget {
 }
 
 class Puzzle2Screen2State extends State<Puzzle2Screen2> {
-
   Vector3 _magnetometer = Vector3.zero();
 
   List<String> hintTexts = [
     "Provide high magnetic signal for a while by using another equipment which has a magnet.",
-    "Use another phone."
+    "use another phone/laptop."
   ];
 
   @override
@@ -60,17 +54,14 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
 
   startDownload() {
     Future.delayed(const Duration(milliseconds: 5000), () {
-      if ((Puzzle2Variables.magnetometerZaxisValue >= 100) ||
-          (Puzzle2Variables.magnetometerZaxisValue <= -100)) {
+      if ((Puzzle2Variables.magnetometerZaxisValue >= Puzzle2Variables.magnetometerMaxValue) ||
+          (Puzzle2Variables.magnetometerZaxisValue <= (-1*Puzzle2Variables.magnetometerMaxValue))) {
         Puzzle2Variables.magnetometerZaxisValue = 0;
-        // Puzzle2MainScreenState.getInstance().setStateCallback();
-        // Navigator.of(context).pop();
         Puzzle2Variables.downloadStatusImage = 'assets/downloadStarted.gif';
-        Puzzle2Variables.puzzle2_2Staus = 'green';
         Puzzle2Variables.subPuzzle = 3;
         Vibration.vibrate(duration: 500);
 
-        if (Puzzle2Variables.cancelDownloadLoopCount == 1){
+        if (Puzzle2Variables.cancelDownloadLoopCount == 1) {
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -86,70 +77,8 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
           Puzzle2Variables.cancelDownloadLoopCount = 0;
         }
         setState(() {});
-
-        /*
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return Scaffold(
-                appBar: AppBar(
-                  automaticallyImplyLeading: false,
-                  title: Text('Flutter Magnetometer Example'),
-                ),
-                body: Container(
-                  margin: EdgeInsets.all(20),
-                  padding: EdgeInsets.all(0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              'Well done!\r\nYou have canceled the download process.'),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          RaisedButton.icon(
-                            // padding: EdgeInsets.all(10),
-                            onPressed: () {
-                              // Puzzle2MainScreenState.getInstance().setStateCallback();
-                              Navigator.of(context).pop();
-                              // Navigator.of(context).pop();
-                            },
-                            icon: Icon(
-                              Icons.cancel_outlined,
-                              size: 30.0,
-                              color: Colors.red,
-                            ),
-                            label: Text(
-                              'Quit',
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 20.0,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 2.0),
-                            ),
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                side: BorderSide(color: Colors.blue)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ));
-          },
-        );
-        */
-
       }
+      Puzzle2Variables.magnetometerMaxValue = 1000;
     });
     return Container();
   }
@@ -160,12 +89,15 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text('Do it like Tesla'),
+          title: Text(Puzzle2Variables.title2_2),
           actions: [
             hintIconButton(context),
             gameMenuIconButton(context),
@@ -187,11 +119,10 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
                 child: Text(
                   Puzzle2Variables.downloadStatusImage ==
                       'assets/downloadNotStarted.gif'
-                      ? 'AI has limited resources and it is counting on you to provide enough '
-                      'magnetic force to destroy the external forces.'
-                      '\r\nSo, that it can process the download uninterruptedly to its mainframe.'
-                      : 'Download Started!',
+                      ? Puzzle2Variables.story2_2_1
+                      : Puzzle2Variables.story2_2_2,
                   textAlign: TextAlign.justify,
+                  style: TextStyle(fontFamily: 'VT323'),
                 ),
               ),
               Expanded(
@@ -200,13 +131,6 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // MagnetometerValueBar(),
-                    // LinearProgressIndicator(
-                    //   value: magnetometerProgress,
-                    //   minHeight: 20,
-                    //   backgroundColor: Colors.red,
-                    //   valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
-                    // ),
                     Container(
                       margin: EdgeInsets.all(20),
                       padding: EdgeInsets.all(0),
@@ -222,17 +146,14 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
                               Text('z: ${_magnetometer.z.round()} μT'),
                             ],
                           ),
-                          // ((_magnetometerData.z.round() < -100) ||
-                          //     (_magnetometerData.z.round() > 100))
                           (_magnetometer.z.round() < 0)
                               ? fun1()
                               : (_magnetometer.z.round() >= 0)
                               ? fun2()
                               : dummyFunction(),
-
-                          (_magnetometer.z.round() <= -100)
+                          (_magnetometer.z.round() <= (-1*Puzzle2Variables.magnetometerMaxValue))
                               ? startDownload()
-                              : (_magnetometer.z.round() >= 100)
+                              : (_magnetometer.z.round() >= Puzzle2Variables.magnetometerMaxValue)
                               ? startDownload()
                               : dummyFunction(),
                         ],
@@ -244,14 +165,14 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
               Container(
                 margin: EdgeInsets.all(20),
                 padding: EdgeInsets.all(0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     RaisedButton.icon(
                       padding: EdgeInsets.all(10),
                       onPressed: () {
-                        if (Puzzle2Variables.subPuzzle == 2){
+                        if (Puzzle2Variables.subPuzzle == 2) {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
@@ -263,10 +184,9 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
                               );
                             },
                           );
-                        }
-
-                        else {
-                          Puzzle2MainScreenState.getInstance().setStateCallback();
+                        } else {
+                          Puzzle2MainScreenState.getInstance()
+                              .setStateCallback();
                           Navigator.of(context).pop();
                         }
                       },
@@ -285,48 +205,6 @@ class Puzzle2Screen2State extends State<Puzzle2Screen2> {
                       ),
                       color: Colors.green,
                     ),
-                    /*
-                    RaisedButton.icon(
-                      // padding: EdgeInsets.all(10),
-                      onPressed: () {
-                        if (Puzzle2Variables.subPuzzle == 2){
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text(
-                                  'Solve the puzzle to proceed.',
-                                  textAlign: TextAlign.center,
-                                ),
-                              );
-                            },
-                          );
-                        }
-
-                        else {
-                          Puzzle2MainScreenState.getInstance().setStateCallback();
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      icon: Icon(
-                        Icons.cancel_outlined,
-                        size: 30.0,
-                        color: Colors.red,
-                      ),
-                      label: Text(
-                        'Next',
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2.0),
-                      ),
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          side: BorderSide(color: Colors.blue)),
-                    ),
-                  */
                   ],
                 ),
               ),

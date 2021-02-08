@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2MainScreen.dart';
-
 import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
-import 'package:ubilab_scavenger_hunt/framework/storyText.dart';
 
 class Puzzle2Screen1 extends StatefulWidget {
   @override
@@ -13,17 +12,17 @@ class Puzzle2Screen1 extends StatefulWidget {
 }
 
 class Puzzle2Screen1State extends State<Puzzle2Screen1> {
-
   List<String> hintTexts = [
     "Any sufficiently crisp question can be answered by a single "
         "yes/no or what a computer could say?",
+    "You can decode the password from 555 to binary conversion."
   ];
+
   @override
   void initState() {
     super.initState();
     Game.getInstance().updateCurrentHints(hintTexts);
   }
-
 
   bool isSwitched0 = false;
   bool isSwitched1 = false;
@@ -123,14 +122,12 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
     if ((isSwitched9) == true) Puzzle2Variables.decimalNumber += 512;
     if ((isSwitched10) == true) Puzzle2Variables.decimalNumber += 1024;
     if ((isSwitched11) == true) Puzzle2Variables.decimalNumber += 2048;
-    setState(() {
-
-    });
+    setState(() {});
 
     return Column();
   }
 
-  enterBinaryCode(){
+  enterBinaryCode() {
     if (Puzzle2Variables.decimalNumber != 555) {
       showDialog(
         context: context,
@@ -143,8 +140,7 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
           );
         },
       );
-    }
-    else if(Puzzle2Variables.decimalNumber == 555){
+    } else if (Puzzle2Variables.decimalNumber == 555) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -162,7 +158,6 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
   }
 
   Widget puzzleSolved() {
-    Puzzle2Variables.puzzle2_1Staus = 'green';
     return Column(children: [
       Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -187,70 +182,46 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
           Container(
             margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
             child: Text(
-
-              'Great Job!\r\n'
-                  'You have done it, \r\nhere\'s the code: 555 - 1000101011 '
-                  '\r\n(Remember this might come in handy later on!!!)',
+              Puzzle2Variables.story2_1_2,
               textAlign: TextAlign.justify,
               style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  ),
+                color: Colors.black,
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
       ),
       Container(
         margin: EdgeInsets.all(0),
-
-        child: RaisedButton.icon(
-          padding: EdgeInsets.all(10),
-          onPressed: () {
-            Puzzle2MainScreenState.getInstance().setStateCallback();
-            Navigator.of(context).pop();
-          },
-          icon: Icon(
-            Icons.next_plan_outlined,
-            color: Colors.white,
-            size: 30.0,
-          ),
-          label: Text(
-            'Next',
-            style: TextStyle(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            RaisedButton.icon(
+              padding: EdgeInsets.all(10),
+              onPressed: () {
+                Puzzle2MainScreenState.getInstance().setStateCallback();
+                Navigator.of(context).pop();
+              },
+              icon: Icon(
+                Icons.next_plan_outlined,
                 color: Colors.white,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2.0),
-          ),
-          color: Colors.green,
+                size: 30.0,
+              ),
+              label: Text(
+                'Next',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2.0),
+              ),
+              color: Colors.green,
+            ),
+          ],
         ),
-        /*
-         RaisedButton.icon(
-          // padding: EdgeInsets.all(10),
-          onPressed: () {
-            Puzzle2MainScreenState.getInstance().setStateCallback();
-            Navigator.of(context).pop();
-          },
-          icon: Icon(
-            Icons.cancel_outlined,
-            size: 30.0,
-            color: Colors.red,
-          ),
-          label: Text(
-            'Next',
-            style: TextStyle(
-                color: Colors.red,
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2.0),
-          ),
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-              side: BorderSide(color: Colors.blue)),
-        ),
-        */
       ),
     ]);
   }
@@ -263,14 +234,8 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
         Container(
           margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: Text(
-            'Predicting Prof Y\'s password to access his research.'
-                ' Use all the resources you can find on the screen. Prof.Y has set up a password '
-                'and now it is up to you to decode that and move forward to save the world.',
+            Puzzle2Variables.story2_1_1,
             textAlign: TextAlign.justify,
-            /*
-            style: TextStyle(
-                fontSize: 15.0, fontWeight: FontWeight.bold, letterSpacing: 2.0),
-          */
           ),
         ),
         Container(
@@ -278,7 +243,6 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
           child: Center(
             child: Column(
               children: <Widget>[
-                //this goes in as one of the children in our column
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -365,7 +329,6 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
                     ),
                   ],
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -452,7 +415,6 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
                     ),
                   ],
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -539,12 +501,8 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
                     ),
                   ],
                 ),
-
                 forgotPassword(),
-
                 Container(
-                  // decoration:
-                  //     BoxDecoration(border: Border.all(color: Colors.blueAccent)),
                   margin: EdgeInsets.all(0),
                   child: RaisedButton.icon(
                     // padding: EdgeInsets.all(10),
@@ -581,18 +539,20 @@ class Puzzle2Screen1State extends State<Puzzle2Screen1> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text('- **Cryptonite**-'),
+          title: Text(Puzzle2Variables.title2_1),
           actions: [
             hintIconButton(context),
             gameMenuIconButton(context),
           ],
         ),
-
         body: Builder(
           builder: (BuildContext context) {
             return Puzzle2Variables.subPuzzle == 2
