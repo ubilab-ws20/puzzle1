@@ -130,7 +130,7 @@ class _StartScreenState extends State<StartScreen> {
             listTeamDetails["gameProgress"] = game.getProgress().toString();
             listTeamDetails["currentPuzzle"] =
                 game.getCurrentPuzzleInfo().toString();
-            listTeamDetails["lattitude"] = currentLocation.latitude;
+            listTeamDetails["latitude"] = currentLocation.latitude;
             listTeamDetails["longitude"] = currentLocation.longitude;
             print(listTeamDetails);
             manager.updateDetail(listTeamDetails);

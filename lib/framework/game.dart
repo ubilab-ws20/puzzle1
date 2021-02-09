@@ -203,6 +203,8 @@ class Game {
 
   /// Callback for map when location of player changed.
   void onLocationChanged(LatLng coords) {
+    currentLocation.latitude = coords.latitude;
+    currentLocation.longitude = coords.longitude;
     if ((_puzzle == null) || !isSearchingForPuzzle()) {
       return;
     }
