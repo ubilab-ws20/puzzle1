@@ -13,7 +13,6 @@ final String stringTeamSize = "Number of members";
 final String stringNoTeamName = "Please enter a team name!";
 final String stringNoTeamSize = "Please enter the number of team members!";
 final String stringStart = "Start";
-var listTeamDetails = [];
 
 class StartScreen extends StatefulWidget {
   @override
@@ -23,6 +22,8 @@ class StartScreen extends StatefulWidget {
 class _StartScreenState extends State<StartScreen> {
   final _nameController = TextEditingController();
   final _sizeController = TextEditingController();
+
+  Map listTeamDetails = {};
 
   @override
   Widget build(BuildContext context) {
@@ -117,18 +118,25 @@ class _StartScreenState extends State<StartScreen> {
     game.reset();
     game.setTeamName(_nameController.text);
     game.setTeamSize(int.parse(_sizeController.text));
-    globalTimer = Timer.periodic(Duration(seconds: 10), (Timer t) {
-      setState(() {
-        print("Mqtt connect $mqttConnected");
-        if (mqttConnected) {
-          listTeamDetails.add(_nameController.text);
-          listTeamDetails.add(_sizeController.text);
-          listTeamDetails.add(game.getAlreadyUsedHints());
-          listTeamDetails.add(game.getProgress().toString());
-          listTeamDetails.add(game.getCurrentPuzzleInfo().toString());
-          manager.updateDetail(listTeamDetails);
-        }
-      });
+    globalTeamName = _nameController.text;
+    globalTimer = Timer.periodic(Duration(seconds: 3), (Timer t) {
+      if (this.mounted) {
+        setState(() {
+          print("Mqtt connect $mqttConnected");
+          if (mqttConnected) {
+            listTeamDetails["teamName"] = _nameController.text;
+            listTeamDetails["teamSize"] = _sizeController.text;
+            listTeamDetails["hintsUsed"] = game.getAlreadyUsedHints();
+            listTeamDetails["gameProgress"] = game.getProgress().toString();
+            listTeamDetails["currentPuzzle"] =
+                game.getCurrentPuzzleInfo().toString();
+            listTeamDetails["lattitude"] = currentLocation.latitude;
+            listTeamDetails["longitude"] = currentLocation.longitude;
+            print(listTeamDetails);
+            manager.updateDetail(listTeamDetails);
+          } else {}
+        });
+      }
     });
 
     //
