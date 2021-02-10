@@ -69,6 +69,13 @@ class Puzzle2 extends PuzzleBase {
   void startPuzzle(BuildContext context) {
     // print("Puzzle 2 started!");
     Puzzle2Variables.subPuzzle = 1;
+    Puzzle2Variables.magnetometerProgress = 0.1;
+    Puzzle2Variables.magnetometerZaxisValue = 0;
+    Puzzle2Variables.downloadStatusImage = 'assets/downloadNotStarted.gif';
+    Puzzle2Variables.decimalNumber = 0;
+    Puzzle2Variables.cancelDownloadLoopCount = 1;
+    Puzzle2Variables.magnetometerMaxValue = 100;
+    
     Navigator.of(context).push(PageTransition(
       type: PageTransitionType.fade,
       child: Puzzle2MainScreen(),
