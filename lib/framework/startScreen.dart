@@ -26,9 +26,9 @@ class _StartScreenState extends State<StartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
+    /*SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp
+    ]);*/
     return Scaffold(
       appBar: AppBar(title: Text(stringAppName)),
       body: SafeArea(
