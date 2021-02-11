@@ -96,7 +96,7 @@ class _ThirdRouteState extends State<ThirdRoute > {
       soundIconSize = 60;
     }
 
-    if (noiseReading.maxDecibel > 70 && !disableKnock) {
+    if (noiseReading.maxDecibel > 72 && !disableKnock) {
       int time = DateTime.now().millisecondsSinceEpoch;
       growableList.add(time);
       print('knock');
@@ -110,12 +110,13 @@ class _ThirdRouteState extends State<ThirdRoute > {
         int len = growableList.length;
         int distance = growableList[4] - growableList[0], distance43 = growableList[4] - growableList[3], distance32 = growableList[3] - growableList[2], distance21 = growableList[2] - growableList[1], distance10 = growableList[1] - growableList[0];
         if (distance < 5000) {
-          if ( distance43 > (distance/3 - 250)  && distance43 < (distance/3 + 250) &&
-              distance32 > (distance/6 - 250)  && distance32 < (distance/6 + 250) &&
-              distance21 > (distance/6 - 250)  && distance21 < (distance/6 + 250) &&
-              distance10 > (distance/3 - 250)  && distance10 < (distance/3 + 250)) {
+          if ( distance43 > (distance/3 - 150)  && distance43 < (distance/3 + 150) &&
+              distance32 > (distance/6 - 150)  && distance32 < (distance/6 + 150) &&
+              distance21 > (distance/6 - 150)  && distance21 < (distance/6 + 150) &&
+              distance10 > (distance/3 - 150)  && distance10 < (distance/3 + 150)) {
             print('Puzzle solved');
             //finish puzzle
+            stop();
             Puzzle3.getInstance().onFinished();
             Navigator.of(context).pop();
           } else {
@@ -279,6 +280,7 @@ class _ThirdRouteState extends State<ThirdRoute > {
                       iconSize: 60,
                       color: Colors.blue,
                       onPressed: () {
+                        Game.getInstance().addTextsToAlreadyShown([StoryText("Use your imagination. Sometimes there is no well known solution for a problem and some creativity is required. Imagination is a powerfull tool, to think outside the box and to make sense of seemingly unconnected things. How could the information of the extracted path connect to this sound icon?", true)]);
                         showDialog(
                           context: context,
                           builder: (BuildContext dialogContext) {
@@ -322,6 +324,7 @@ class _ThirdRouteState extends State<ThirdRoute > {
                       child: ElevatedButton(
                         child: Text('Skip'),
                         onPressed: () {
+                          stop();
                           Puzzle3.getInstance().onFinished();
                           Navigator.of(context).pop();
                         },
@@ -508,8 +511,8 @@ class _SecondRouteState extends State<SecondRoute > {
       child: Text('Continue'),
       onPressed: () {
         Game.getInstance().updateCurrentHints(hintKnock);
-        Navigator.pushReplacement(
-          context,
+        //Navigator.of(context).push(MaterialPageRoute(builder: (context) => ThirdRoute()));
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => ThirdRoute()),
         );
       },
@@ -532,10 +535,7 @@ class _SecondRouteState extends State<SecondRoute > {
   @override
   void dispose(){
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp
     ]);
     super.dispose();
   }
@@ -918,6 +918,7 @@ class _SecondRouteState extends State<SecondRoute > {
                         iconSize: 60,
                         color: Colors.blue,
                         onPressed: () {
+                          Game.getInstance().addTextsToAlreadyShown([StoryText('Life is like a graph. There are different scenarios (nodes) and different choices (edges) connecting them. On the way to your goal, there are many possible paths to chose from. To make a plan you optimally find the shortest path to your goal and make your choice accordingly.', true)]);
                           showDialog(
                             context: context,
                             builder: (BuildContext dialogContext) {
@@ -938,8 +939,7 @@ class _SecondRouteState extends State<SecondRoute > {
                         child: Text('Skip'),
                         onPressed: () {
                           Game.getInstance().updateCurrentHints(hintKnock);
-                          Navigator.pushReplacement(
-                            context,
+                          Navigator.of(context).pushReplacement(
                             MaterialPageRoute(builder: (context) => ThirdRoute()),
                           );
                         },
