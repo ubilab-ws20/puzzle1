@@ -6,7 +6,6 @@ import 'package:latlng/latlng.dart';
 /// MQTT
 final String stringHostName =
     "wss://earth.informatik.uni-freiburg.de/ubilab/ws/";
-String globalTeamName = "";
 LatLng currentLocation = LatLng(48.013217, 7.833264);
 MQTTManager globalMqttManager = MQTTManager(stringHostName);
 

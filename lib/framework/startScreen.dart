@@ -114,7 +114,6 @@ class _StartScreenState extends State<StartScreen> {
     game.reset();
     game.setTeamName(_nameController.text);
     game.setTeamSize(int.parse(_sizeController.text));
-    globalTeamName = _nameController.text;
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext context) {
     return IntroScreen();
     }));

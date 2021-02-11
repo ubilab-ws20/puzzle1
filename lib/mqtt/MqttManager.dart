@@ -5,12 +5,14 @@ import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ubilab_scavenger_hunt/framework/beaconScanner.dart';
 import 'dart:async';
+import 'dart:convert';
 
 final String topicTest = "testID/testtopic";
 final String topicMacs = "config/#";
 
 class MQTTManager {
   Timer _gameDetailsTimer;
+  String _hostName;
   MqttServerClient _client;
   bool _connected;
   Map _listTeamDetails = new Map();
@@ -18,7 +20,8 @@ class MQTTManager {
   MQTTManager(String hostName) {
     Uuid uuid = Uuid();
     String uuidString = uuid.v1();
-    _client = MqttServerClient(hostName, uuidString);
+    _hostName = hostName;
+    _client = MqttServerClient(_hostName, uuidString);
     _client.useWebSocket = true;
     _client.port = 443;
     _client.logging(on: false);
@@ -78,7 +81,7 @@ class MQTTManager {
     if (globalIsTesting) {
       print('MQTT: Disconnecting');
     }
-    publishString(_topicName, "$globalTeamName: disconnecting from $host");
+    publishString(topicTest, "${Game.getInstance().getTeamName()}: disconnecting from $_hostName");
     _client.disconnect();
     _gameDetailsTimer.cancel();
   }
@@ -100,19 +103,17 @@ class MQTTManager {
   /// Sends the current game details to the server.
   void publishGameDetails() {
     Game game = Game.getInstance();
-    final builder = MqttClientPayloadBuilder();
     if (!_connected) {
       return;
     }
-    _listTeamDetails["teamName"] = _nameController.text;
-    _listTeamDetails["teamSize"] = _sizeController.text;
+    _listTeamDetails["teamName"] = game.getTeamName();
+    _listTeamDetails["teamSize"] = game.getTeamSize().toString();
     _listTeamDetails["hintsUsed"] = game.getAlreadyUsedHints();
     _listTeamDetails["gameProgress"] = game.getProgress().toString();
     _listTeamDetails["currentPuzzle"] = game.getCurrentPuzzleInfo().toString();
     _listTeamDetails["latitude"] = currentLocation.latitude;
     _listTeamDetails["longitude"] = currentLocation.longitude;
-    var _jsonList = json.encode(listTeamDetails);
-    publishString(topicTest, _jsonList);
+    publishString(topicTest, json.encode(_listTeamDetails));
   }
 
   /// Callback if connection was successful.
