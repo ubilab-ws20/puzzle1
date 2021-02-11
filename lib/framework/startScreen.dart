@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ubilab_scavenger_hunt/mqtt/MqttManager.dart';
 import 'package:ubilab_scavenger_hunt/framework/introScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
-import 'dart:async';
-
-import 'package:ubilab_scavenger_hunt/globals.dart';
 
 final String stringAppName = "Prof. Y";
 final String stringTeamName = "Team name";
@@ -13,7 +9,6 @@ final String stringTeamSize = "Number of members";
 final String stringNoTeamName = "Please enter a team name!";
 final String stringNoTeamSize = "Please enter the number of team members!";
 final String stringStart = "Start";
-var listTeamDetails = [];
 
 class StartScreen extends StatefulWidget {
   @override
@@ -65,7 +60,7 @@ class _StartScreenState extends State<StartScreen> {
                     style: TextStyle(fontSize: 40),
                   ),
                   onPressed: () {
-                    startGame(context, manager);
+                    startGame(context);
                   },
                 ),
               ),
@@ -83,9 +78,8 @@ class _StartScreenState extends State<StartScreen> {
     super.dispose();
   }
 
-  void startGame(BuildContext context, MQTTManager manager) {
+  void startGame(BuildContext context) {
     Game game = Game.getInstance();
-    //manager.connect();
     if (_nameController.text.isEmpty) {
       showDialog(
         context: context,
@@ -117,23 +111,7 @@ class _StartScreenState extends State<StartScreen> {
     game.reset();
     game.setTeamName(_nameController.text);
     game.setTeamSize(int.parse(_sizeController.text));
-    globalTimer = Timer.periodic(Duration(seconds: 10), (Timer t) {
-      setState(() {
-        print("Mqtt connect $mqttConnected");
-        if (mqttConnected) {
-          listTeamDetails.add(_nameController.text);
-          listTeamDetails.add(_sizeController.text);
-          listTeamDetails.add(game.getAlreadyUsedHints());
-          listTeamDetails.add(game.getProgress().toString());
-          listTeamDetails.add(game.getCurrentPuzzleInfo().toString());
-          manager.updateDetail(listTeamDetails);
-        }
-      });
-    });
-
-    //
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext context) {
       return IntroScreen();
     }));
   }

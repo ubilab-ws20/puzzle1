@@ -15,6 +15,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: stringAppName,
+      theme: ThemeData(
+        primaryColor: Color(0xFF4E8973),
+        accentColor: Color(0xFF69C869),
+      ),
       initialRoute: '/',
       routes: {
         '/': (context) => StartScreen(),

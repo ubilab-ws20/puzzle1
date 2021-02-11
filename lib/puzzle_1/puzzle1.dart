@@ -42,6 +42,7 @@ class Puzzle1 extends PuzzleBase {
       "Could this be a hint to or from Prof. Dr. Y?",
       "Where does the content of the message lead you to?",
       "Find a location which is closely linked to nutrition.",
+      "You have to go to the canteen (building 080).",
     ];
   }
 

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:ubilab_scavenger_hunt/main.dart';
 import 'package:ubilab_scavenger_hunt/framework/framework.dart';
-import 'package:ubilab_scavenger_hunt/globals.dart';
 
 final String stringContinueToGame = "Continue";
 final String stringIntroText = "Hey there!\n\n"
@@ -25,7 +24,6 @@ final String stringIntroText = "Hey there!\n\n"
 class IntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    manager.initialiseMQTTClient();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -58,7 +56,6 @@ class IntroScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 40),
                   ),
                   onPressed: () {
-                    manager.connect();
                     continueToGame(context);
                   },
                 ),
