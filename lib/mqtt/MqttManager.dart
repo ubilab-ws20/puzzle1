@@ -7,7 +7,7 @@ import 'package:ubilab_scavenger_hunt/framework/beaconScanner.dart';
 import 'dart:async';
 import 'dart:convert';
 
-final String topicTest = "testID/testtopic";
+final String topicTest = "testID/scavenger_hunt";
 final String topicMacs = "config/#";
 
 class MQTTManager {
@@ -55,7 +55,8 @@ class MQTTManager {
     }
     _client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final MqttPublishMessage payload = c[0].payload;
-      final String message = MqttPublishPayload.bytesToStringAsString(payload.payload.message);
+      final String message =
+          MqttPublishPayload.bytesToStringAsString(payload.payload.message);
       _onReceivedMessage(c[0].topic, message);
     });
     _gameDetailsTimer = Timer.periodic(Duration(seconds: 3), (Timer t) {
@@ -63,17 +64,16 @@ class MQTTManager {
     });
   }
 
-  
   void publishString(String topic, String message) {
     if (globalIsTesting) {
-    print("MQTTManager::Publishing: $message");
+      print("MQTTManager::Publishing: $message");
     }
     final builder = MqttClientPayloadBuilder();
     builder.addString(message);
     _client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
   }
-  
-/// Disconnects from the server.
+
+  /// Disconnects from the server.
   void disconnect() {
     if (!_connected) {
       return;
@@ -81,7 +81,8 @@ class MQTTManager {
     if (globalIsTesting) {
       print('MQTT: Disconnecting');
     }
-    publishString(topicTest, "${Game.getInstance().getTeamName()}: disconnecting from $_hostName");
+    publishString(topicTest,
+        "${Game.getInstance().getTeamName()}: disconnecting from $_hostName");
     _client.disconnect();
     _gameDetailsTimer.cancel();
   }
