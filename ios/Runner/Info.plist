@@ -51,5 +51,7 @@
     <string>This app needs access to Bluetooth Low Energy.</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
     <string>This app needs access to Bluetooth Low Energy.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app needs microphone access.</string>
 </dict>
 </plist>

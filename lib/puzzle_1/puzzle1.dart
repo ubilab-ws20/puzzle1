@@ -13,10 +13,8 @@ class Puzzle1 extends PuzzleBase {
     "At certain locations in and around the building sounds are played, telling you the numbers to use for the vault.",
   ];
 
-  // TODO:
-  // Insert hint to the exact 6 locations.
   List<String> hintTexts2FindAllSounds = ["You need to find 6 different numbers which have to be used as a combination for the vault, hidden at 6 different locations in and around the building.",
-    "TBD hint to the exact locations.",
+    "The numbers are 2, 30, 46, 51, 73, 89.",
   ];
 
   List<String> hintTexts3SecretOrder = ["What may these black scratches at the bottom be about? Are they there for a reason?",
@@ -42,14 +40,14 @@ class Puzzle1 extends PuzzleBase {
       "Could this be a hint to or from Prof. Dr. Y?",
       "Where does the content of the message lead you to?",
       "Find a location which is closely linked to nutrition.",
-      "You have to go to the canteen (building 080).",
+      "You have to go to the canteen (building 082).",
     ];
   }
 
   @override
   LatLng getStartLocation() {
     /// Coordinates of the entry to the canteen of the Faculty of Engineering
-    return LatLng(48.013217, 7.833264);
+    return LatLng(48.013153, 7.833124);
   }
 
   @override

@@ -46,11 +46,14 @@ class Game {
     StoryText("Strange...", false)
   ];
 
+  final int _puzzleTriggerThreshold = 20;
+
   BuildContext _context;
   String _teamName = "";
   int _teamSize = 0;
   gameState _state = gameState.none;
   PuzzleBase _puzzle;
+  LatLng _currentLocation = LatLng(0, 0);
 
   Stopwatch _stopWatch = Stopwatch();
   List<StoryText> _alreadyShownTexts = [];
@@ -120,6 +123,11 @@ class Game {
     return alreadyShownTexts;
   }
 
+  /// Getter for current location.
+  LatLng getCurrentLocation() {
+    return _currentLocation;
+  }
+
   /// Adds new texts to the already shown ones, along with a seperator.
   void addTextsToAlreadyShown(List<StoryText> texts) {
     if (_alreadyShownTexts.isNotEmpty) {
@@ -174,6 +182,7 @@ class Game {
     _teamSize = 0;
     _state = gameState.none;
     _puzzle = null;
+    _currentLocation = LatLng(0, 0);
     _stopWatch.reset();
     _alreadyShownTexts.clear();
     _currentHints.clear();
@@ -185,19 +194,17 @@ class Game {
 
   /// Callback for map when location of player changed.
   void onLocationChanged(LatLng coords) {
-    currentLocation.latitude = coords.latitude;
-    currentLocation.longitude = coords.longitude;
+    _currentLocation.latitude = coords.latitude;
+    _currentLocation.longitude = coords.longitude;
     if ((_puzzle == null) || !isSearchingForPuzzle()) {
       return;
     }
     LatLng pCoords = _puzzle.getStartLocation();
-    double distance = Geolocator.distanceBetween(
-        coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
-    if (distance <= 10) {
+    double distance = Geolocator.distanceBetween(coords.latitude, coords.longitude, pCoords.latitude, pCoords.longitude);
+    if (distance <= _puzzleTriggerThreshold) {
       nextState();
       _puzzle.setFinishedCallback(onPuzzleFinished);
-      storyIntroWidgetyKey.currentState
-          .show(_puzzle.getIntroTexts(), onStartPuzzle, true);
+      storyIntroWidgetyKey.currentState.show(_puzzle.getIntroTexts(), onStartPuzzle, true);
       addTextsToAlreadyShown(_puzzle.getIntroTexts());
     }
   }
