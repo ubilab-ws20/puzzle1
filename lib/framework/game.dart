@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:ubilab_scavenger_hunt/globals.dart';
-import 'package:uuid/uuid.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_base/puzzleBase.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_1/puzzle1.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
@@ -38,28 +37,16 @@ class Game {
   GlobalKey<GameProgressBarState> gameProgressBarStateKey = GlobalKey();
 
   List<StoryText> gameStartTexts = [
-    StoryText(
-        "A few days ago something mysterious happened in Freiburg.", false),
-    StoryText(
-        "The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.",
-        false),
-    StoryText(
-        "The official version is that he is suffering from a severe illness.",
-        false),
-    StoryText(
-        "But people who were working closely with him are heavily doubting this.",
-        false),
-    StoryText(
-        "While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:",
-        false),
-    StoryText(
-        "Scientists discovered the key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?",
-        true),
+    StoryText("A few days ago something mysterious happened in Freiburg.", false),
+    StoryText("The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.", false),
+    StoryText("The official version is that he is suffering from a severe illness.", false),
+    StoryText("But people who were working closely with him are heavily doubting this.", false),
+    StoryText("While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:", false),
+    StoryText("Scientists discovered the key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?", true),
     StoryText("Strange...", false)
   ];
 
   BuildContext _context;
-  String _uuid = "";
   String _teamName = "";
   int _teamSize = 0;
   gameState _state = gameState.none;
@@ -153,6 +140,7 @@ class Game {
       _currentHints.add(Hint(text));
     }
     _totalHints += _currentHints.length;
+    globalMqttManager.publishGameDetails();
   }
 
   /// Increase the counter of used hints.
@@ -171,19 +159,17 @@ class Game {
       return false;
     }
     _state = gameState.none;
-    Uuid uuid = Uuid();
-    _uuid = uuid.v1();
     _puzzle = null;
     _stopWatch.start();
     addTextsToAlreadyShown(gameStartTexts);
     nextState();
+    globalMqttManager.connect();
     return true;
   }
 
   /// Resets the game in order to start it again.
   void reset() {
     _context = null;
-    _uuid = "";
     _teamName = "";
     _teamSize = 0;
     _state = gameState.none;
@@ -194,11 +180,7 @@ class Game {
     _totalHints = 0;
     _hintsUsed = 0;
     _progress = 0.01;
-  }
-
-  void mqttDisconnect() {
-    globalTimer.cancel();
-    manager.disconnect();
+    globalMqttManager.disconnect();
   }
 
   /// Callback for map when location of player changed.
@@ -277,6 +259,8 @@ class Game {
       _progress = 1.0; // Finished puzzle 2
       gameProgressBarStateKey.currentState.setStateCallback();
     }
+    // MQTT
+    globalMqttManager.publishGameDetails();
     _testPrintState();
   }
 

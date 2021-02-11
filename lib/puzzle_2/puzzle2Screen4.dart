@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:io' show Platform;
-import 'package:beacons_plugin/beacons_plugin.dart';
-
+import 'package:flutter/services.dart';
 import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
 import 'package:ubilab_scavenger_hunt/framework/storyText.dart';
-
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2MainScreen.dart';
+import 'package:ubilab_scavenger_hunt/framework/beaconScanner.dart';
+import 'package:ubilab_scavenger_hunt/globals.dart';
+import 'puzzle2.dart';
 
 class Puzzle2Screen4 extends StatefulWidget {
   @override
@@ -18,195 +17,239 @@ class Puzzle2Screen4 extends StatefulWidget {
 }
 
 class Puzzle2Screen4State extends State<Puzzle2Screen4> {
-  String _beaconResult = 'Not Scanned Yet.';
-  int _nrMessaggesReceived = 0;
-  var isRunning = false;
-
-  final StreamController<String> beaconEventsController =
-  StreamController<String>.broadcast();
+  bool puzzle2_4_solved = false;
+  BeaconScanner _beaconScanner;
+  final double _maxBeaconDist = 20;
 
   List<String> hintTexts = [
     "{1000101011}",
-    "A place to read & where you shouldn't make noise."
+    "A place to read & where you shouldn't make noise.",
+    "Go to the library in the building 101.",
+    "Are you at the back entrance of the Library?"
   ];
+
+  ///false=not in range
+  bool bleRange = false;
+
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    _beaconScanner = BeaconScanner.getInstance();
+    _beaconScanner.start(_closestBeaconCallback, _maxBeaconDist);
     Game.getInstance().updateCurrentHints(hintTexts);
   }
 
   @override
-  void dispose() {
-    beaconEventsController.close();
-    super.dispose();
+  void deactivate() {
+    _beaconScanner.stop();
+    super.deactivate();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    if (Platform.isAndroid) {
-      //Prominent disclosure
-      await BeaconsPlugin.setDisclosureDialogMessage(
-          title: "Need Location Permission",
-          message: "This app collects location data to work with beacons.");
-
-      //Only in case, you want the dialog to be shown again. By Default, dialog will never be shown if permissions are granted.
-      //await BeaconsPlugin.clearDisclosureDialogShowFlag(false);
-    }
-
-    BeaconsPlugin.listenToBeacons(beaconEventsController);
-
-    await BeaconsPlugin.addRegion(
-        "BeaconType1", "D2:EA:2B:A4:F8:3C");
-    await BeaconsPlugin.addRegion(
-        "BeaconType2", "6a84c716-0f2a-1ce9-f210-6a63bd873dd9");
-
-    beaconEventsController.stream.listen(
-            (data) {
-          if (data.isNotEmpty) {
-            setState(() {
-              _beaconResult = data;
-              _nrMessaggesReceived++;
-            });
-            print("Beacons DataReceived: " + data);
-          }
-        },
-        onDone: () {},
-        onError: (error) {
-          print("Error: $error");
-        });
-
-    //Send 'true' to run in background
-    await BeaconsPlugin.runInBackground(true);
-
-    if (Platform.isAndroid) {
-      BeaconsPlugin.channel.setMethodCallHandler((call) async {
-        if (call.method == 'scannerReady') {
-          await BeaconsPlugin.startMonitoring;
-          setState(() {
-            isRunning = true;
-          });
-        }
-      });
-    } else if (Platform.isIOS) {
-      await BeaconsPlugin.startMonitoring;
+  /// Callback for the beacon scanner when a closest beacon is found.
+  void _closestBeaconCallback(String beaconName) {
+    if ((beaconName == "p2_00") ||
+        (beaconName == "p2_01") ||
+        (beaconName == "p2_02")) {
       setState(() {
-        isRunning = true;
+        ///ble beacon in range
+        bleRange = true;
       });
+    } else {
+      ///do nothing
     }
-
-    if (!mounted) return;
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Monitoring Beacons'),
-          actions: [
-            hintIconButton(context),
-            gameMenuIconButton(context),
-          ],
-        ),
-        body: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+      home: WillPopScope(
+        onWillPop: () async => false,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text(Puzzle2Variables.title2_4),
+            actions: [
+              hintIconButton(context),
+              gameMenuIconButton(context),
+            ],
+          ),
+          body: Column(
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
                 margin: EdgeInsets.all(10.0),
                 child: Text(
-                  'Reach towards the location quickly and find a safe spot '
-                      'to fire up a strong Electromagnetic Pulse signal to stop the forces.',
+                  Puzzle2Variables.story2_4_1,
                   textAlign: TextAlign.justify,
-                  style: TextStyle(fontFamily: 'VT323', fontSize: 22.0),
+                  style: TextStyle(fontFamily: 'VT323', fontSize: 18.0),
                 ),
               ),
-              Text('$_beaconResult'),
-              Padding(
-                padding: EdgeInsets.all(10.0),
+              Container(
+                margin: EdgeInsets.all(10.0),
+                child: Text(
+                  bleRange == false
+                      ? 'You are in a wrong location.'
+                      : 'Location reached, your are ready to fire the signal.',
+                  style: TextStyle(fontFamily: 'VT323', fontSize: 18.0),
+                ),
               ),
-              Text('$_nrMessaggesReceived'),
-              SizedBox(
-                height: 20.0,
-              ),
-              Visibility(
-                visible: isRunning,
-                child: RaisedButton(
-                  onPressed: () async {
-                    if (Platform.isAndroid) {
-                      await BeaconsPlugin.stopMonitoring;
-
-                      setState(() {
-                        isRunning = false;
-                      });
+              Container(
+                margin: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+                child: RaisedButton.icon(
+                  padding: EdgeInsets.all(10),
+                  onPressed: () {
+                    if (bleRange == false) {
+                      ///not in range dialog
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text(
+                              'Reach the correct location and fire the signal.',
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        },
+                      );
+                    } else if (bleRange == true) {
+                      puzzle2_4_solved = true;
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text(
+                              'Puzzle solved. \r\nEMP signal fired!',
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        },
+                      );
                     }
                   },
-                  child: Text('Stop Scanning', style: TextStyle(fontSize: 20)),
+                  icon: Icon(
+                    Icons.wifi,
+                    color: Colors.white,
+                    size: 22.0,
+                  ),
+                  label: Text(
+                    'Fire EMP signal',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 2.0),
+                  ),
+                  color: Colors.blue,
                 ),
               ),
-              SizedBox(
-                height: 20.0,
-              ),
-              Visibility(
-                visible: !isRunning,
-                child: RaisedButton(
-                  onPressed: () async {
-                    initPlatformState();
-                    await BeaconsPlugin.startMonitoring;
 
-                    setState(() {
-                      isRunning = true;
-                    });
-                  },
-                  child: Text('Start Scanning', style: TextStyle(fontSize: 20)),
-                ),
-              ),
-              RaisedButton.icon(
-                padding: EdgeInsets.all(10),
-                onPressed: () {
-                  Puzzle2Variables.subPuzzle = 5;///delete this
-                  if (Puzzle2Variables.subPuzzle == 4){
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text(
-                            'Solve the puzzle to proceed.',
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      },
-                    );
-                  }
+              ///test button
+              quit(),
 
-                  else if (Puzzle2Variables.subPuzzle == 5){
-                    Puzzle2MainScreenState.getInstance().setStateCallback();
-                    Navigator.of(context).pop();
-                    Puzzle2.getInstance().onFinished();
-                    Navigator.of(context).pop();
-                  }
-                },
-                icon: Icon(
-                  Icons.next_plan_outlined,
-                  color: Colors.white,
-                  size: 30.0,
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      RaisedButton.icon(
+                        padding: EdgeInsets.all(10),
+                        onPressed: () {
+                          if (puzzle2_4_solved == false) {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text(
+                                    'Solve the puzzle to proceed.',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                );
+                              },
+                            );
+                          } else if (puzzle2_4_solved == true) {
+                            List<StoryText> textInsidePuzzle2_4_1 = [
+                              StoryText(Puzzle2Variables.story2_4_1, true),
+                              StoryText(Puzzle2Variables.story2_4_2, true),
+                            ];
+                            Puzzle2Variables.subPuzzle = 5;
+                            Game.getInstance()
+                                .addTextsToAlreadyShown(textInsidePuzzle2_4_1);
+                            Puzzle2MainScreenState.getInstance()
+                                .setStateCallback();
+                            Navigator.of(context).pop();
+                            Puzzle2.getInstance().onFinished();
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        icon: Icon(
+                          Icons.next_plan_outlined,
+                          color: Colors.white,
+                          size: 30.0,
+                        ),
+                        label: Text(
+                          'Next',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 2.0),
+                        ),
+                        color: Colors.green,
+                      ),
+                    ],
+                  ),
                 ),
-                label: Text(
-                  'Next',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2.0),
-                ),
-                color: Colors.green,
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget quit() {
+    if (globalIsTesting) {
+      return Container(
+        margin: EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
+        child: RaisedButton.icon(
+          padding: EdgeInsets.all(10),
+          onPressed: () {
+            puzzle2_4_solved = true;
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(
+                    'TEST\r\nPuzzle solved. \r\nEMP signal fired!',
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
+            );
+          },
+          icon: Icon(
+            Icons.navigate_next,
+            color: Colors.white,
+            size: 16.0,
+          ),
+          label: Text(
+            'Solve, TEST button',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2.0),
+          ),
+          color: Colors.blue,
+        ),
+      );
+    } else {
+      return Container();
+    }
   }
 }

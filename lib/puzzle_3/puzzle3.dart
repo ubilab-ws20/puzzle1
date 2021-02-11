@@ -19,17 +19,17 @@ class Puzzle3 extends PuzzleBase {
     return _instance;
   }
 
-  LatLng getStartLocation() {
-    return LatLng(48.01331791150736, 7.833964150855805);
-  }
-
-
   @override
   List<String> getPuzzleSearchHints() {
-    return [/*"CIV? What could this mean?",
-      "The old Romans used letters for numbers..",
-      "C = 100, I = 1, V = 5. Take a look on your map.",*/
+    return ["Who are the people offering their help a lot when you start to study?",
+      "It's the people from the student association...or Fachschaft.",
+      "You have to find the office of the Fachschaft of the Faculty of Engineering.",
+      "It is located on the ground floor of building 051.",
     ];
+  }
+
+  LatLng getStartLocation() {
+    return LatLng(48.01331791150736, 7.833964150855805);
   }
 
   List<StoryText> getIntroTexts() {

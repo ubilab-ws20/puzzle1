@@ -1,23 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
-
 import 'dart:async';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:vector_math/vector_math_64.dart' hide Colors;
 import 'package:motion_sensors/motion_sensors.dart';
-
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2.dart';
 import 'package:ubilab_scavenger_hunt/puzzle_2/puzzle2MainScreen.dart';
-
 import 'package:ubilab_scavenger_hunt/framework/gameMenuScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/hintScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
-
 import 'package:vibration/vibration.dart';
-import 'package:ubilab_scavenger_hunt/framework/storyText.dart';
 
 class Puzzle2Screen3 extends StatefulWidget {
   @override
@@ -26,12 +20,12 @@ class Puzzle2Screen3 extends StatefulWidget {
 
 class Puzzle2Screen3State extends State<Puzzle2Screen3> {
   Vector3 _orientation = Vector3.zero();
-  int _groupValue = 0;
 
   List<String> hintTexts = [
-    "Keeping a good diet requires right amount of flexibility "
-        "in your system. It can be done by rotating your body right to left "
+    "Staying fit is important. "
+        "It can be done by rotating your body right to left "
         "and repeat that till you feel that you have achieved your goal.",
+    "Rotating your device could do some wonders. Why don't you try that."
   ];
 
   @override
@@ -51,23 +45,11 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
         });
       }
     });
+    resetPuzzle();
   }
 
   ///-----------------------------
-/*
-  void dataPlotAlert(double data) {
-    AlertDialog(
-      title: Text(
-        data == 1
-            ? 'high signal generated'
-            : data == 0
-                ? 'low signal generated'
-                : 'no signal generated!',
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-*/
+
   usageUpdate() {
     const hundredMillisecond = const Duration(milliseconds: 500);
     new Timer.periodic(
@@ -76,7 +58,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
             ? setState(() {
           Puzzle23Variables.timeCounter++;
           if (Puzzle23Variables.stopTimer) {
-            // t.cancel();
             Puzzle23Variables.cpuUsage = 99;
             Puzzle23Variables.timeCounter = 0;
             Puzzle23Variables.stopTimer = false;
@@ -105,7 +86,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
 
   tiltToGenerateSignal() {
     if (!((degrees(_orientation.z) > 40) || (degrees(_orientation.z) < -40))) {
-      // dataPlotAlert(2.0);
       Puzzle23Variables.phoneTilt = false;
       Puzzle23Variables.generateSignal = true;
     } else if (((degrees(_orientation.z) > 40) ||
@@ -121,7 +101,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
           Puzzle23Variables.point1 = 2;
         else if (degrees(_orientation.z) < -40) Puzzle23Variables.point1 = 0;
         if ((degrees(_orientation.z) > 40) || (degrees(_orientation.z) < -40)) {
-          // dataPlotAlert(Puzzle23Variables.point1);
           Puzzle23Variables.pointCounter++;
         }
       } else if (Puzzle23Variables.pointCounter == 2) {
@@ -130,7 +109,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
           Puzzle23Variables.point2 = 2;
         else if (degrees(_orientation.z) < -40) Puzzle23Variables.point2 = 0;
         if ((degrees(_orientation.z) > 40) || (degrees(_orientation.z) < -40)) {
-          // dataPlotAlert(Puzzle23Variables.point2);
           Puzzle23Variables.pointCounter++;
         }
       } else if (Puzzle23Variables.pointCounter == 3) {
@@ -139,7 +117,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
           Puzzle23Variables.point3 = 2;
         else if (degrees(_orientation.z) < -40) Puzzle23Variables.point3 = 0;
         if ((degrees(_orientation.z) > 40) || (degrees(_orientation.z) < -40)) {
-          // dataPlotAlert(Puzzle23Variables.point3);
           Puzzle23Variables.pointCounter++;
         }
       } else if (Puzzle23Variables.pointCounter == 4) {
@@ -148,7 +125,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
           Puzzle23Variables.point4 = 2;
         else if (degrees(_orientation.z) < -40) Puzzle23Variables.point4 = 0;
         if ((degrees(_orientation.z) > 40) || (degrees(_orientation.z) < -40)) {
-          // dataPlotAlert(Puzzle23Variables.point4);
           Puzzle23Variables.pointCounter++;
         }
       } else if (Puzzle23Variables.pointCounter == 5) {
@@ -157,7 +133,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
           Puzzle23Variables.point5 = 2;
         else if (degrees(_orientation.z) < -40) Puzzle23Variables.point5 = 0;
         if ((degrees(_orientation.z) > 40) || (degrees(_orientation.z) < -40)) {
-          // dataPlotAlert(Puzzle23Variables.point5);
           Puzzle23Variables.pointCounter++;
         }
       } else if (Puzzle23Variables.pointCounter == 6) {
@@ -166,38 +141,47 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
           Puzzle23Variables.point6 = 2;
         else if (degrees(_orientation.z) < -40) Puzzle23Variables.point6 = 0;
         if ((degrees(_orientation.z) > 40) || (degrees(_orientation.z) < -40)) {
-          // dataPlotAlert(Puzzle23Variables.point6);
           Puzzle23Variables.pointCounter++;
         }
       }
-
-      /*
-  else if (Puzzle23Variables.pointCounter == 7) {
-  if (degrees(_orientation.z) > 40)
-  Puzzle23Variables.point7 = 1;
-  else if (degrees(_orientation.z) < -40)
-  Puzzle23Variables.point7 = 0;
-  if ((degrees(_orientation.z) > 40) ||
-  (degrees(_orientation.z) < -40)) {
-  dataPlotAlert(Puzzle23Variables.point7);
-  Puzzle23Variables.pointCounter++;
-  }
-  }
-*/
       Puzzle23Variables.generateSignal = false;
     }
     return Container();
   }
 
+  resetGraph() {
+    Puzzle23Variables.pointCounter = 1;
+    Puzzle23Variables.point1 = 1;
+    Puzzle23Variables.point2 = 1;
+    Puzzle23Variables.point3 = 1;
+    Puzzle23Variables.point4 = 1;
+    Puzzle23Variables.point5 = 1;
+    Puzzle23Variables.point6 = 1;
+  }
+
+  resetPuzzle() {
+    resetGraph();
+    Puzzle23Variables.cpuUsage = 5.0;
+    Puzzle23Variables.stopTimer = false;
+    Puzzle23Variables.timeCounter = 0;
+
+    Puzzle23Variables.puzzleSolved = false;
+    Puzzle23Variables.phoneTilt = false;
+    Puzzle23Variables.generateSignal = true;
+  }
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     usageUpdate();
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text('Function generator'),
+          title: Text(Puzzle2Variables.title2_3),
           actions: [
             hintIconButton(context),
             gameMenuIconButton(context),
@@ -212,10 +196,7 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                     Container(
                       margin: EdgeInsets.all(10.0),
                       child: Text(
-                        'AI to player:'
-                            '\r\n-> If you are able to generate the right signal sequence in square wave then you might be able to turn the table'
-                            ' around in our favor by sharing your phone\'s hardware resources.'
-                            '\r\n-> Saving the world takes high precedence and if we work together, we might be able to pull through.',
+                        Puzzle2Variables.story2_3_1,
                         textAlign: TextAlign.justify,
                         style: TextStyle(fontFamily: 'VT323'),
                       ),
@@ -276,7 +257,8 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                         color: const Color.fromRGBO(
                                             238, 193, 34, 0.75)),
                                     GaugeRange(
-                                        startValue: Puzzle23Variables.puzzleSolved
+                                        startValue:
+                                        Puzzle23Variables.puzzleSolved
                                             ? 70
                                             : 0,
                                         endValue: 100,
@@ -294,8 +276,8 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                             child: const Text('CPU',
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
-                                                    decoration:
-                                                    TextDecoration.underline,
+                                                    decoration: TextDecoration
+                                                        .underline,
                                                     color: Colors.red,
                                                     fontSize: 15)))),
                                     GaugeAnnotation(
@@ -397,7 +379,8 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                         color: const Color.fromRGBO(
                                             238, 193, 34, 0.75)),
                                     GaugeRange(
-                                        startValue: Puzzle23Variables.puzzleSolved
+                                        startValue:
+                                        Puzzle23Variables.puzzleSolved
                                             ? 70
                                             : 0,
                                         endValue: 100,
@@ -415,8 +398,8 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                             child: const Text('GPU',
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
-                                                    decoration:
-                                                    TextDecoration.underline,
+                                                    decoration: TextDecoration
+                                                        .underline,
                                                     color: Colors.red,
                                                     fontSize: 15)))),
                                     GaugeAnnotation(
@@ -521,7 +504,8 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                         color: const Color.fromRGBO(
                                             238, 193, 34, 0.75)),
                                     GaugeRange(
-                                        startValue: Puzzle23Variables.puzzleSolved
+                                        startValue:
+                                        Puzzle23Variables.puzzleSolved
                                             ? 70
                                             : 0,
                                         endValue: 100,
@@ -539,8 +523,8 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                             child: const Text('RAM',
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold,
-                                                    decoration:
-                                                    TextDecoration.underline,
+                                                    decoration: TextDecoration
+                                                        .underline,
                                                     color: Colors.red,
                                                     fontSize: 15)))),
                                     GaugeAnnotation(
@@ -598,7 +582,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                     ],
                   ),
                 ),
-
                 Expanded(
                   flex: 1,
                   child: Row(
@@ -636,13 +619,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                     FlSpot(5, Puzzle23Variables.point5),
                                     FlSpot(5, Puzzle23Variables.point6), //1
                                     FlSpot(6, Puzzle23Variables.point6), //1
-                                    /*
-                                    FlSpot(6, Puzzle23Variables.point7),
-                                    FlSpot(7, Puzzle23Variables.point7),
-
-                                    FlSpot(7, Puzzle23Variables.point8),
-                                    FlSpot(8, Puzzle23Variables.point8),
-                                    */
                                   ],
                                 ),
                               ]),
@@ -653,17 +629,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                 ),
                 Column(
                   children: [
-                    /*
-                    Text('Orientation'),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Text('X: ${degrees(_orientation.x).toStringAsFixed(2)}'),
-                        Text('Y: ${degrees(_orientation.y).toStringAsFixed(2)}'),
-                        Text('Z: ${degrees(_orientation.z).toStringAsFixed(2)}'),
-                      ],
-                    ),
-                    */
                     tiltToGenerateSignal(),
                   ],
                 ),
@@ -687,15 +652,7 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                             color: Colors.blue,
                             onPressed: () {
                               setState(() {
-                                Puzzle23Variables.pointCounter = 1;
-                                Puzzle23Variables.point1 = 1;
-                                Puzzle23Variables.point2 = 1;
-                                Puzzle23Variables.point3 = 1;
-                                Puzzle23Variables.point4 = 1;
-                                Puzzle23Variables.point5 = 1;
-                                Puzzle23Variables.point6 = 1;
-                                Puzzle23Variables.point7 = 1;
-                                Puzzle23Variables.point8 = 1;
+                                resetGraph();
                               });
                             },
                           ),
@@ -711,7 +668,6 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                             color: Colors.blue,
                             onPressed: () {
                               setState(() {
-
                                 if (((Puzzle23Variables.point1 == 2) &&
                                     (Puzzle23Variables.point2 == 0) &&
                                     (Puzzle23Variables.point3 == 2) &&
@@ -725,7 +681,7 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                         (Puzzle23Variables.point5 == 0) &&
                                         (Puzzle23Variables.point6 == 2))) {
                                   //puzzle solved
-                                  Puzzle2Variables.puzzle2_3Staus = 'green';
+
                                   Puzzle2Variables.subPuzzle = 4;
                                   Puzzle23Variables.stopTimer = true;
                                   Puzzle23Variables.puzzleSolved = true;
@@ -757,24 +713,21 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                               });
                             },
                           ),
-
                         ],
                       ),
-
-
                       Expanded(
                         flex: 1,
                         child: Container(
                           margin: EdgeInsets.all(20),
                           padding: EdgeInsets.all(0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               RaisedButton.icon(
                                 padding: EdgeInsets.all(10),
                                 onPressed: () {
-                                  if (Puzzle2Variables.subPuzzle == 3){
+                                  if (Puzzle2Variables.subPuzzle == 3) {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -786,10 +739,9 @@ class Puzzle2Screen3State extends State<Puzzle2Screen3> {
                                         );
                                       },
                                     );
-                                  }
-
-                                  else if (Puzzle2Variables.subPuzzle == 4){
-                                    Puzzle2MainScreenState.getInstance().setStateCallback();
+                                  } else if (Puzzle2Variables.subPuzzle == 4) {
+                                    Puzzle2MainScreenState.getInstance()
+                                        .setStateCallback();
                                     Navigator.of(context).pop();
                                   }
                                 },
@@ -834,8 +786,6 @@ class Puzzle23Variables {
   static double point4 = 1; //0
   static double point5 = 1; //1
   static double point6 = 1; //0
-  static double point7 = 1; //1
-  static double point8 = 1; //1
   static int pointCounter = 1;
   static bool puzzleSolved = false;
   static bool phoneTilt = false;

@@ -1,4 +1,5 @@
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -29,14 +30,7 @@ class BeaconScanner {
 
   FlutterBlue _flutterBlue;
   Timer _beaconHandleTimer;
-  final List<Beacon> _beacons = [
-    Beacon("p1_1_46", [0xC9, 0x96, 0xD9, 0xA0, 0xEC, 0xB2]),
-    Beacon("p1_2_2", [0xDB, 0xCD, 0xDF, 0x5A, 0xE1, 0xC7]),
-    Beacon("p1_3_30", [0xE8, 0x63, 0x97, 0xD4, 0xEB, 0x3B]),
-    Beacon("p1_4_89", [0xD9, 0xF5, 0xB7, 0xB1, 0x57, 0x64]),
-    Beacon("p1_5_51", [0xCB, 0x69, 0x61, 0x67, 0xA9, 0xB9]),
-    Beacon("p1_6_73", [0xEB, 0x65, 0x46, 0x4A, 0x5E, 0x21]),
-  ];
+  final List<Beacon> _beacons = [];
   double _maxBeaconDist = 0;
   Function _closestBeaconCallback;
 
@@ -50,6 +44,29 @@ class BeaconScanner {
       _instance = BeaconScanner();
     }
     return _instance;
+  }
+
+  /// To add a beacon to the known ones by name and mac address.
+  void addBeacon(String name, String mac) {
+    String hex;
+    List<int> macAsList = [];
+    if (name.isEmpty || mac.isEmpty) {
+      return;
+    }
+    for (int i = (_beacons.length - 1); i >= 0; i--) {
+      if (_beacons[i].name == name) {
+        _beacons.removeAt(i);
+        break;
+      }
+    }
+    for (int i = 0; i < 12; i += 2) {
+      hex = mac.substring(i, (i + 2));
+      macAsList.add(int.parse(hex, radix: 16));
+    }
+    _beacons.add(Beacon(name, macAsList));
+    if (globalIsTesting) {
+      print("Beacon Scanner: Added beacon '$name' ($mac)");
+    }
   }
 
   /// Starts the beacon scanner. The function closestBeaconCallback is called

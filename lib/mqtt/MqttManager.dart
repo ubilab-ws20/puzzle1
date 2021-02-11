@@ -1,124 +1,159 @@
-import 'package:flutter/cupertino.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:ubilab_scavenger_hunt/framework/game.dart';
 import 'package:ubilab_scavenger_hunt/globals.dart';
-import 'dart:convert';
+import 'package:uuid/uuid.dart';
+import 'package:ubilab_scavenger_hunt/framework/beaconScanner.dart';
 import 'dart:async';
 
-import 'package:uuid/uuid.dart';
+final String topicTest = "testID/testtopic";
+final String topicMacs = "config/#";
 
 class MQTTManager {
-  MqttServerClient client;
-  final String _host;
-  final String topicName = "testID/testtopic";
-  var teamDetails = [];
-  String _uuid = "";
-  Uuid uuid = Uuid();
+  Timer _gameDetailsTimer;
+  MqttServerClient _client;
+  bool _connected;
 
-  MQTTManager({@required String host}) : _host = host;
-
-  void initialiseMQTTClient() {
-    _uuid = uuid.v1();
-    client = MqttServerClient(_host, _uuid);
-
-    client.useWebSocket = true;
-    client.port = 443;
-    //client.secure = true;
-    client.logging(on: false);
-    client.keepAlivePeriod = 5;
-    client.autoReconnect = true;
-    client.resubscribeOnAutoReconnect = true;
-    client.onConnected = onConnected;
-    client.onSubscribed = onSubscribed;
+  MQTTManager(String hostName) {
+    Uuid uuid = Uuid();
+    String uuidString = uuid.v1();
+    _client = MqttServerClient(hostName, uuidString);
+    _client.useWebSocket = true;
+    _client.port = 443;
+    _client.logging(on: false);
+    _client.keepAlivePeriod = 5;
+    _client.autoReconnect = true;
+    _client.resubscribeOnAutoReconnect = true;
+    _client.onConnected = _onConnected;
+    _client.onDisconnected = _onDisconnected;
+    _client.onUnsubscribed = _onUnsubscribed;
+    _client.onSubscribed = _onSubscribed;
+    _client.onSubscribeFail = _onSubscribeFail;
+    _connected = false;
   }
 
+  /// Connects to the server.
   void connect() async {
-    assert(client != null);
-    try {
-      print('EXAMPLE::start client connecting....');
-      //_currentState.setAppConnectionState(MQTTAppConnectionState.connecting);
-      await client.connect('ubilab', 'ubilab');
-      print("connected");
-      mqttConnected = true;
-    } on Exception catch (e) {
-      print('EXAMPLE::client exception - $e');
-      disconnect();
+    if (_connected) {
+      return;
     }
-    client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
-      final MqttPublishMessage message = c[0].payload;
-      final payload =
-          MqttPublishPayload.bytesToStringAsString(message.payload.message);
-
-      print(
-          'Received message in Framework:$payload from topic: ${c[0].topic}>');
+    try {
+      if (globalIsTesting) {
+        print("MQTT: Connecting");
+      }
+      await _client.connect("ubilab", "ubilab");
+    } on Exception catch (e) {
+      if (globalIsTesting) {
+        print("MQTT: Exception during connection establishment ($e)");
+      }
+      disconnect();
+      return;
+    }
+    _client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+      final MqttPublishMessage payload = c[0].payload;
+      final String message = MqttPublishPayload.bytesToStringAsString(payload.payload.message);
+      _onReceivedMessage(c[0].topic, message);
+    });
+    _gameDetailsTimer = Timer.periodic(Duration(seconds: 10), (Timer t) {
+      publishGameDetails();
     });
   }
 
+  /// Disconnects from the server.
   void disconnect() {
-    publishString(topicName, "$globalTeamName Disconnecting from $_host");
-    print('Disconnected from $_host');
-    clear(teamDetails);
-    client.disconnect();
-    mqttConnected = false;
-  }
-
-  void onConnected() {
-    print('EXAMPLE::Mosquitto client connected....');
-    _subscribeToTopic(topicName);
-  }
-
-  void _subscribeToTopic(String topicName) {
-    print('MQTTClientWrapper::Subscribing to the $topicName topic');
-    publishList(topicName, teamDetails);
-
-    //client.subscribe(topicName, MqttQos.atMostOnce);
-  }
-
-// subscribe to topic succeeded
-  void onSubscribed(String topic) {
-    print('Subscribed topic: $topic');
-  }
-
-// subscribe to topic failed
-  void onSubscribeFail(String topic) {
-    print('Failed to subscribe $topic');
-  }
-
-// unsubscribe succeeded
-  void onUnsubscribed(String topic) {
-    print('Unsubscribed topic: $topic');
-  }
-
-  void publishList(String topic, var teamDetails) {
-    final builder = MqttClientPayloadBuilder();
-    if ((teamDetails != null) || (teamDetails.length > 0)) {
-      for (int i = 0; i < teamDetails.length - 1; i++) {
-        builder.addString(teamDetails[i]);
-        builder.addString(",");
-      }
-      builder.addString(teamDetails[teamDetails.length - 1]);
-    } else {
-      builder.addString('');
+    if (!_connected) {
+      return;
     }
-    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
-  }
-
-  void publishString(String topic, String message) {
-    final builder = MqttClientPayloadBuilder();
-    builder.addString(message);
-    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
-  }
-
-  void updateDetail(List<dynamic> listTeamDetails) {
-    print("Function updateDetail called");
-    for (int i = 0; i < listTeamDetails.length - 1; i++) {
-      teamDetails = listTeamDetails;
+    if (globalIsTesting) {
+      print('MQTT: Disconnecting');
     }
-    publishList(topicName, teamDetails);
-    clear(teamDetails);
+    _client.disconnect();
+    _gameDetailsTimer.cancel();
   }
 
-  void clear(var teamDetails) {
-    teamDetails.clear();
+  /// If currently connected to the server.
+  bool isConnected() {
+    return _connected;
+  }
+
+  /// Subscribe to all needed topics.
+  void subscribeToTopics() {
+    if (!_connected) {
+      return;
+    }
+    _client.subscribe(topicTest, MqttQos.atMostOnce);
+    _client.subscribe(topicMacs, MqttQos.atMostOnce);
+  }
+
+  /// Sends the current game details to the server.
+  void publishGameDetails() {
+    Game game = Game.getInstance();
+    final builder = MqttClientPayloadBuilder();
+    if (!_connected) {
+      return;
+    }
+    builder.addString(game.getTeamName());
+    builder.addString(",");
+    builder.addString(game.getTeamSize().toString());
+    builder.addString(",");
+    builder.addString(game.getAlreadyUsedHints());
+    builder.addString(",");
+    builder.addString(game.getProgress().toString());
+    builder.addString(",");
+    builder.addString(game.getCurrentPuzzleInfo().toString());
+    builder.addString(",5");
+    _client.publishMessage(topicTest, MqttQos.atLeastOnce, builder.payload);
+  }
+
+  /// Callback if connection was successful.
+  void _onConnected() {
+    if (globalIsTesting) {
+      print("MQTT: Connected");
+    }
+    _connected = true;
+    subscribeToTopics();
+  }
+
+  /// Callback if disconnected from server.
+  void _onDisconnected() {
+    if (globalIsTesting) {
+      print("MQTT: Disconnected");
+    }
+    _connected = false;
+  }
+
+  /// Callback if subscription to topic succeeded.
+  void _onSubscribed(String topic) {
+    if (globalIsTesting) {
+      print("MQTT: Subscribed to topic '$topic'");
+    }
+  }
+
+  /// Callback if subscription to topic failed.
+  void _onSubscribeFail(String topic) {
+    if (globalIsTesting) {
+      print("MQTT: Failed to subscribe to topic '$topic'");
+    }
+  }
+
+  /// Callback if unsubscribed from topic.
+  void _onUnsubscribed(String topic) {
+    if (globalIsTesting) {
+      print("MQTT: Unsubscribed from topic '$topic'");
+    }
+  }
+
+  /// Callback for received messages.
+  void _onReceivedMessage(String topic, String message) {
+    String beaconName;
+    if (globalIsTesting) {
+      print("MQTT: Received message '$message' from topic '$topic'");
+    }
+    if (topic.contains("config/tag/")) {
+      beaconName = topic;
+      beaconName = beaconName.replaceAll("config/tag/", "");
+      beaconName = beaconName.replaceAll("/mac", "");
+      BeaconScanner.getInstance().addBeacon(beaconName, message);
+    }
   }
 }

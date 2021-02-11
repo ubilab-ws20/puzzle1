@@ -130,17 +130,17 @@ class _Puzzle1ScreenState extends State<Puzzle1Screen> {
 
   /// Callback for the beacon scanner when a closest beacon is found.
   void _closestBeaconCallback(String beaconName) {
-    if (beaconName == "p1_1_46") {
+    if (beaconName == "p1_46") {
       _playSecret1_46();
-    } else if (beaconName == "p1_2_2") {
+    } else if (beaconName == "p1_2") {
       _playSecret2_2();
-    } else if (beaconName == "p1_3_30") {
+    } else if (beaconName == "p1_30") {
       _playSecret3_30();
-    } else if (beaconName == "p1_4_89") {
+    } else if (beaconName == "p1_89") {
       _playSecret4_89();
-    } else if (beaconName == "p1_5_51") {
+    } else if (beaconName == "p1_51") {
       _playSecret5_51();
-    } else if (beaconName == "p1_6_73") {
+    } else if (beaconName == "p1_73") {
       _playSecret6_73();
     }
   }
