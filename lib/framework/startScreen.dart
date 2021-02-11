@@ -19,6 +19,8 @@ class _StartScreenState extends State<StartScreen> {
   final _nameController = TextEditingController();
   final _sizeController = TextEditingController();
 
+  Map listTeamDetails = {};
+
   @override
   Widget build(BuildContext context) {
     /*SystemChrome.setPreferredOrientations([
@@ -35,6 +37,7 @@ class _StartScreenState extends State<StartScreen> {
                 margin: EdgeInsets.all(10.0),
                 child: TextField(
                   controller: _nameController,
+                  maxLength: 15,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: stringTeamName,
@@ -111,8 +114,9 @@ class _StartScreenState extends State<StartScreen> {
     game.reset();
     game.setTeamName(_nameController.text);
     game.setTeamSize(int.parse(_sizeController.text));
+    globalTeamName = _nameController.text;
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext context) {
-      return IntroScreen();
+    return IntroScreen();
     }));
   }
 }

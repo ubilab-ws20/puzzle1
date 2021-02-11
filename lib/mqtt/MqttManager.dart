@@ -13,6 +13,7 @@ class MQTTManager {
   Timer _gameDetailsTimer;
   MqttServerClient _client;
   bool _connected;
+  Map _listTeamDetails = new Map();
 
   MQTTManager(String hostName) {
     Uuid uuid = Uuid();
@@ -54,12 +55,22 @@ class MQTTManager {
       final String message = MqttPublishPayload.bytesToStringAsString(payload.payload.message);
       _onReceivedMessage(c[0].topic, message);
     });
-    _gameDetailsTimer = Timer.periodic(Duration(seconds: 10), (Timer t) {
+    _gameDetailsTimer = Timer.periodic(Duration(seconds: 3), (Timer t) {
       publishGameDetails();
     });
   }
 
-  /// Disconnects from the server.
+  
+  void publishString(String topic, String message) {
+    if (globalIsTesting) {
+    print("MQTTManager::Publishing: $message");
+    }
+    final builder = MqttClientPayloadBuilder();
+    builder.addString(message);
+    _client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
+  }
+  
+/// Disconnects from the server.
   void disconnect() {
     if (!_connected) {
       return;
@@ -67,6 +78,7 @@ class MQTTManager {
     if (globalIsTesting) {
       print('MQTT: Disconnecting');
     }
+    publishString(_topicName, "$globalTeamName: disconnecting from $host");
     _client.disconnect();
     _gameDetailsTimer.cancel();
   }
@@ -92,17 +104,15 @@ class MQTTManager {
     if (!_connected) {
       return;
     }
-    builder.addString(game.getTeamName());
-    builder.addString(",");
-    builder.addString(game.getTeamSize().toString());
-    builder.addString(",");
-    builder.addString(game.getAlreadyUsedHints());
-    builder.addString(",");
-    builder.addString(game.getProgress().toString());
-    builder.addString(",");
-    builder.addString(game.getCurrentPuzzleInfo().toString());
-    builder.addString(",5");
-    _client.publishMessage(topicTest, MqttQos.atLeastOnce, builder.payload);
+    _listTeamDetails["teamName"] = _nameController.text;
+    _listTeamDetails["teamSize"] = _sizeController.text;
+    _listTeamDetails["hintsUsed"] = game.getAlreadyUsedHints();
+    _listTeamDetails["gameProgress"] = game.getProgress().toString();
+    _listTeamDetails["currentPuzzle"] = game.getCurrentPuzzleInfo().toString();
+    _listTeamDetails["latitude"] = currentLocation.latitude;
+    _listTeamDetails["longitude"] = currentLocation.longitude;
+    var _jsonList = json.encode(listTeamDetails);
+    publishString(topicTest, _jsonList);
   }
 
   /// Callback if connection was successful.
@@ -120,6 +130,7 @@ class MQTTManager {
       print("MQTT: Disconnected");
     }
     _connected = false;
+    _listTeamDetails.clear();
   }
 
   /// Callback if subscription to topic succeeded.

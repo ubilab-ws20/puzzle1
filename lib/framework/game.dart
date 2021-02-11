@@ -185,6 +185,8 @@ class Game {
 
   /// Callback for map when location of player changed.
   void onLocationChanged(LatLng coords) {
+    currentLocation.latitude = coords.latitude;
+    currentLocation.longitude = coords.longitude;
     if ((_puzzle == null) || !isSearchingForPuzzle()) {
       return;
     }
@@ -287,12 +289,12 @@ class Game {
       case gameState.introPuzzle2:
       case gameState.searchPuzzle2:
       case gameState.outroPuzzle2:
-        return 2;
+        return 3;
       case gameState.puzzle3:
       case gameState.introPuzzle3:
       case gameState.searchPuzzle3:
       case gameState.outroPuzzle3:
-        return 3;
+        return 2;
       default:
         return 0;
     }
