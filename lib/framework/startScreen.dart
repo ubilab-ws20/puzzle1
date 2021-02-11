@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ubilab_scavenger_hunt/mqtt/MqttManager.dart';
 import 'package:ubilab_scavenger_hunt/framework/introScreen.dart';
 import 'package:ubilab_scavenger_hunt/framework/game.dart';
-import 'dart:async';
-
-import 'package:ubilab_scavenger_hunt/globals.dart';
 
 final String stringAppName = "Prof. Y";
 final String stringTeamName = "Team name";
@@ -67,7 +63,7 @@ class _StartScreenState extends State<StartScreen> {
                     style: TextStyle(fontSize: 40),
                   ),
                   onPressed: () {
-                    startGame(context, manager);
+                    startGame(context);
                   },
                 ),
               ),
@@ -85,9 +81,8 @@ class _StartScreenState extends State<StartScreen> {
     super.dispose();
   }
 
-  void startGame(BuildContext context, MQTTManager manager) {
+  void startGame(BuildContext context) {
     Game game = Game.getInstance();
-    //manager.connect();
     if (_nameController.text.isEmpty) {
       showDialog(
         context: context,
@@ -120,30 +115,8 @@ class _StartScreenState extends State<StartScreen> {
     game.setTeamName(_nameController.text);
     game.setTeamSize(int.parse(_sizeController.text));
     globalTeamName = _nameController.text;
-    globalTimer = Timer.periodic(Duration(seconds: 3), (Timer t) {
-      if (this.mounted) {
-        setState(() {
-          print("StartScreen:: Mqtt connect $mqttConnected");
-          if (mqttConnected) {
-            listTeamDetails["teamName"] = _nameController.text;
-            listTeamDetails["teamSize"] = _sizeController.text;
-            listTeamDetails["hintsUsed"] = game.getAlreadyUsedHints();
-            listTeamDetails["gameProgress"] = game.getProgress().toString();
-            listTeamDetails["currentPuzzle"] =
-                game.getCurrentPuzzleInfo().toString();
-            listTeamDetails["latitude"] = currentLocation.latitude;
-            listTeamDetails["longitude"] = currentLocation.longitude;
-            print(listTeamDetails);
-            manager.updateDetail(listTeamDetails);
-          } else {}
-        });
-      }
-    });
-
-    //
-    Navigator.of(context)
-        .push(MaterialPageRoute<void>(builder: (BuildContext context) {
-      return IntroScreen();
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (BuildContext context) {
+    return IntroScreen();
     }));
   }
 }
