@@ -3,7 +3,6 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'dart:convert';
-
 import 'package:uuid/uuid.dart';
 
 class MQTTManager {
@@ -28,63 +27,68 @@ class MQTTManager {
     _client.onConnected = onConnected;
     _client.onSubscribed = onSubscribed;
     _client.onDisconnected = onDisconnected;
+    _client.onAutoReconnected = onAutoReconnected;
   }
 
   void connect() async {
     assert(_client != null);
     try {
-      print('EXAMPLE::start client connecting....');
-      //_currentState.setAppConnectionState(MQTTAppConnectionState.connecting);
+      print('MQTTManager::connect()');
+      print("Start client connecting....");
       await _client.connect('ubilab', 'ubilab');
-      print("connected");
       mqttConnected = true;
     } on Exception catch (e) {
-      print('EXAMPLE::client exception - $e');
+      print('MQTTManager::client exception - $e');
       disconnect();
     }
     _client.updates.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final MqttPublishMessage message = c[0].payload;
       final payload =
           MqttPublishPayload.bytesToStringAsString(message.payload.message);
-
       print(
-          'Received message in Framework:$payload from topic: ${c[0].topic}>');
+          'MQTTManager:: Received message in Framework:$payload from topic: ${c[0].topic}>');
     });
   }
 
   void disconnect() {
-    publishString(_topicName, "$globalTeamName disconnecting from $host");
+    publishString(_topicName, "$globalTeamName: disconnecting from $host");
     _client.disconnect();
     mqttConnected = false;
   }
 
   void onConnected() {
-    print('EXAMPLE::Mosquitto client connected....');
+    print('MQTTManager::onConnected() Mosquitto client connected....');
   }
 
   void onDisconnected() {
-    print('Disconnected from $host');
-    clear(_teamDetails);
+    print('MQTTManager::onDisconnected() Disconnected from $host');
+    _teamDetails.clear();
+  }
+
+  void onAutoReconnected() {
+    print("MQTTManager::onAutoReconnected");
+    connect();
   }
 
   void _subscribeToTopic(String _topicName) {
-    print('MQTTClientWrapper::Subscribing to the $_topicName topic');
+    print(
+        'MQTTManager::_subscribeToTopic() Subscribing to the $_topicName topic');
     _client.subscribe(_topicName, MqttQos.atMostOnce);
   }
 
 // subscribe to topic succeeded
   void onSubscribed(String topic) {
-    print('Subscribed topic: $topic');
+    print('MQTTManager::onSubscribed() Subscribed topic: $topic');
   }
 
 // subscribe to topic failed
   void onSubscribeFail(String topic) {
-    print('Failed to subscribe $topic');
+    print('MQTTManager::onSubscribeFail() Failed to subscribe $topic');
   }
 
 // unsubscribe succeeded
   void onUnsubscribed(String topic) {
-    print('Unsubscribed topic: $topic');
+    print('MQTTManager::onUnsubscribed() Unsubscribed topic: $topic');
   }
 
   void publishList(String topic, var _teamDetails) {
@@ -102,7 +106,7 @@ class MQTTManager {
   }
 
   void publishString(String topic, String message) {
-    print("Publishing: $message");
+    print("MQTTManager::Publishing: $message");
     final builder = MqttClientPayloadBuilder();
     builder.addString(message);
     _client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload);
@@ -110,15 +114,11 @@ class MQTTManager {
 
   void updateDetail(Map listTeamDetails) {
     if (mqttConnected) {
-      print("Function updateDetail called");
+      print("MQTTManager::updateDetail()");
       var _jsonList = json.encode(listTeamDetails);
       print(_jsonList);
       publishString(_topicName, _jsonList);
     }
     return;
-  }
-
-  void clear(var _teamDetails) {
-    _teamDetails.clear();
   }
 }

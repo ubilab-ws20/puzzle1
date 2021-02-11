@@ -41,6 +41,7 @@ class _StartScreenState extends State<StartScreen> {
                 margin: EdgeInsets.all(10.0),
                 child: TextField(
                   controller: _nameController,
+                  maxLength: 15,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: stringTeamName,
@@ -122,7 +123,7 @@ class _StartScreenState extends State<StartScreen> {
     globalTimer = Timer.periodic(Duration(seconds: 3), (Timer t) {
       if (this.mounted) {
         setState(() {
-          print("Mqtt connect $mqttConnected");
+          print("StartScreen:: Mqtt connect $mqttConnected");
           if (mqttConnected) {
             listTeamDetails["teamName"] = _nameController.text;
             listTeamDetails["teamSize"] = _sizeController.text;
