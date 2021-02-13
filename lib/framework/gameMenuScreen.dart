@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'game.dart';
 import 'gameProgressBar.dart';
-import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'storyText.dart';
 import 'hintScreen.dart';
 

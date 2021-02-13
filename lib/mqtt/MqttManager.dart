@@ -64,6 +64,7 @@ class MQTTManager {
     });
   }
 
+  /// Publish Message to given topic on the server
   void publishString(String topic, String message) {
     if (globalIsTesting) {
       print("MQTTManager::Publishing: $message");
@@ -81,8 +82,8 @@ class MQTTManager {
     if (globalIsTesting) {
       print('MQTT: Disconnecting');
     }
-    publishString(topicTest,
-        "${Game.getInstance().getTeamName()}: disconnecting from $_hostName");
+    _listTeamDetails["connected"] = false;
+    publishString(topicTest, json.encode(_listTeamDetails));
     _client.disconnect();
     _gameDetailsTimer.cancel();
   }
@@ -107,6 +108,7 @@ class MQTTManager {
     if (!_connected) {
       return;
     }
+    _listTeamDetails["teamID"] = _client.clientIdentifier;
     _listTeamDetails["teamName"] = game.getTeamName();
     _listTeamDetails["teamSize"] = game.getTeamSize().toString();
     _listTeamDetails["hintsUsed"] = game.getAlreadyUsedHints();
@@ -114,6 +116,7 @@ class MQTTManager {
     _listTeamDetails["currentPuzzle"] = game.getCurrentPuzzleInfo().toString();
     _listTeamDetails["latitude"] = currentLocation.latitude;
     _listTeamDetails["longitude"] = currentLocation.longitude;
+    _listTeamDetails["connected"] = true;
     publishString(topicTest, json.encode(_listTeamDetails));
   }
 
