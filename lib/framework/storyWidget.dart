@@ -90,9 +90,10 @@ class StoryWidgetState extends State<StoryWidget> {
       } else {
         _buttonText = stringNext;
       }
+      Vibration.cancel();
       if (_storyText.fromAi) {
         _font = fontAi;
-        Vibration.vibrate(pattern: [0, 200, 100, 200, 100, 200]);
+        Vibration.vibrate(pattern: [0, 200, 100, 200, 100, 200], intensities: [255, 255, 255]);
       } else {
         _font = fontNarration;
       }

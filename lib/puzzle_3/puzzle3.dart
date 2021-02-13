@@ -42,8 +42,7 @@ class Puzzle3 extends PuzzleBase {
 
   List<StoryText> getOutroTexts() {
     return [StoryText("After finding the correct knocking pattern, the puzzle seems to be completed.", false),
-        //StoryText("where could the next CaptIVating puzzle begin? maybe the solution is hidden within...", true),
-      StoryText("The fourth key to a good health is to stay hygienic by keeping your surroundings clean. You cannot buy your health; you must earn it through healthy living and maintaining a cleanroom.", true),
+      StoryText("The next key to a good health is to stay hygienic by keeping your surroundings clean. You cannot buy your health; you must earn it through healthy living and maintaining a cleanroom.", true),
     ];
   }
 

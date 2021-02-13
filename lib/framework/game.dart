@@ -268,6 +268,10 @@ class Game {
       _progress = 1.0; // Finished puzzle 2
       gameProgressBarStateKey.currentState.setStateCallback();
     }
+    // End of game
+    if (_state == gameState.end) {
+      _stopWatch.stop();
+    }
     // MQTT
     globalMqttManager.publishGameDetails();
     _testPrintState();
