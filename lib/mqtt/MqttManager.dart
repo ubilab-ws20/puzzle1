@@ -60,6 +60,11 @@ class MQTTManager {
       _onReceivedMessage(c[0].topic, message);
     });
     _gameDetailsTimer = Timer.periodic(Duration(seconds: 3), (Timer t) {
+      if (_client.connectionStatus.state != MqttConnectionState.connected) {
+        _connected = false;
+      } else {
+        _connected = true;
+      }
       publishGameDetails();
     });
   }
@@ -117,6 +122,7 @@ class MQTTManager {
     _listTeamDetails["latitude"] = currentLocation.latitude;
     _listTeamDetails["longitude"] = currentLocation.longitude;
     _listTeamDetails["connected"] = true;
+    _listTeamDetails["timeStamp"] = DateTime.now().toIso8601String();
     publishString(topicTest, json.encode(_listTeamDetails));
   }
 

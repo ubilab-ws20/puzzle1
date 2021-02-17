@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'dart:async';
 import 'game.dart';
 import 'gameProgressBar.dart';
@@ -61,6 +62,7 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
       appBar: AppBar(
         title: Text(stringProgress),
         actions: [
+          _mqttConnectionStatusButton(context),
           hintIconButton(context),
           _quitGameButton(context),
         ],
@@ -254,6 +256,14 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
           children: textSpans,
         ),
       ),
+    );
+  }
+
+  /// Mqtt Connection Status button.
+  Widget _mqttConnectionStatusButton(BuildContext context) {
+    return Icon(
+      Icons.lightbulb,
+      color: globalMqttManager.isConnected() ? Colors.green : Colors.red,
     );
   }
 
