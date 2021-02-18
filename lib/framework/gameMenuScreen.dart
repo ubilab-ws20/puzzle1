@@ -165,6 +165,7 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
   /// Container with game menu already played time entry.
   Widget _alreadyPlayedTime() {
     String teamName = Game.getInstance().getAlreadyPlayedTime();
+    var hour = double.parse(teamName.split(":")[0]);
     return Container(
       margin: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
       child: Row(
@@ -176,9 +177,17 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
               size: 30.0,
             ),
           ),
-          Text(
-            teamName,
-            style: TextStyle(fontSize: 25.0),
+          Column(
+            children: <Widget>[
+              Text(
+                teamName,
+                style: TextStyle(fontSize: 25.0),
+              ),
+              Text(
+                hour >= 1 ? "Disconnected from Operator" : "",
+                style: TextStyle(color: Colors.red, fontSize: 10.0),
+              ),
+            ],
           ),
         ],
       ),
@@ -263,7 +272,7 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
   Widget _mqttConnectionStatusButton(BuildContext context) {
     return Icon(
       Icons.lightbulb,
-      color: globalMqttManager.isConnected() ? Colors.green : Colors.red,
+      color: globalMqttManager.isConnected() ? Colors.yellow : Colors.red,
     );
   }
 

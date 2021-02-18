@@ -65,6 +65,11 @@ class MQTTManager {
       } else {
         _connected = true;
       }
+      if (double.parse(
+              Game.getInstance().getAlreadyPlayedTime().split(":")[0]) >=
+          globalMaxTime) {
+        disconnect();
+      }
       publishGameDetails();
     });
   }
@@ -122,7 +127,7 @@ class MQTTManager {
     _listTeamDetails["latitude"] = currentLocation.latitude;
     _listTeamDetails["longitude"] = currentLocation.longitude;
     _listTeamDetails["connected"] = true;
-    _listTeamDetails["timeStamp"] = DateTime.now().toIso8601String();
+    _listTeamDetails["timeStamp"] = game.getAlreadyPlayedTime();
     publishString(topicTest, json.encode(_listTeamDetails));
   }
 
