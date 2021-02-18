@@ -8,7 +8,7 @@ final String stringHostName =
     "wss://earth.informatik.uni-freiburg.de/ubilab/ws/";
 LatLng currentLocation = LatLng(48.013217, 7.833264);
 MQTTManager globalMqttManager = MQTTManager(stringHostName);
-
+double globalMaxTime = 2;
 
 /// Debugging & Testing
 final bool globalIsTesting = true;
