@@ -37,12 +37,23 @@ class Game {
   GlobalKey<GameProgressBarState> gameProgressBarStateKey = GlobalKey();
 
   List<StoryText> gameStartTexts = [
-    StoryText("A few days ago something mysterious happened in Freiburg.", false),
-    StoryText("The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.", false),
-    StoryText("The official version is that he is suffering from a severe illness.", false),
-    StoryText("But people who were working closely with him are heavily doubting this.", false),
-    StoryText("While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:", false),
-    StoryText("Scientists discovered the key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?", true),
+    StoryText(
+        "A few days ago something mysterious happened in Freiburg.", false),
+    StoryText(
+        "The famous and ingenious Prof. Dr. Y has disappeared and no one really knows what has happend to him.",
+        false),
+    StoryText(
+        "The official version is that he is suffering from a severe illness.",
+        false),
+    StoryText(
+        "But people who were working closely with him are heavily doubting this.",
+        false),
+    StoryText(
+        "While thinking about the real reason for his disappearance you see a strange text message popping up on your phone. It says:",
+        false),
+    StoryText(
+        "Scientists discovered the key elements for a balanced, peaceful and happy life. The first one of them is healthy nutrition. So whY don't you go and search for the right food for your personal needs?",
+        true),
     StoryText("Strange...", false)
   ];
 
@@ -189,7 +200,9 @@ class Game {
     _totalHints = 0;
     _hintsUsed = 0;
     _progress = 0.01;
-    globalMqttManager.disconnect();
+    if (globalMqttManager.isConnected()) {
+      globalMqttManager.disconnect();
+    }
   }
 
   /// Callback for map when location of player changed.

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'dart:async';
 import 'game.dart';
 import 'gameProgressBar.dart';
-import 'package:ubilab_scavenger_hunt/globals.dart';
 import 'storyText.dart';
 import 'hintScreen.dart';
 
@@ -62,6 +62,7 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
       appBar: AppBar(
         title: Text(stringProgress),
         actions: [
+          _mqttConnectionStatusButton(context),
           hintIconButton(context),
           _quitGameButton(context),
         ],
@@ -164,6 +165,7 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
   /// Container with game menu already played time entry.
   Widget _alreadyPlayedTime() {
     String teamName = Game.getInstance().getAlreadyPlayedTime();
+    var hour = double.parse(teamName.split(":")[0]);
     return Container(
       margin: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0, bottom: 10.0),
       child: Row(
@@ -175,9 +177,17 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
               size: 30.0,
             ),
           ),
-          Text(
-            teamName,
-            style: TextStyle(fontSize: 25.0),
+          Column(
+            children: <Widget>[
+              Text(
+                teamName,
+                style: TextStyle(fontSize: 25.0),
+              ),
+              Text(
+                hour >= 1 ? "Disconnected from Operator" : "",
+                style: TextStyle(color: Colors.red, fontSize: 10.0),
+              ),
+            ],
           ),
         ],
       ),
@@ -255,6 +265,14 @@ class _GameMenuScreenState extends State<GameMenuScreen> {
           children: textSpans,
         ),
       ),
+    );
+  }
+
+  /// Mqtt Connection Status button.
+  Widget _mqttConnectionStatusButton(BuildContext context) {
+    return Icon(
+      Icons.lightbulb,
+      color: globalMqttManager.isConnected() ? Colors.yellow : Colors.red,
     );
   }
 

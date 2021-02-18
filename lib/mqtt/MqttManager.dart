@@ -60,11 +60,21 @@ class MQTTManager {
       _onReceivedMessage(c[0].topic, message);
     });
     _gameDetailsTimer = Timer.periodic(Duration(seconds: 3), (Timer t) {
+      if (_client.connectionStatus.state != MqttConnectionState.connected) {
+        _connected = false;
+      } else {
+        _connected = true;
+      }
+      if (double.parse(
+              Game.getInstance().getAlreadyPlayedTime().split(":")[0]) >=
+          globalMaxTime) {
+        disconnect();
+      }
       publishGameDetails();
     });
   }
 
-  /// Send a message to the server.
+  /// Publish Message to given topic on the server.
   void publishString(String topic, String message) {
     final builder = MqttClientPayloadBuilder();
     if (globalIsTesting) {
@@ -82,8 +92,8 @@ class MQTTManager {
     if (globalIsTesting) {
       print('MQTT: Disconnecting');
     }
-    publishString(topicTest,
-        "${Game.getInstance().getTeamName()}: disconnecting from $_hostName");
+    _mapTeamDetails["connected"] = false;
+    publishString(topicTest, json.encode(_mapTeamDetails));
     _client.disconnect();
     _gameDetailsTimer.cancel();
     _mapTeamDetails.clear();
@@ -109,6 +119,7 @@ class MQTTManager {
     if (!_connected) {
       return;
     }
+    _mapTeamDetails["teamID"] = _client.clientIdentifier;
     _mapTeamDetails["teamName"] = game.getTeamName();
     _mapTeamDetails["teamSize"] = game.getTeamSize().toString();
     _mapTeamDetails["hintsUsed"] = game.getAlreadyUsedHints();
@@ -116,6 +127,8 @@ class MQTTManager {
     _mapTeamDetails["currentPuzzle"] = game.getCurrentPuzzleInfo().toString();
     _mapTeamDetails["latitude"] = game.getCurrentLocation().latitude;
     _mapTeamDetails["longitude"] = game.getCurrentLocation().longitude;
+    _mapTeamDetails["connected"] = true;
+    _mapTeamDetails["timeStamp"] = game.getAlreadyPlayedTime();
     publishString(topicTest, json.encode(_mapTeamDetails));
   }
 
